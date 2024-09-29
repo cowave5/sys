@@ -6,7 +6,7 @@
  * This code is proprietary and confidential.
  * Unauthorized copying of this file, via any medium is strictly prohibited.
  */
-package com.cowave.sys.admin.security;
+package com.cowave.sys.admin.core.security;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;

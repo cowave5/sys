@@ -17,16 +17,17 @@ import javax.servlet.http.HttpServletResponse;
 import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.framework.filter.security.AccessToken;
 import com.cowave.commons.framework.helper.operation.Operation;
-import com.cowave.commons.framework.helper.operation.OperationAccepter;
 import com.cowave.sys.admin.api.entity.UserProfile;
 import com.cowave.sys.admin.api.entity.UserRegister;
 import com.cowave.sys.admin.api.entity.oauth.OAuthUser;
 import com.cowave.sys.admin.api.service.OAuthService;
 import com.cowave.sys.admin.api.service.SysAttachService;
+import com.cowave.sys.admin.api.service.SysLogService;
 import com.cowave.sys.admin.api.service.auth.captcha.CaptchaInfo;
 import com.cowave.sys.admin.api.entity.Route;
 import com.cowave.sys.admin.api.service.auth.AuthService;
 import com.cowave.sys.admin.api.service.auth.captcha.CaptchaService;
+import com.cowave.sys.admin.core.OplogHandler;
 import com.cowave.sys.model.admin.Login;
 import com.cowave.sys.model.admin.SysAttach;
 import com.cowave.sys.model.admin.SysLog;
@@ -65,7 +66,7 @@ public class AuthController {
 
     private final OAuthService oAuthService;
 
-    private final OperationAccepter<SysLog> operationAccepter;
+    private final SysLogService sysLogService;
 
     /**
      * 获取验证码
@@ -113,7 +114,8 @@ public class AuthController {
     /**
      * 退出
      */
-    @Operation(type = "admin_login", action = "logout", desc = "退出登录")
+    @Operation(type = "admin_login", action = "logout", handler = OplogHandler.class,
+            summary = "退出登录", expr = "#opHandler.log(#opInfo)")
     @RequestMapping("/logout")
     public Response<Void> logout(HttpServletResponse response) throws IOException {
     	authService.logout(response);
@@ -201,11 +203,11 @@ public class AuthController {
     		return Response.success();
         }
     	redisHelper.delete(tokenKey);
-
+        // 强退日志
         SysLog sysLog = new SysLog();
         sysLog.initialize();
         sysLog.recordOperation("admin_login", "logout_force", "强退用户：[" + accessToken.getUserNick() + "]");
-        operationAccepter.accept(sysLog);
+        sysLogService.add(sysLog);
         return Response.success();
     }
 }

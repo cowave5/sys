@@ -3,18 +3,19 @@ server:
   servlet:
     context-path: /quartz
 
-info:
-  cluster:
-    id: ${cluster_id:10}
-    level: ${cluster_level:1}
-    name: ${cluster_name:default}
-
 spring:
+  application:
+    name: sys-quartz
+  access:
+    always-success: true
   datasource:
     driverClassName: org.postgresql.Driver
     url: ${datasource_url:jdbc:postgresql://127.0.0.1:5432/sys-quartz}
     username: ${datasource_username:postgres}
     password: ${datasource_password:postgres}
+  liquibase:
+    enabled: true
+    change-log: sql/changelog.yml
   cloud:
     nacos:
       discovery:

@@ -14,7 +14,6 @@ import com.alibaba.excel.annotation.write.style.ContentStyle;
 import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import com.alibaba.excel.enums.poi.HorizontalAlignmentEnum;
-import com.cowave.commons.framework.helper.alarm.Alarm;
 import com.cowave.commons.framework.support.excel.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -31,7 +30,7 @@ import java.util.Date;
 @HeadFontStyle(fontHeightInPoints = 10)
 @ContentStyle(horizontalAlignment = HorizontalAlignmentEnum.LEFT)
 @Data
-public class SysAlarm implements Alarm {
+public class SysAlarm {
 
 	/**
 	 * 告警id

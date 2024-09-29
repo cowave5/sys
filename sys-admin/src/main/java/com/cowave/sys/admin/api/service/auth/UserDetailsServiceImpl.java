@@ -13,8 +13,8 @@ import java.util.List;
 import com.cowave.commons.framework.filter.security.AccessToken;
 import com.cowave.commons.framework.filter.security.Permission;
 import com.cowave.commons.framework.filter.security.TokenService;
-import com.cowave.commons.framework.helper.operation.OperationAccepter;
 import com.cowave.commons.tools.Asserts;
+import com.cowave.sys.admin.api.service.SysLogService;
 import com.cowave.sys.model.admin.SysLog;
 import com.cowave.sys.model.admin.SysUserRole;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,7 +43,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final ClusterInfo clusterInfo;
 
-    private final OperationAccepter<SysLog> operationAccepter;
+    private final SysLogService sysLogService;
 
     @Override
 	public UserDetails loadUserByUsername(String userAccount) throws UsernameNotFoundException {
@@ -52,7 +52,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UserNotFoundException("{user.notexist}");
         }
         Asserts.equals(1, sysUser.getUserStatus(), "{auth.account.disable}", userAccount);
-
+        // 获取用户角色权限
         List<String> roleCodes = sysUser.getRoleList().stream().map(SysUserRole::getRoleCode).toList();
         List<String> permits;
         if(roleCodes.contains(Permission.ROLE_ADMIN)){
@@ -60,7 +60,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }else{
             permits = sysUserMapper.permitKeys(sysUser.getUserId());
         }
-
+        // 构造token
         AccessToken accessToken = SysUser.accessToken(sysUser);
         accessToken.setRoles(roleCodes);
         accessToken.setPermissions(permits);
@@ -68,11 +68,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         accessToken.setClusterName(clusterInfo.getName());
         accessToken.setClusterLevel(clusterInfo.getLevel());
         tokenService.assignToken(accessToken);
-
+        // 登录日志
         SysLog sysLog = new SysLog();
         sysLog.initialize();
         sysLog.recordOperation("admin_login", "login", "登录");
-        operationAccepter.accept(sysLog);
+        sysLogService.add(sysLog);
+        // 返回
         return accessToken;
 	}
 }

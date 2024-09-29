@@ -32,7 +32,7 @@ public class SysConfigControllerTest extends SpringTest {
     @BeforeEach
     public void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(sysConfigController)
-                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator))
+                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, true))
                 .addFilter(new TokenAuthenticationFilter(tokenService))
                 .setControllerAdvice(accessAdvice).build();
     }

@@ -36,7 +36,7 @@ public class SysAttachControllerTest extends SpringTest {
     @BeforeEach
     public void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(sysAttachController)
-                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator))
+                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, true))
                 .addFilter(new TokenAuthenticationFilter(tokenService))
                 .setControllerAdvice(accessAdvice).build();
     }

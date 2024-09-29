@@ -18,9 +18,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.cowave.commons.framework.helper.operation.Operation;
-import com.cowave.commons.framework.helper.operation.Operation.Content;
 import com.cowave.sys.admin.api.caches.SysDeptCaches;
 import com.cowave.sys.admin.api.service.SysDeptService;
+import com.cowave.sys.admin.core.OplogHandler;
 import com.cowave.sys.model.admin.SysDeptPost;
 import com.cowave.sys.model.admin.SysUser;
 import com.cowave.sys.model.admin.SysUserDept;
@@ -92,7 +92,8 @@ public class SysDeptController {
     /**
      * 新增
      */
-    @Operation(type = "admin_dept", action = "add", desc = "新增部门：#{sysDept.deptName}", content = Content.REQ)
+    @Operation(type = "admin_dept", action = "add", handler = OplogHandler.class,
+            summary = "新增部门：#{#sysDept.deptName}", expr = "#opHandler.logRequest(#opInfo)")
     @PreAuthorize("@permit.hasPermit('sys:dept:new')")
     @PostMapping("/add")
     public Response<Void> add(@Validated @RequestBody SysDept sysDept) throws Exception {
@@ -103,7 +104,8 @@ public class SysDeptController {
     /**
      * 修改
      */
-    @Operation(type = "admin_dept", action = "edit", desc = "修改部门：#{resp.deptName}", content = Content.ALL)
+    @Operation(type = "admin_dept", action = "edit", handler = OplogHandler.class,
+            summary = "修改部门：#{#resp.deptName}", expr = "#opHandler.logAll(#opInfo, #sysDept, #resp)")
     @PreAuthorize("@permit.hasPermit('sys:dept:edit')")
     @PostMapping("/edit")
     public Response<SysDept> edit(@RequestBody SysDept sysDept) throws Exception {
@@ -114,7 +116,8 @@ public class SysDeptController {
      * 删除
      * @param deptId 部门id
      */
-    @Operation(type = "admin_dept", action = "delete", desc = "删除部门", content = Content.RESP)
+    @Operation(type = "admin_dept", action = "delete", handler = OplogHandler.class,
+            summary = "删除部门", expr = "#opHandler.logResponse(#opInfo, #resp)")
     @PreAuthorize("@permit.hasPermit('sys:dept:delete')")
     @GetMapping("/delete")
     public Response<List<SysDept>> delete(@NotNull(message = "{dept.notnull.id}") Long[] deptId) throws Exception {
@@ -145,7 +148,8 @@ public class SysDeptController {
     /**
      * 修改只读
      */
-    @Operation(type = "admin_dept", action = "readonly", desc = "修改部门[#{sysDept.deptName}]只读状态", content = Content.REQ)
+    @Operation(type = "admin_dept", action = "readonly", handler = OplogHandler.class,
+            summary = "修改部门[#{#sysDept.deptName}]只读状态", expr = "#opHandler.logRequest(#opInfo)")
     @PreAuthorize("@permit.hasPermit('sys:common:readonly')")
     @PostMapping("/change/readonly")
     public Response<Void> changeReadonly(@RequestBody SysDept sysDept) {

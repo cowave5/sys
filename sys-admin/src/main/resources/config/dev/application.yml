@@ -3,35 +3,11 @@ server:
   servlet:
     context-path: /admin
 
-info:
-  cluster:
-    id: 10
-    level: 1
-    name: default
-
 spring:
-  liquibase:
-    enabled: true
-    change-log: sql/changelog.yml
-  datasource:
-    driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://10.64.4.74:5432/sys-admin
-    username: postgres
-    password: postgres
-  redis:
-    host: 10.64.4.74
-    port: 6379
-  minio:
-    endpoint: http://10.64.4.74:39000
-    accessKey: admin
-    secretKey: admin123
-  socket-io:
-    port: 19011
-  mail:
-    host: smtp.163.com
-    username: cowaveAdmin@163.com
-    password: TQQWRIRSQLTEELPT
   application:
+    name: sys-admin
+  access:
+    always-success: true
     token:
       header: Authorization
       salt: admin@cowave.com
@@ -48,6 +24,27 @@ spring:
         - /api/v1/oauth/callback/**
         - /api/v1/flow/designer/**
         - /designer/**
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://127.0.0.1:5432/sys-admin
+    username: postgres
+    password: postgres
+  liquibase:
+    enabled: true
+    change-log: sql/changelog.yml
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  minio:
+    endpoint: http://10.64.4.74:39000
+    accessKey: admin
+    secretKey: admin123
+  socket-io:
+    port: 19011
+  mail:
+    host: smtp.163.com
+    username: cowaveAdmin@163.com
+    password: TQQWRIRSQLTEELPT
   cloud:
     nacos:
       discovery:

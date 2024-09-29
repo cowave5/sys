@@ -6,7 +6,7 @@
  * This code is proprietary and confidential.
  * Unauthorized copying of this file, via any medium is strictly prohibited.
  */
-package com.cowave.sys.admin.socket;
+package com.cowave.sys.admin.core.socket;
 
 import com.cowave.commons.framework.helper.socketio.ConnectedHandler;
 import com.cowave.commons.framework.helper.socketio.SocketServer;

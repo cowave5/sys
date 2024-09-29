@@ -9,7 +9,6 @@
 package com.cowave.sys.admin.api.service;
 
 import com.cowave.sys.admin.SpringTest;
-import com.cowave.sys.admin.api.service.impl.SysAlarmServiceImpl;
 import com.cowave.sys.model.admin.SysAlarm;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class SysAlarmServiceTest extends SpringTest {
 
     @Autowired
-    private SysAlarmServiceImpl sysAlarmService;
+    private SysAlarmService sysAlarmService;
 
     @Test
     public void accept() {
         SysAlarm sysAlarm = new SysAlarm();
         sysAlarm.setAlarmCode("xxx");
-        sysAlarmService.handle(sysAlarm);
+        sysAlarmService.add(sysAlarm);
     }
 }

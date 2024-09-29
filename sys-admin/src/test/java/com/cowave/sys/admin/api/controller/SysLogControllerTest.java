@@ -30,7 +30,7 @@ public class SysLogControllerTest  extends SpringTest {
     @BeforeEach
     public void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(sysLogController)
-                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator))
+                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, true))
                 .addFilter(new TokenAuthenticationFilter(tokenService))
                 .setControllerAdvice(accessAdvice).build();
     }

@@ -8,8 +8,6 @@
  */
 package com.cowave.sys.admin.api.service;
 
-import java.util.List;
-
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cowave.sys.admin.api.entity.LogQuery;
 import com.cowave.sys.model.admin.SysLog;
@@ -21,7 +19,10 @@ import com.cowave.sys.model.admin.SysLog;
  */
 public interface SysLogService {
 
-	void accept(SysLog sysLog);
+	/**
+	 * 新增
+	 */
+	void add(SysLog sysLog);
 
 	/**
 	 * 列表

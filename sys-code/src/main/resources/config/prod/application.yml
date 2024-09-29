@@ -3,17 +3,18 @@ server:
   servlet:
     context-path: /code
 
-info:
-  cluster:
-    id: ${cluster_id:10}
-    level: ${cluster_level:1}
-    name: ${cluster_name:default}
-
 spring:
+  application:
+    name: sys-code
+  access:
+    always-success: true
   datasource:
     url: ${datasource_url:jdbc:postgresql://127.0.0.1:5432/sys-code}
     username: ${datasource_username:postgres}
     password: ${datasource_password:postgres}
+  liquibase:
+    enabled: true
+    change-log: sql/changelog.yml
   cloud:
     nacos:
       discovery:

@@ -18,9 +18,9 @@ import javax.validation.constraints.NotNull;
 
 import cn.hutool.core.lang.tree.Tree;
 import com.cowave.commons.framework.helper.operation.Operation;
-import com.cowave.commons.framework.helper.operation.Operation.Content;
 import com.cowave.sys.admin.api.caches.SysPostCaches;
 import com.cowave.sys.admin.api.service.SysPostService;
+import com.cowave.sys.admin.core.OplogHandler;
 import com.cowave.sys.model.admin.SysUser;
 import org.springframework.feign.codec.Response;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -98,7 +98,8 @@ public class SysPostController {
 	/**
 	 * 新增
 	 */
-	@Operation(type = "admin_post", action = "add", desc = "新增岗位：#{sysPost.postName}", content = Content.REQ)
+	@Operation(type = "admin_post", action = "add", handler = OplogHandler.class,
+			summary = "新增岗位：#{#sysPost.postName}", expr = "#opHandler.logRequest(#opInfo)")
 	@PreAuthorize("@permit.hasPermit('sys:post:new')")
 	@PostMapping("/add")
 	public Response<Void> add(@Validated @RequestBody SysPost sysPost) {
@@ -109,7 +110,8 @@ public class SysPostController {
 	/**
 	 * 修改
 	 */
-	@Operation(type = "admin_post", action = "edit", desc = "修改岗位：#{resp.postName}", content = Content.ALL)
+	@Operation(type = "admin_post", action = "edit", handler = OplogHandler.class,
+			summary = "修改岗位：#{#resp.postName}", expr = "#opHandler.logAll(#opInfo, #sysPost, #resp)")
 	@PreAuthorize("@permit.hasPermit('sys:post:edit')")
 	@PostMapping("/edit")
 	public Response<SysPost> edit(@Validated @RequestBody SysPost sysPost) {
@@ -121,7 +123,8 @@ public class SysPostController {
 	 *
 	 * @param postId 岗位id
 	 */
-	@Operation(type = "admin_post", action = "delete", desc = "删除岗位", content = Content.RESP)
+	@Operation(type = "admin_post", action = "delete", handler = OplogHandler.class,
+			summary = "删除岗位", expr = "#opHandler.logResponse(#opInfo, #resp)")
 	@PreAuthorize("@permit.hasPermit('sys:post:delete')")
 	@GetMapping("/delete")
 	public Response<List<SysPost>> delete(@NotNull(message = "{post.notnull.id}") Long[] postId) {
@@ -131,7 +134,8 @@ public class SysPostController {
 	/**
 	 * 修改只读
 	 */
-	@Operation(type = "admin_post", action = "readonly", desc = "修改岗位[#{sysPost.postName}]只读状态", content = Content.REQ)
+	@Operation(type = "admin_post", action = "readonly", handler = OplogHandler.class,
+			summary = "修改岗位[#{#sysPost.postName}]只读状态", expr = "#opHandler.logRequest(#opInfo)")
 	@PreAuthorize("@permit.hasPermit('sys:common:readonly')")
 	@PostMapping("/change/readonly")
 	public Response<Void> changeReadonly(@RequestBody SysPost sysPost) {

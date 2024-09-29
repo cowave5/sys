@@ -17,12 +17,13 @@ import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import com.alibaba.excel.enums.poi.HorizontalAlignmentEnum;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.cowave.commons.framework.access.Access;
-import com.cowave.commons.framework.helper.operation.OperationLog;
+import com.cowave.commons.framework.helper.operation.OperationInfo;
 import com.cowave.commons.framework.support.excel.DateConverter;
 import com.cowave.commons.framework.support.excel.JsonConverter;
 import com.cowave.commons.framework.support.excel.YesNoConverter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
@@ -39,12 +40,9 @@ import java.util.Map;
 @ColumnWidth(20)
 @HeadFontStyle(fontHeightInPoints = 10)
 @ContentStyle(horizontalAlignment = HorizontalAlignmentEnum.LEFT)
+@NoArgsConstructor
 @Data
-public class SysLog implements OperationLog {
-
-    public static final int SUCCESS = 1;
-
-    public static final int FAIL = 0;
+public class SysLog {
 
     /**
      * 日志id
@@ -168,16 +166,6 @@ public class SysLog implements OperationLog {
     private Map<String, Object> logContent;
 
     /**
-     * 请求
-     */
-    private Map<String, Object> request;
-
-    /**
-     * 响应
-     */
-    private Object response;
-
-    /**
      * 开始时间
      */
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
@@ -190,6 +178,18 @@ public class SysLog implements OperationLog {
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
+
+    public SysLog(OperationInfo opInfo){
+        this.logTime = opInfo.getAccessTime();
+        this.logStatus = opInfo.isSuccess() ? 1 : 0;
+        this.ip = opInfo.getAccessIp();
+        this.url = opInfo.getAccessUrl();
+        this.userId = opInfo.getUserId();
+        this.deptId = opInfo.getDeptId();
+        this.typeCode = opInfo.getOpType();
+        this.actionCode = opInfo.getOpAction();
+        this.logDesc = opInfo.getSummary();
+    }
 
     public void putContent(String key, Object obj) {
         if(logContent == null){
@@ -206,7 +206,7 @@ public class SysLog implements OperationLog {
 
     public void initialize(){
         this.logTime = new Date();
-        this.logStatus = SUCCESS;
+        this.logStatus = 1;
         this.ip = Access.accessIp();
         this.url = Access.accessUrl();
         this.userId = Access.userId();

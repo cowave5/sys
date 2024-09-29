@@ -176,7 +176,7 @@ public class AppServiceImpl implements AppService {
         velocityContext.put("httpContext", appInfo.getHttpContext());
 
         valueTemplate("vm/app/pom.xml.vm", "/pom.xml", zip, velocityContext);
-        valueTemplate("vm/app/info.yml.vm", "/src/main/resources/META-INF/info.yml", zip, velocityContext);
+        valueTemplate("vm/app/common.yml.vm", "/src/main/resources/META-INF/common.yml", zip, velocityContext);
         valueTemplate("vm/app/README.md.vm", "/README.md", zip, velocityContext);
         valueTemplate("vm/app/smart-doc.json.vm", "/src/main/resources/smart-doc.json", zip, velocityContext);
         valueTemplate("vm/app/env.properties.vm", "/bin/env.properties", zip, velocityContext);

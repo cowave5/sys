@@ -8,8 +8,8 @@
  */
 package com.cowave.sys.code.security;
 
+import com.cowave.commons.framework.configuration.AccessConfiguration;
 import com.cowave.commons.framework.filter.security.TokenAuthenticationFilter;
-import com.cowave.commons.framework.filter.security.TokenConfiguration;
 import com.cowave.commons.framework.filter.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +32,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-	private final TokenConfiguration tokenConfiguration;
+	private final AccessConfiguration accessConfiguration;
 
 	private final TokenService tokenService;
 
@@ -46,7 +46,7 @@ public class SecurityConfiguration {
 	}
 
 	private String[] permitAll(){
-		PERMIT_ALL.addAll(tokenConfiguration.getIgnoreUrls());
+		PERMIT_ALL.addAll(accessConfiguration.tokenIgnoreUrls());
 		return PERMIT_ALL.toArray(new String[0]);
 	}
 

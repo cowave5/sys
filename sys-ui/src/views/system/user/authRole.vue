@@ -105,8 +105,9 @@ export default {
     /** 提交 */
     submitForm() {
       const userId = this.form.userId;
+      const userName = this.form.userName;
       const roleIds = this.roleIds;
-      updateAuthRole(userId, roleIds).then((response) => {
+      updateAuthRole(userId, userName, roleIds).then((response) => {
         this.$modal.msgSuccess(this.$t(`msg.success_grant`));
         this.close();
       });

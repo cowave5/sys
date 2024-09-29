@@ -21,14 +21,15 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSON;
 import com.cowave.commons.framework.filter.security.AccessToken;
 import com.cowave.commons.framework.filter.security.TokenService;
-import org.apache.commons.lang3.StringUtils;
 import org.flowable.engine.IdentityService;
 import org.springframework.feign.codec.HttpCode;
 import org.springframework.feign.codec.Response;
-import org.springframework.http.HttpStatus;
+import org.springframework.feign.codec.ResponseCode;
 import org.springframework.http.MediaType;
 
 import lombok.RequiredArgsConstructor;
+
+import static org.springframework.feign.codec.ResponseCode.SUCCESS;
 
 /**
  * Api接口权限过滤器
@@ -46,15 +47,17 @@ public class ApiSecurityFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         AccessToken accessToken = tokenService.parseToken(httpRequest);
-        if(StringUtils.isNotBlank(accessToken.getValidCode())) {
+
+        ResponseCode validCode = accessToken.getValidCode();
+        if(validCode != null) {
             HttpServletResponse httpResponse = (HttpServletResponse)response;
             httpResponse.setCharacterEncoding("UTF-8");
             httpResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            httpResponse.setStatus(HttpStatus.OK.value());
+            httpResponse.setStatus(SUCCESS.getStatus());
             httpResponse.getWriter().write(JSON.toJSONString(Response.code(new HttpCode() {
                 @Override
                 public String getCode() {
-                    return accessToken.getValidCode();
+                    return validCode.getCode();
                 }
 
                 @Override

@@ -10,11 +10,9 @@ package com.cowave.sys.admin.api.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cowave.commons.framework.access.Access;
-import com.cowave.commons.framework.helper.operation.OperationAccepter;
 import com.cowave.sys.admin.api.entity.LogQuery;
 import com.cowave.sys.admin.api.service.SysLogService;
 import com.cowave.sys.model.admin.SysLog;
@@ -32,15 +30,13 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @Service
-public class SysLogServiceImpl implements SysLogService, OperationAccepter<SysLog> {
-
-	private final ThreadPoolExecutor applicationExecutor;
+public class SysLogServiceImpl implements SysLogService {
 
 	private final SysLogMapper sysLogMapper;
 
 	@Override
-	public void accept(SysLog sysLog) {
-		applicationExecutor.execute(() -> sysLogMapper.insert(sysLog));
+	public void add(SysLog sysLog) {
+		sysLogMapper.insert(sysLog);
 	}
 
 	@Override

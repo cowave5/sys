@@ -6,12 +6,13 @@
  * This code is proprietary and confidential.
  * Unauthorized copying of this file, via any medium is strictly prohibited.
  */
-package com.cowave.sys.model.common;
+package com.cowave.sys.admin.core;
 
 import com.alibaba.fastjson.JSON;
 import com.cowave.commons.framework.access.Access;
+import com.cowave.commons.framework.access.AccessExceptionHandler;
 import com.cowave.commons.framework.configuration.ApplicationConfiguration;
-import com.cowave.commons.framework.helper.alarm.AccessAlarmFactory;
+import com.cowave.sys.admin.api.service.SysAlarmService;
 import com.cowave.sys.model.admin.SysAlarm;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -28,20 +29,22 @@ import java.util.Map;
  */
 @RequiredArgsConstructor
 @Component
-public class SysAccessAlarmFactory implements AccessAlarmFactory<SysAlarm> {
+public class AccessAlarmHandler implements AccessExceptionHandler {
 
     private final ApplicationConfiguration applicationConfiguration;
+
+    private final SysAlarmService sysAlarmService;
+
     @Override
-    public SysAlarm createAlarm(int httpStatus, String code, String message, Object response, Exception e) {
-        Response<Void> errorResp = (Response<Void>) response;
+    public void handler(Exception e, int status, Response<Void> response) {
         Access access = Access.get();
         Map<String, Object> content = new HashMap<>();
         content.put("requestId", access.getAccessId());
         content.put("requestUrl", access.getAccessUrl());
         content.put("requestParam", access.getRequestParam());
-        content.put("responseCode", errorResp.getCode());
-        content.put("responseMsg", errorResp.getMsg());
-        content.put("responseData", errorResp.getData());
+        content.put("responseCode", response.getCode());
+        content.put("responseMsg", response.getMsg());
+        content.put("responseData", response.getData());
 
         SysAlarm sysAlarm = new SysAlarm();
         String group = applicationConfiguration.getName();
@@ -54,6 +57,6 @@ public class SysAccessAlarmFactory implements AccessAlarmFactory<SysAlarm> {
         String md5 = DigestUtils.md5Hex(access.getAccessUrl() + param);
         sysAlarm.recordAlarm(md5, group, type, access.getAccessUrl(), content);
         sysAlarm.setAlarmLevel(3);
-        return sysAlarm;
+        sysAlarmService.add(sysAlarm);
     }
 }

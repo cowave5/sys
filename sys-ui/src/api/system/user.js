@@ -128,9 +128,10 @@ export function changeReadonly(userId, readOnly, userName) {
 }
 
 // 用户角色修改
-export function updateAuthRole(userId, roleIds) {
+export function updateAuthRole(userId, userName, roleIds) {
   const data = {
     userId,
+    userName,
     roleIds
   }
   return request({

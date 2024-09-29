@@ -18,12 +18,12 @@ import javax.validation.constraints.NotNull;
 
 import cn.hutool.core.lang.tree.Tree;
 import com.cowave.commons.framework.helper.operation.Operation;
-import com.cowave.commons.framework.helper.operation.Operation.Content;
 import com.cowave.commons.framework.support.excel.valid.ExcelImportValidListener;
 import com.cowave.commons.framework.support.excel.write.DropdownWriteHandler;
 import com.cowave.commons.tools.Messages;
 import com.cowave.sys.admin.api.caches.SysUserCaches;
 import com.cowave.sys.admin.api.service.SysUserService;
+import com.cowave.sys.admin.core.OplogHandler;
 import org.springframework.feign.codec.Response;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -101,7 +101,8 @@ public class SysUserController {
 	/**
 	 * 新增
 	 */
-	@Operation(type = "admin_user", action = "add", desc = "新增用户：#{sysUser.userName}", content = Content.REQ)
+	@Operation(type = "admin_user", action = "add", handler = OplogHandler.class,
+			summary = "新增用户：#{#sysUser.userName}", expr = "#opHandler.logRequest(#opInfo)")
 	@PreAuthorize("@permit.hasPermit('sys:user:new')")
 	@PostMapping("/add")
 	public Response<Void> add(@Validated @RequestBody SysUser sysUser) {
@@ -112,7 +113,8 @@ public class SysUserController {
 	/**
 	 * 编辑
 	 */
-	@Operation(type = "admin_user", action = "edit", desc = "修改用户：#{resp.userName}", content = Content.ALL)
+	@Operation(type = "admin_user", action = "edit", handler = OplogHandler.class,
+			summary = "修改用户：#{#sysUser.userName}", expr = "#opHandler.logAll(#opInfo, #sysUser, #resp)")
 	@PreAuthorize("@permit.hasPermit('sys:user:edit')")
 	@PostMapping("/edit")
 	public Response<SysUser> edit(@Validated @RequestBody SysUser sysUser) {
@@ -123,7 +125,8 @@ public class SysUserController {
 	 * 删除
 	 * @param userId 用户id
 	 */
-	@Operation(type = "admin_user", action = "delete", desc = "删除用户", content = Content.RESP)
+	@Operation(type = "admin_user", action = "delete", handler = OplogHandler.class,
+			summary = "删除用户", expr = "#opHandler.logResponse(#opInfo, #resp)")
 	@PreAuthorize("@permit.hasPermit('sys:user:delete')")
 	@GetMapping(value = {"/delete"})
 	public Response<List<SysUser>> delete(@NotNull(message = "{user.notnull.id}") Long[] userId) {
@@ -133,7 +136,8 @@ public class SysUserController {
 	/**
 	 * 修改状态
 	 */
-	@Operation(type = "admin_user", action = "status", desc = "修改用户[#{sysUser.userName}]状态", content = Content.REQ)
+	@Operation(type = "admin_user", action = "status", handler = OplogHandler.class,
+			summary = "修改用户[#{#sysUser.userName}]状态", expr = "#opHandler.logRequest(#opInfo)")
 	@PreAuthorize("@permit.hasPermit('sys:user:edit')")
 	@PostMapping("/change/status")
 	public Response<Void> changeStatus(@RequestBody SysUser sysUser) {
@@ -144,7 +148,8 @@ public class SysUserController {
 	/**
 	 * 修改密码
 	 */
-	@Operation(type = "admin_user", action = "passwd", desc = "修改用户[#{sysUser.userName}]密码")
+	@Operation(type = "admin_user", action = "passwd", handler = OplogHandler.class,
+			summary = "修改用户[#{#sysUser.userName}]密码", expr = "#opHandler.log(#opInfo)")
 	@PreAuthorize("@permit.hasPermit('sys:user:passwd')")
 	@PostMapping("/change/passwd")
 	public Response<Void> changePasswd(@RequestBody SysUser sysUser) {
@@ -155,7 +160,8 @@ public class SysUserController {
 	/**
 	 * 修改角色
 	 */
-	@Operation(type = "admin_user", action = "role_grant", desc = "修改用户[#{sysUser.userName}]角色")
+	@Operation(type = "admin_user", action = "role_grant", handler = OplogHandler.class,
+			summary = "修改用户[#{#sysUser.userName}]角色", expr = "#opHandler.log(#opInfo)")
 	@PreAuthorize("@permit.hasPermit('sys:user:grant')")
 	@PostMapping("/change/roles")
 	public Response<Void> changeRoles(@RequestBody SysUser sysUser) {
@@ -166,7 +172,8 @@ public class SysUserController {
 	/**
 	 * 修改只读
 	 */
-	@Operation(type = "admin_user", action = "readonly", desc = "修改用户[#{sysUser.userName}]只读状态", content = Content.REQ)
+	@Operation(type = "admin_user", action = "readonly", handler = OplogHandler.class,
+			summary = "修改用户[#{#sysUser.userName}]只读状态", expr = "#opHandler.logRequest(#opInfo)")
 	@PreAuthorize("@permit.hasPermit('sys:common:readonly')")
 	@PostMapping("/change/readonly")
 	public Response<Void> changeReadonly(@RequestBody SysUser sysUser) {

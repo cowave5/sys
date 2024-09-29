@@ -3,8 +3,6 @@ spring:
     name: sys-gateway
   main:
     web-application-type: reactive
-  liquibase:
-    enabled: false
   cloud:
     discovery:
       client:

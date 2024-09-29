@@ -10,7 +10,6 @@ package com.cowave.sys.admin.api.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cowave.commons.framework.access.Access;
-import com.cowave.commons.framework.helper.alarm.AlarmHandler;
 import com.cowave.commons.tools.Asserts;
 import com.cowave.sys.admin.api.service.SysAlarmService;
 import com.cowave.sys.model.admin.SysAlarm;
@@ -29,13 +28,12 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @Service
-public class SysAlarmServiceImpl implements SysAlarmService, AlarmHandler<SysAlarm> {
+public class SysAlarmServiceImpl implements SysAlarmService {
 
 	private final SysAlarmMapper sysAlarmMapper;
 
-
 	@Override
-	public void handle(SysAlarm sysAlarm) {
+	public void add(SysAlarm sysAlarm) {
         if(sysAlarmMapper.alarmIncrease(sysAlarm) == 0) {
             sysAlarmMapper.insert(sysAlarm);
         }

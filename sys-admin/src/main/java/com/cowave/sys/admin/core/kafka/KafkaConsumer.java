@@ -6,11 +6,11 @@
  * This code is proprietary and confidential.
  * Unauthorized copying of this file, via any medium is strictly prohibited.
  */
-package com.cowave.sys.admin.kafka;
+package com.cowave.sys.admin.core.kafka;
 
 import com.alibaba.fastjson.JSON;
-import com.cowave.sys.admin.api.service.impl.SysAlarmServiceImpl;
-import com.cowave.sys.admin.api.service.impl.SysLogServiceImpl;
+import com.cowave.sys.admin.api.service.SysAlarmService;
+import com.cowave.sys.admin.api.service.SysLogService;
 import com.cowave.sys.model.admin.SysAlarm;
 import com.cowave.sys.model.admin.SysLog;
 import lombok.RequiredArgsConstructor;
@@ -27,19 +27,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaConsumer {
 
-    private final SysAlarmServiceImpl sysAlarmService;
+    private final SysAlarmService sysAlarmService;
 
-    private final SysLogServiceImpl sysLogService;
+    private final SysLogService sysLogService;
 
-    @KafkaListener(topics = {"${application.oplog.topic.kafka:sys-oplog}"})
+    @KafkaListener(topics = {"${spring.access.oplog-kafka:access-oplog}"})
     public void recordOperation(ConsumerRecord<?, ?> message) {
         SysLog sysLog = JSON.parseObject(String.valueOf(message.value()), SysLog.class);
-        sysLogService.accept(sysLog);
+        sysLogService.add(sysLog);
     }
 
-    @KafkaListener(topics = {"${application.alarm.topic.kafka:sys-alarm}"})
+    @KafkaListener(topics = {"${spring.access.alarm.kafka-topic:access-alarm}"})
     public void recordAlarm(ConsumerRecord<?, ?> message) {
         SysAlarm sysAlarm = JSON.parseObject(String.valueOf(message.value()), SysAlarm.class);
-        sysAlarmService.handle(sysAlarm);
+        sysAlarmService.add(sysAlarm);
     }
 }

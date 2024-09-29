@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
 
     <name>sys</name>
-    <url>sys://www.cowave.com/</url>
+    <url>https://www.cowave.com/</url>
     <description>管理应用</description>
 
     <modules>

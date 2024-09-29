@@ -36,9 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        insert into sys_log(log_group,log_type,log_action,user_id,dept_id,
-                            ip,url,log_status,log_time,log_desc,
-                            log_content)
+        insert into sys_log(log_group,log_type,log_action,user_id,dept_id,ip,url,log_status,log_time,log_desc,log_content)
         select parent_code,#{typeCode},#{actionCode},#{userId},#{deptId},
                #{ip},#{url},#{logStatus},#{logTime},#{logDesc},
                #{logContent,jdbcType=OTHER,typeHandler=com.cowave.commons.framework.support.mybatis.JsonTypeHandler}

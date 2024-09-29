@@ -1,5 +1,5 @@
 <configuration>
-    <property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} %t%X{tid} [%level] %m%n" />
+    <property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %t%X{tid} [%level] %m%n" />
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${pattern}</pattern>

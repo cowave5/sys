@@ -13,14 +13,17 @@ import com.cowave.sys.admin.api.entity.AlarmHandles;
 import com.cowave.sys.model.admin.SysAlarm;
 import com.cowave.sys.model.admin.SysAlarmType;
 
-import java.util.List;
-
 /**
  *
  * @author shanhuiming
  *
  */
 public interface SysAlarmService {
+
+	/**
+	 * 新增
+	 */
+	void add(SysAlarm sysAlarm);
 
 	/**
 	 * 类型列表

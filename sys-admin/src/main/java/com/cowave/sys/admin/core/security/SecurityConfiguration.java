@@ -6,12 +6,12 @@
  * This code is proprietary and confidential.
  * Unauthorized copying of this file, via any medium is strictly prohibited.
  */
-package com.cowave.sys.admin.security;
+package com.cowave.sys.admin.core.security;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cowave.commons.framework.filter.security.TokenConfiguration;
+import com.cowave.commons.framework.configuration.AccessConfiguration;
 import com.cowave.commons.framework.filter.security.TokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,7 +41,7 @@ public class SecurityConfiguration {
 
 	private final UserDetailsService userDetailsService;
 
-	private final TokenConfiguration tokenConfiguration;
+	private final AccessConfiguration accessConfiguration;
 
 	private final TokenService tokenService;
 
@@ -56,7 +56,7 @@ public class SecurityConfiguration {
 
 	private String[] permitAll(){
 		List<String> list = new ArrayList<>(PERMIT_ALL);
-		list.addAll(tokenConfiguration.getIgnoreUrls());
+		list.addAll(accessConfiguration.tokenIgnoreUrls());
 		return list.toArray(new String[0]);
 	}
 

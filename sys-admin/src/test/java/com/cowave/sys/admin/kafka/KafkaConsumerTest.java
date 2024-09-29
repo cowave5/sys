@@ -34,11 +34,11 @@ public class KafkaConsumerTest extends SpringTest {
         sysAlarm.setAlarmCode("xxxxx");
         sysAlarm.setSourceName("sys-admin");
         sysAlarm.setAlarmContent(new HashMap<>());
-        kafkaTemplate.send("sys-alarm", JSON.toJSONString(sysAlarm));
+        kafkaTemplate.send("access-alarm", JSON.toJSONString(sysAlarm));
 
         SysLog sysLog = new SysLog();
         sysLog.setTypeCode("sys-user");
         sysLog.setLogContent(new HashMap<>());
-        kafkaTemplate.send("sys-oplog", JSON.toJSONString(sysLog));
+        kafkaTemplate.send("access-oplog", JSON.toJSONString(sysLog));
     }
 }

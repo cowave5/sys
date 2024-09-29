@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
 import com.cowave.commons.framework.helper.operation.Operation;
-import com.cowave.commons.framework.helper.operation.Operation.Content;
 import com.cowave.sys.admin.api.service.SysRoleService;
+import com.cowave.sys.admin.core.OplogHandler;
 import org.springframework.feign.codec.Response;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -66,7 +66,8 @@ public class SysRoleController {
     /**
      * 新增
      */
-    @Operation(type = "admin_role", action = "add", desc = "新增角色：#{sysRole.roleName}", content = Content.REQ)
+    @Operation(type = "admin_role", action = "add", handler = OplogHandler.class,
+            summary = "新增角色：#{#sysRole.roleName}", expr = "#opHandler.logRequest(#opInfo)")
     @PostMapping("/add")
     public Response<Void> add(@Validated @RequestBody SysRole sysRole) {
     	sysRoleService.add(sysRole);
@@ -76,7 +77,8 @@ public class SysRoleController {
     /**
      * 修改
      */
-    @Operation(type = "admin_role", action = "edit", desc = "修改角色：#{resp.roleName}", content = Content.ALL)
+    @Operation(type = "admin_role", action = "edit", handler = OplogHandler.class,
+            summary = "修改角色：#{#sysRole.roleName}", expr = "#opHandler.logAll(#opInfo, #sysRole, #resp)")
     @PostMapping("/edit")
     public Response<SysRole> edit(@Validated @RequestBody SysRole sysRole) {
         return Response.success(sysRoleService.edit(sysRole));
@@ -87,7 +89,8 @@ public class SysRoleController {
      *
      * @param roleId 角色id
      */
-    @Operation(type = "admin_role", action = "delete", desc = "删除角色", content = Content.RESP)
+    @Operation(type = "admin_role", action = "delete", handler = OplogHandler.class,
+            summary = "删除角色", expr = "#opHandler.logResponse(#opInfo, #resp)")
     @GetMapping("/delete")
     public Response<List<SysRole>> delete(@NotNull(message = "{role.notnull.id}") Long[] roleId) {
         return Response.success(sysRoleService.delete(roleId));
@@ -96,7 +99,8 @@ public class SysRoleController {
     /**
      * 修改只读
      */
-    @Operation(type = "admin_role", action = "readonly", desc = "修改角色[#{sysRole.roleName}]只读状态", content = Content.REQ)
+    @Operation(type = "admin_role", action = "readonly", handler = OplogHandler.class,
+            summary = "修改角色[#{#sysRole.roleName}]只读状态", expr = "#opHandler.logRequest(#opInfo)")
     @PreAuthorize("@permit.hasPermit('sys:common:readonly')")
     @PostMapping("/change/readonly")
     public Response<Void> changeReadonly(@RequestBody SysRole sysRole) {
