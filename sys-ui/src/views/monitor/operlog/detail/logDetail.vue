@@ -9,7 +9,11 @@
           <el-form-item label="操作人：">{{ log.userName }}</el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="操作结果：">{{ log.logStatus === 1 ? '成功' : '失败'  }}</el-form-item>
+          <el-form-item label="操作结果：">
+            <template v-for="item in dict.type.success_failed">
+              <span v-if="log.logStatus === item.value">{{ $t(item.name) }}</span>
+            </template>
+          </el-form-item>
         </el-col>
       </el-row>
       <el-row>
@@ -42,6 +46,7 @@
 <script>
 import { info } from "@/api/monitor/operlog";
 export default {
+  dicts: ['success_failed'],
   data() {
     return {
       visible: false,

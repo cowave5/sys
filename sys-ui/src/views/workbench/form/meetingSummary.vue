@@ -58,7 +58,7 @@
 import {taskComplete, taskRecords} from "@/api/workbench/task";
 import Treeselect from "@riophae/vue-treeselect";
 import {editMeeting, infoMeeting} from "@/api/workbench/meeting";
-import {getUsers} from "@/api/system/user";
+import {getDeptUserDiagram} from "@/api/system/dept";
 
 export default {
   components: {Treeselect},
@@ -105,7 +105,7 @@ export default {
     },
     /** 获取部门人员树 */
     getUserOptions(){
-      getUsers().then(resp => {
+      getDeptUserDiagram().then(resp => {
         this.userOptions = resp.data
       });
     },

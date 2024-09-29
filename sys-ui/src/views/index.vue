@@ -2,12 +2,12 @@
   <div class="app-container home">
     <el-row :gutter="20">
       <el-col :sm="24" :lg="12" style="padding-left: 20px">
-        <h2>Cowave后台管理系统</h2>
+        <h2>Cowave管理系统</h2>
         <p>
-          我们希望写出一款适合自己业务，足够简单通用，并且方便扩展定制的管理系统。也看了一些优秀的开源项目，最后选择了若依来作为参考来进行设计开发。
+          初衷希望写一款适合自己业务，简单通用，并且方便扩展定制的管理系统，也看了一些优秀的开源项目，最后选择了若依作为参考来进行设计开发。
         </p>
         <p>
-          站在别人的肩膀上，我们进行了一些自己的优化和设计，主要是对服务和存储进行了重写，前端直接复用了若依的框架。这里非常感谢若依的开源，比如它设计的动态路由菜单权限，给了我们不少的帮助和启发。
+          非常感谢若依的开源，站在别人的肩膀上继续做了一些优化和设计，主要是对服务和存储进行了重写，前端基本复用了若依的框架。
         </p>
         <p>
           <b>若依版本:</b> <span>3.8.2@<a href="http://vue.ruoyi.vip" target="_blank" style="color: #409eff;">http://vue.ruoyi.vip</a></span>
@@ -26,7 +26,8 @@
           <el-col :span="5">
             <h4>服务模块</h4>
             <ul>
-              <li><label style="font-weight: normal; display:inline-block; width: 80px">sys-ui       </label>80</li>
+              <li><label style="font-weight: normal; display:inline-block; width: 80px">sys-blog     </label>80</li>
+              <li><label style="font-weight: normal; display:inline-block; width: 80px">sys-ui       </label>81</li>
               <li><label style="font-weight: normal; display:inline-block; width: 80px">nacos        </label>8848</li>
               <li><label style="font-weight: normal; display:inline-block; width: 80px">sys-gateway  </label>19000</li>
               <li><label style="font-weight: normal; display:inline-block; width: 80px">sys-admin    </label>19010</li>
@@ -50,9 +51,10 @@
             <h4>存储服务</h4>
             <ul>
               <li>Postgres</li>
+              <li>Elasticsearch</li>
               <li>Redis</li>
-              <li>Minio</li>
               <li>Kafka</li>
+              <li>Minio</li>
             </ul>
           </el-col>
           <el-col :span="4">
@@ -72,13 +74,10 @@
             <ul>
               <li>Java 17</li>
               <li>Spring-boot 2.7.0</li>
-              <li>Spring-cloud-gateway</li>
-              <li>MyBatis-Plus</li>
               <li>Nacos 2.3.0</li>
               <li>Flowable 6.8.0</li>
+              <li>Mybatis-plus</li>
               <li>Quartz</li>
-              <li>Easyexcel</li>
-              <li>netty-socketio</li>
               <li>...</li>
             </ul>
           </el-col>
@@ -100,8 +99,7 @@
           <el-table-column align="center" width="100">
             <template slot-scope="scope">
               <template v-for="item in dict.type.notice_level">
-                <span v-if="scope.row.noticeLevel === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-                <span v-if="scope.row.noticeLevel === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+                <span v-if="scope.row.noticeLevel === item.value">{{ $t(item.name) }}</span>
               </template>
             </template>
           </el-table-column>
@@ -109,8 +107,7 @@
           <el-table-column align="center" width="100">
             <template slot-scope="scope">
               <template v-for="item in dict.type.notice_type">
-                <span v-if="scope.row.noticeType === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-                <span v-if="scope.row.noticeType === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+                <span v-if="scope.row.noticeType === item.value">{{ $t(item.name) }}</span>
               </template>
             </template>
           </el-table-column>
@@ -147,12 +144,12 @@
 </template>
 
 <script>
-import { getMsgs, msgRead} from "@/api/system/notice";
+import { getNoticeMsg, readNoticeMsg} from "@/api/system/notice";
 
 export default {
   name: "Index",
   dicts: ['notice_level', 'notice_type'],
-  components: { noticeInfo: ()=> import('./msg.vue')},
+  components: { noticeInfo: ()=> import('../layout/components/msg.vue')},
   data() {
     return {
       version: "",
@@ -171,14 +168,14 @@ export default {
   },
   methods: {
     getList() {
-      getMsgs(this.queryParams).then(response => {
+      getNoticeMsg(this.queryParams).then(response => {
         this.msgList = response.data.list;
         this.total = response.data.total;
       });
     },
     handleRowClick(row, column, event){
       if(row.readStatus === 0){
-        msgRead(row.noticeId).then(response => {
+        readNoticeMsg(row.noticeId).then(response => {
           row.readStatus = 10;
           this.$refs.noticeInfo.show(row);
         });

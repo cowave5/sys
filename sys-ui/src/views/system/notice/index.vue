@@ -6,12 +6,12 @@
       </el-form-item>
       <el-form-item label="类型" prop="noticeType">
         <el-select v-model="queryParams.noticeType" placeholder="选择类型" clearable>
-          <el-option v-for="dict in dict.type.notice_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
+          <el-option v-for="dict in dict.type.notice_type" :key="dict.value" :value="dict.value" :label="$t(dict.name)"/>
         </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="noticeStatus">
         <el-select v-model="queryParams.noticeStatus" placeholder="选择状态" clearable>
-          <el-option v-for="dict in dict.type.notice_status" :key="dict.value" :label="dict.label" :value="dict.value"/>
+          <el-option v-for="dict in dict.type.notice_status" :key="dict.value" :value="dict.value" :label="$t(dict.name)"/>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -22,33 +22,29 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-                   >新增</el-button>
+        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate"
-                   >修改</el-button>
+        <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate">修改</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
-                   >删除</el-button>
+        <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="noticeList" @selection-change="handleSelectionChange">
+    <el-table :data="list" @selection-change="handleSelectionChange" v-loading="loading">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+      <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
         <template slot-scope="scope">
           <span>{{(queryParams.page - 1) * queryParams.pageSize + scope.$index + 1}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="标题" align="center" prop="noticeTitle" width="380" :show-overflow-tooltip="true"/>
+      <el-table-column label="标题" align="center" prop="noticeTitle" width="280" :show-overflow-tooltip="true"/>
       <el-table-column label="类型" align="center" prop="noticeType">
         <template slot-scope="{row: {noticeType}}">
           <template v-for="item in dict.type.notice_type">
-            <span v-if="noticeType === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-            <span v-if="noticeType === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+            <span v-if="noticeType === item.value">{{ $t(item.name) }}</span>
           </template>
         </template>
       </el-table-column>
@@ -67,8 +63,7 @@
       <el-table-column label="状态" align="center" prop="noticeStatus">
         <template slot-scope="{row: {noticeStatus}}">
           <template v-for="item in dict.type.notice_status">
-            <span v-if="noticeStatus === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-            <span v-if="noticeStatus === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+            <span v-if="noticeStatus === item.value">{{ $t(item.name) }}</span>
           </template>
         </template>
       </el-table-column>
@@ -107,22 +102,21 @@
           <el-col :span="12">
             <el-form-item label="公告类型" prop="noticeType">
               <el-select v-model="form.noticeType" placeholder="请选择公告类型" style="width: 230px;">
-                <el-option v-for="dict in dict.type.notice_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
+                <el-option v-for="dict in dict.type.notice_type" :key="dict.value" :value="dict.value" :label="$t(dict.name)"/>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="公告级别">
               <el-select v-model="form.noticeLevel" placeholder="请选择公告级别" style="width: 230px;">
-                <el-option v-for="dict in dict.type.notice_level" :key="dict.value" :label="dict.label" :value="dict.value"/>
+                <el-option v-for="dict in dict.type.notice_level" :key="dict.value" :value="dict.value" :label="$t(dict.name)"/>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="全员发送">
               <el-radio-group v-model="form.goalsAll">
-                <el-radio v-if="$i18n.locale==='zh'" v-for="dict in dict.type.sys_yes_no" :key="dict.value" :label="dict.value">{{dict.label}}</el-radio>
-                <el-radio v-if="$i18n.locale==='en'" v-for="dict in dict.type.sys_yes_no" :key="dict.value" :label="dict.value">{{dict.labelEn}}</el-radio>
+                <el-radio v-for="dict in dict.type.yes_no" :key="dict.value" :label="dict.value">{{$t(dict.name)}}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -149,8 +143,7 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="内容">
-              <editor v-model="form.content" :min-height="240"
-                      @notice="recordattach" attachUrl="/admin/api/v1/notice/image"/>
+              <editor v-model="form.content" :min-height="240" @notice="recordAttach" attachUrl="/admin/api/v1/notice/image"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -166,13 +159,13 @@
 </template>
 
 <script>
-import {listNotice, getNotice, delNotice, addNotice, updateNotice, publishNotice} from "@/api/system/notice";
-import {getRoles, getUsers} from "@/api/system/user";
-import {getDeptTree} from "@/api/system/dept";
+import {getNoticeList, getNoticeInfo, delNotice, addNotice, updateNotice, publishNotice} from "@/api/system/notice";
+import {getRoles} from "@/api/system/user";
+import {getDeptDiagramById, getDeptUserDiagram} from "@/api/system/dept";
 
 export default {
   name: "Notice",
-  dicts: ['notice_status', 'notice_level', 'notice_type', 'sys_yes_no'],
+  dicts: ['notice_status', 'notice_level', 'notice_type', 'yes_no'],
   components: { noticeInfo: ()=> import('./info.vue')},
   data() {
     return {
@@ -189,7 +182,7 @@ export default {
       // 总条数
       total: 0,
       // 公告表格数据
-      noticeList: [],
+      list: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -280,13 +273,16 @@ export default {
         goalsDept: [],
         goalsRole: [],
         goalsUser: [],
-        attachs: []
+        attaches: []
       };
       this.resetForm("form");
     },
     /** 附件记录 */
-    recordattach(attach) {
-      this.form.attachs.push(attach);
+    recordAttach(attach) {
+      this.form.attaches.push({
+        "attachId" : attach.attachId,
+        "attachPath" : attach.attachPath
+      });
     },
     /** 用户Tree */
     userTreeRender(h, { node, data, store }) {
@@ -309,8 +305,8 @@ export default {
     /** 公告列表 */
     getList() {
       this.loading = true;
-      listNotice(this.queryParams).then(response => {
-        this.noticeList = response.data.list;
+      getNoticeList(this.queryParams).then(response => {
+        this.list = response.data.list;
         this.total = response.data.total;
         this.loading = false;
       });
@@ -344,16 +340,16 @@ export default {
     },
     /** 获取用户选项 */
     getUserOptions(){
-      getUsers().then(resp => {
+      getDeptUserDiagram().then(resp => {
         this.userTreeParams.data = resp.data
       });
     },
     /** 新增 */
     handleAdd() {
       this.reset();
-      getDeptTree("1").then(response => {
+      getDeptDiagramById(1).then(response => {
         this.deptTreeParams.data = response.data
-        getUsers().then(resp => {
+        getDeptUserDiagram().then(resp => {
           this.userTreeParams.data = resp.data
           this.title = "新增公告";
           this.open = true;
@@ -364,11 +360,11 @@ export default {
     handleUpdate(row) {
       this.reset();
       const noticeId = row.noticeId || this.ids
-      getDeptTree("1").then(response => {
+      getDeptDiagramById(1).then(response => {
         this.deptTreeParams.data = response.data
-        getUsers().then(resp => {
+        getDeptUserDiagram().then(resp => {
           this.userTreeParams.data = resp.data
-          getNotice(noticeId).then(rsp => {
+          getNoticeInfo(noticeId).then(rsp => {
             this.form = rsp.data;
             if(rsp.data.goalsDept === null){
               this.form.goalsDept = [];

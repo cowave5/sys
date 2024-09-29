@@ -1,8 +1,10 @@
 <template>
   <el-dropdown trigger="click" @command="handleSetSize">
-    <div>
+    <el-tooltip content="字体大小" placement="top">
+      <div>
       <svg-icon class-name="size-icon" icon-class="size" />
     </div>
+    </el-tooltip>
     <el-dropdown-menu slot="dropdown">
       <el-dropdown-item v-for="item of sizeOptions" :key="item.value" :disabled="size===item.value" :command="item.value">
         {{ item.label }}
