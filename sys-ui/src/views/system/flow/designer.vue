@@ -24,8 +24,11 @@ export default {
   },
   methods: {
     getSrc(id) {
-      // this.src = 'http://localhost:19010/admin/designer/index.html#/editor/' + id;
-      this.src = 'http://' + location.host +':82/admin/designer/index.html#/editor/' + id;
+      if (process.env.NODE_ENV === 'production') {
+        this.src = 'http://' + location.host +':82/admin/designer/index.html#/editor/' + id;
+      }else{
+        this.src = 'http://localhost:19010/admin/designer/index.html#/editor/' + id;
+      }
     },
   }
 }

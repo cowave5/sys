@@ -3,8 +3,6 @@ spring:
     name: sys-gateway
   main:
     web-application-type: reactive
-  liquibase:
-    enabled: false
   cloud:
     discovery:
       client:
@@ -12,7 +10,7 @@ spring:
           enabled: false
     nacos:
       discovery:
-        server-addr: ${nacos_server:10.64.4.74:8848}
+        server-addr: ${nacos_server:192.168.141.74:8848}
         metadata:
           context-path: ${server.servlet.context-path}
     gateway:
@@ -40,7 +38,7 @@ spring:
             - Path=/code/**
 
 server:
-  port: ${server_port:19000}
+  port: ${app_port:19000}
   servlet:
     context-path: /
 

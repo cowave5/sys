@@ -1,25 +1,28 @@
 /*
- * Copyright (c) 2017～2099 Cowave All Rights Reserved.
+ * Copyright (c) 2017～2024 Cowave All Rights Reserved.
  *
- * For licensing information, please contact: https://www.cowave.com.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
- * This code is proprietary and confidential.
- * Unauthorized copying of this file, via any medium is strictly prohibited.
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 package com.cowave.sys.blog.api.controller;
 
+import com.cowave.commons.client.http.asserts.AssertsException;
+import com.cowave.commons.client.http.asserts.HttpAsserts;
+import com.cowave.commons.client.http.response.Response;
 import com.cowave.commons.framework.access.Access;
-import com.cowave.commons.tools.Asserts;
-import com.cowave.commons.tools.AssertsException;
+import com.cowave.commons.framework.access.security.AccessUserDetails;
+import com.cowave.commons.framework.access.security.BearerTokenService;
+import com.cowave.sys.blog.api.entity.LoginUser;
 import com.cowave.sys.blog.configuration.LdapConfiguration;
 import com.cowave.sys.blog.utils.LdapUserNameMapper;
-import com.cowave.sys.model.admin.Login;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.context.properties.PropertyMapper;
-import org.springframework.feign.codec.Response;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.DirContextAuthenticationStrategy;
 import org.springframework.ldap.core.support.LdapContextSource;
@@ -39,6 +42,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import static com.cowave.commons.client.http.constants.HttpCode.UNAUTHORIZED;
+
 /**
  * 认证
  *
@@ -51,6 +56,8 @@ public class AuthController {
 
     private final Random rand = new Random();
 
+    private final BearerTokenService bearerTokenService;
+
     private final LdapConfiguration ldapConfiguration;
 
     private final ObjectProvider<DirContextAuthenticationStrategy> dirContextAuthenticationStrategy;
@@ -59,17 +66,22 @@ public class AuthController {
      * 登录
      */
     @RequestMapping("/login")
-    public Response<Void> login(@Validated Login login) throws IOException {
+    public Response<Void> login(@Validated LoginUser loginUser) throws IOException {
         LdapTemplate ldapTemplate = getLdapTemplate();
-        String filter = "(&(objectClass=person)(sAMAccountName=" + login.getUserAccount() + "))";
-        boolean isAuthenticated = ldapTemplate.authenticate("", filter, login.getPassWord());
-        Asserts.isTrue(isAuthenticated, "用户名或密码错误");
-        Access.setCookie("blog-userName", login.getUserAccount());
+        String filter = "(&(objectClass=person)(sAMAccountName=" + loginUser.getUserAccount() + "))";
+        boolean isAuthenticated = ldapTemplate.authenticate("", filter, loginUser.getPassWord());
+        HttpAsserts.isTrue(isAuthenticated, UNAUTHORIZED, "用户名或密码错误");
+
+        AccessUserDetails userDetails = AccessUserDetails.newUserDetails();
+        userDetails.setUsername(loginUser.getUserAccount());
+        bearerTokenService.simpleAssignToken(userDetails);
+        // 界面约定
+        Access.setCookie("blog-userName", loginUser.getUserAccount());
 
         List<String> list = ldapTemplate.search(
                 ldapConfiguration.getUserDn(), filter, SearchControls.SUBTREE_SCOPE, new LdapUserNameMapper());
         if(CollectionUtils.isNotEmpty(list)){
-            avatarGenerate(list.get(0), login.getUserAccount());
+            avatarGenerate(list.get(0), loginUser.getUserAccount());
         }
         return Response.success();
     }
@@ -88,7 +100,7 @@ public class AuthController {
                     baseEnvironment -> source.setBaseEnvironmentProperties(Collections.unmodifiableMap(baseEnvironment)));
             source.afterPropertiesSet();
         }catch(Exception e){
-            throw new AssertsException("ldap.invalid", e);
+            throw new AssertsException(e, "ldap.invalid");
         }
         return new LdapTemplate(source);
     }

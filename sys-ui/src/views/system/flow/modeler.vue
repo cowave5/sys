@@ -8,8 +8,8 @@
         <el-input v-model="queryParams.name" placeholder="" clearable />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{$t('button.search')}}</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{$t('button.reset')}}</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{$t('commons.button.search')}}</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{$t('commons.button.reset')}}</el-button>
       </el-form-item>
     </el-form>
 
@@ -23,7 +23,7 @@
     <el-table v-loading="loading" :data="list"
               @selection-change="handleSelectionChange" :header-cell-style="{'text-align':'center'}">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+      <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
         <template slot-scope="scope">
           <span>{{(queryParams.page - 1) * queryParams.pageSize + scope.$index + 1}}</span>
         </template>
@@ -43,7 +43,7 @@
           <span>{{ parseTime(scope.row.lastUpdateTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t(`label.option`)" align="center" class-name="small-padding" width="200">
+      <el-table-column :label="$t('commons.label.options')" align="center" class-name="small-padding" width="200">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
           <el-button size="mini" type="text" icon="el-icon-s-promotion"
@@ -73,8 +73,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm"
-                   >{{$t('button.confirm')}}</el-button>
-        <el-button @click="cancel">{{$t('button.cancel')}}</el-button>
+                   >{{$t('commons.button.confirm')}}</el-button>
+        <el-button @click="cancel">{{$t('commons.button.cancel')}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -203,7 +203,7 @@ export default {
         return deleteModel(ids);
       }).then(() => {
         this.getList();
-        this.$modal.msgSuccess(this.$t(`msg.success_delete`));
+        this.$modal.msgSuccess(this.$t('commons.msg.success.delete'));
       }).catch(() => {});
     },
     /** 新增 */
@@ -222,7 +222,7 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           addModel(this.form).then(response => {
-            this.$modal.msgSuccess(this.$t(`msg.success_create`));
+            this.$modal.msgSuccess(this.$t('commons.msg.success.create'));
             this.open = false;
             this.getList();
           });

@@ -14,16 +14,11 @@
 	<url>https://www.cowave.com/</url>
 	<description>流程管理</description>
 
-	<properties>
-		<skip.changelog>true</skip.changelog>
-	</properties>
-
 	<dependencies>
 		<dependency>
-			<groupId>com.cowave.sys</groupId>
-			<artifactId>sys-model</artifactId>
-			<version>1.0.3</version>
-		</dependency>
+            <groupId>com.cowave.commons</groupId>
+            <artifactId>commons-framework</artifactId>
+        </dependency>
 		<!-- security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

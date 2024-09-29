@@ -12,18 +12,17 @@
 
 	<name>sys-code</name>
 	<url>https://www.cowave.com/</url>
-	<description>代码生成</description>
-
-	<properties>
-		<skip.changelog>true</skip.changelog>
-	</properties>
+	<description>代码模板</description>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.cowave.sys</groupId>
-			<artifactId>sys-model</artifactId>
-			<version>1.0.3</version>
+			<groupId>com.cowave.commons</groupId>
+			<artifactId>commons-framework</artifactId>
 		</dependency>
+		<dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+        </dependency>
 		<!--velocity -->
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
@@ -53,11 +52,6 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-		</dependency>
-		<!-- oscar -->
-		<dependency>
-			<groupId>org.cowave</groupId>
-			<artifactId>oscarJDBC</artifactId>
 		</dependency>
 		<!-- pagehelper -->
 		<dependency>
