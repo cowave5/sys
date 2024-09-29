@@ -6,12 +6,12 @@
       </el-form-item>
       <el-form-item label="任务分组" prop="taskGroup">
         <el-select v-model="queryParams.taskGroup" placeholder="请选择任务分组" clearable style="width: 180px">
-          <el-option v-for="dict in dict.type.quartz_group" :key="dict.value" :label="dict.label" :value="dict.value"/>
+          <el-option v-for="dict in dict.type.quartz_group" :key="dict.code" :value="dict.code" :label="$t(dict.name)"/>
         </el-select>
       </el-form-item>
       <el-form-item label="执行结果" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择执行结果" clearable style="width: 180px">
-          <el-option v-for="dict in dict.type.sys_is_success" :key="dict.value" :label="dict.label" :value="dict.value"/>
+          <el-option v-for="dict in dict.type.success_failed" :key="dict.value" :value="dict.value" :label="$t(dict.name)"/>
         </el-select>
       </el-form-item>
       <el-form-item label="执行时间">
@@ -54,8 +54,7 @@
       <el-table-column label="任务分组" align="center" prop="taskGroup" width="160" :show-overflow-tooltip="true">
         <template slot-scope="{row: {taskGroup}}">
           <template v-for="item in dict.type.quartz_group">
-            <span v-if="taskGroup === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-            <span v-if="taskGroup === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+            <span v-if="taskGroup === item.code">{{ $t(item.name) }}</span>
           </template>
         </template>
       </el-table-column>
@@ -64,7 +63,7 @@
       <el-table-column label="结束时间" align="center" prop="endTime" width="160"/>
       <el-table-column label="执行结果" align="center" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_is_success" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.success_failed" :value="scope.row.status"/>
         </template>
       </el-table-column>
       <el-table-column label="任务耗时[ms]" align="center" prop="costTime"/>
@@ -87,8 +86,7 @@
           <el-col :span="12">
             <el-form-item label="任务分组：">
               <template v-for="item in dict.type.quartz_group">
-                <span v-if="form.taskGroup === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-                <span v-if="form.taskGroup === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+                <span v-if="form.taskGroup === item.code">{{ $t(item.name) }}</span>
               </template>
             </el-form-item>
           </el-col>
@@ -104,9 +102,8 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="执行结果：">
-              <template v-for="item in dict.type.sys_is_success">
-                <span v-if="form.status === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-                <span v-if="form.status === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+              <template v-for="item in dict.type.success_failed">
+                <span v-if="form.status === item.value">{{ $t(item.name) }}</span>
               </template>
             </el-form-item>
           </el-col>
@@ -137,7 +134,7 @@ import {checkPermit} from "@/utils/permission";
 
 export default {
   name: "JobLog",
-  dicts: ['sys_is_success', 'quartz_group'],
+  dicts: ['success_failed', 'quartz_group'],
   data() {
     return {
       // 遮罩层

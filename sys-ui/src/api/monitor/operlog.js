@@ -1,18 +1,21 @@
 import request from '@/utils/request'
 
+/**
+ * 模块类型选项
+ */
+export function options() {
+  return request({
+    url: '/admin/api/v1/dict/group/types/op_log',
+    method: 'get'
+  })
+}
+
 // 日志列表
 export function list(data) {
   return request({
     url: '/admin/api/v1/log/list',
     method: 'post',
     data: data
-  })
-}
-
-export function options() {
-  return request({
-    url: '/admin/api/v1/dict/group/options?groupCode=sys_log',
-    method: 'get'
   })
 }
 

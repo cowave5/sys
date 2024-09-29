@@ -1,23 +1,21 @@
 <template>
   <div class="top-right-btn">
     <el-row>
-      <el-tooltip class="item" effect="dark" :content="showSearch ? $t(`content.search_hide`) : $t(`content.search_show`)" placement="top">
+      <el-tooltip class="item" effect="dark" :content="showSearch ? $t('commons.button.search_hide') : $t('commons.button.search_show')" placement="top">
         <el-button size="mini" circle icon="el-icon-search" @click="toggleSearch()" />
       </el-tooltip>
-      <el-tooltip class="item" effect="dark" :content="$t(`button.refresh`)" placement="top">
+      <el-tooltip class="item" effect="dark" :content="$t('commons.button.refresh')" placement="top">
         <el-button size="mini" circle icon="el-icon-refresh" @click="refresh()" />
       </el-tooltip>
-      <el-tooltip class="item" effect="dark" :content="$t(`content.column_choose`)" placement="top" v-if="columns">
+      <el-tooltip class="item" effect="dark" :content="$t('commons.button.select_column')" placement="top" v-if="columns">
         <el-button size="mini" circle icon="el-icon-menu" @click="showColumn()" />
       </el-tooltip>
     </el-row>
+
     <el-dialog :visible.sync="open" append-to-body>
-      <el-transfer
-        :titles="[$t(`content.show`), $t(`content.hide`)]"
-        v-model="value"
-        :data="columns"
-        @change="dataChange"
-      ></el-transfer>
+      <el-transfer :titles="[$t('commons.button.show'), $t('commons.button.hide')]"
+        v-model="value" :data="localizedColumns" @change="dataChange">
+      </el-transfer>
     </el-dialog>
   </div>
 </template>
@@ -32,6 +30,18 @@ export default {
       open: false,
     };
   },
+  computed: {
+    localizedColumns() {
+      if (this.columns) {
+        return this.columns.map(item => ({
+          ...item,
+          label: this.$t(`${item.label}`)
+        }));
+      } else {
+        return []
+      }
+    }
+  },
   props: {
     showSearch: {
       type: Boolean,
@@ -44,13 +54,12 @@ export default {
   created() {
     // 显隐列初始默认隐藏列
     for (let item in this.columns) {
-      if (this.columns[item].visible === false) {
+      if (this.columns[item].show === false) {
         this.value.push(parseInt(item));
       }
     }
   },
   methods: {
-
     // 搜索
     toggleSearch() {
       this.$emit("update:showSearch", !this.showSearch);
@@ -63,7 +72,7 @@ export default {
     dataChange(data) {
       for (let item in this.columns) {
         const key = this.columns[item].key;
-        this.columns[item].visible = !data.includes(key);
+        this.columns[item].show = !data.includes(key);
       }
     },
     // 打开显隐列dialog
