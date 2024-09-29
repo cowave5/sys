@@ -1,35 +1,148 @@
 import request from '@/utils/request'
-import { parseStrEmpty } from "@/utils/ruoyi";
 
-// 岗位关系
-export function getTree() {
+/**
+ * 用户组织架构
+ */
+export function getUserDiagram() {
   return request({
-    url: '/admin/api/v1/user/tree',
+    url: '/admin/api/v1/user/diagram',
     method: 'get'
   })
 }
 
-// 刷新字典缓存
-export function refreshCache() {
+/**
+ * 刷新用户组织
+ */
+export function refreshUserDiagram() {
   return request({
-    url: '/admin/api/v1/user/refresh',
+    url: '/admin/api/v1/user/diagram/refresh',
     method: 'get'
   })
 }
 
-// 查询用户列表
-export function listUser(query) {
+/**
+ * 用户列表
+ */
+export function getUserList(params) {
   return request({
-    url: '/admin/api/v1/user/list',
+    url: '/admin/api/v1/user',
+    method: 'get',
+    params: params
+  })
+}
+
+/**
+ * 用户详情
+ */
+export function getUserInfo(userId) {
+  return request({
+    url: '/admin/api/v1/user/' + userId,
+    method: 'get'
+  })
+}
+
+/**
+ * 新增用户
+ */
+export function addUser(data) {
+  return request({
+    url: '/admin/api/v1/user',
     method: 'post',
-    data: query
+    data: data
   })
 }
 
-// 查询用户详细
-export function getUser(userId) {
+/**
+ * 删除用户
+ */
+export function delUser(userIds) {
   return request({
-    url: '/admin/api/v1/user/info/' + parseStrEmpty(userId),
+    url: '/admin/api/v1/user/' + userIds,
+    method: 'delete'
+  })
+}
+
+/**
+ * 修改用户
+ */
+export function updateUser(data) {
+  return request({
+    url: '/admin/api/v1/user',
+    method: 'patch',
+    data: data
+  })
+}
+
+/**
+ * 修改角色
+ */
+export function updateUserRoles(userId, userName, roleIds) {
+  const data = {
+    userId,
+    userName,
+    roleIds
+  }
+  return request({
+    url: '/admin/api/v1/user/roles',
+    method: 'patch',
+    data: data
+  })
+}
+
+/**
+ * 修改状态
+ */
+export function updateUserStatus(userId, userStatus, userName) {
+  const data = {
+    userId,
+    userName,
+    userStatus
+  }
+  return request({
+    url: '/admin/api/v1/user/status',
+    method: 'patch',
+    data: data
+  })
+}
+
+/**
+ * 修改密码
+ */
+export function updateUserPasswd(userId, userPasswd, userName) {
+  const data = {
+    userId,
+    userPasswd,
+    userName
+  }
+  return request({
+    url: '/admin/api/v1/user/passwd',
+    method: 'patch',
+    data: data
+  })
+}
+
+/**
+ * 用户流程候选人
+ */
+export function getUserCandidates(userId) {
+  let url;
+  if (userId === undefined) {
+    url = '/admin/api/v1/user/candidates';
+  } else {
+    url = '/admin/api/v1/user/candidates?userId=' + userId;
+  }
+  return request({
+    url: url,
+    method: 'get'
+  })
+}
+
+/**
+ * 查询用户名称
+ */
+export function getUserNames(userIds) {
+  return request({
+    url: '/admin/api/v1/user/name/' + userIds,
     method: 'get'
   })
 }
@@ -37,106 +150,8 @@ export function getUser(userId) {
 // 角色选择
 export function getRoles() {
   return request({
-    url: '/admin/api/v1/role/list',
-    method: 'post',
-    data: {}
-  })
-}
-
-// 岗位选择
-export function getPosts(deptId) {
-  return request({
-    url: '/admin/api/v1/post/tree/dept',
+    url: '/admin/api/v1/role',
     method: 'get'
-  })
-}
-
-// 用户选择
-export function getUsers() {
-  return request({
-    url: '/admin/api/v1/user/tree/dept',
-    method: 'get'
-  })
-}
-
-// 新增用户
-export function addUser(data) {
-  return request({
-    url: '/admin/api/v1/user/add',
-    method: 'post',
-    data: data
-  })
-}
-
-// 修改用户
-export function updateUser(data) {
-  return request({
-    url: '/admin/api/v1/user/edit',
-    method: 'post',
-    data: data
-  })
-}
-
-// 删除用户
-export function delUser(userId) {
-  return request({
-    url: '/admin/api/v1/user/delete?userId=' + userId,
-    method: 'get'
-  })
-}
-
-// 用户密码重置
-export function resetUserPwd(userId, userPasswd, userName) {
-  const data = {
-    userId,
-    userPasswd,
-    userName
-  }
-  return request({
-    url: '/admin/api/v1/user/change/passwd',
-    method: 'post',
-    data: data
-  })
-}
-
-// 用户状态修改
-export function changeStatus(userId, userStatus, userName) {
-  const data = {
-    userId,
-    userName,
-    userStatus
-  }
-  return request({
-    url: '/admin/api/v1/user/change/status',
-    method: 'post',
-    data: data
-  })
-}
-
-// 用户只读修改
-export function changeReadonly(userId, readOnly, userName) {
-  const data = {
-    userId,
-    readOnly,
-    userName
-  }
-  return request({
-    url: '/admin/api/v1/user/change/readonly',
-    method: 'post',
-    data: data
-  })
-}
-
-// 用户角色修改
-export function updateAuthRole(userId, roleIds) {
-  const data = {
-    userId,
-    roleIds
-  }
-  return request({
-    url: '/admin/api/v1/user/change/roles',
-    method: 'post',
-    data: data
   })
 }
 
@@ -176,20 +191,6 @@ export function uploadAvatar(data) {
     url: '/admin/api/v1/profile/avatar',
     method: 'post',
     data: data
-  })
-}
-
-// 用户部门领导
-export function userLeaders(userId) {
-  let url;
-  if (userId === undefined) {
-    url = '/admin/api/v1/user/leaders';
-  } else {
-    url = '/admin/api/v1/user/leaders?userId=' + userId;
-  }
-  return request({
-    url: url,
-    method: 'get'
   })
 }
 

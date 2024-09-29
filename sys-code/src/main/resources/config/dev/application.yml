@@ -3,18 +3,21 @@ server:
   servlet:
     context-path: /code
 
-info:
-  cluster:
-    id: 10
-    level: 1
-    name: default
-
 spring:
+  application:
+    name: sys-code
+  access:
+    always-success: true
+    urlPatterns:
+      - /api/v1/*
   datasource:
     url: jdbc:postgresql://127.0.0.1:5432/sys-code
     username: postgres
     password: postgres
+  liquibase:
+    enabled: true
+    change-log: sql/changelog.yml
   cloud:
     nacos:
       discovery:
-        server-addr: 10.64.4.74:8848
+        server-addr: 192.168.141.74:8848

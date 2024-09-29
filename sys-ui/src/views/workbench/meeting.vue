@@ -21,8 +21,8 @@
                         range-separator="-" start-placeholder="开始时间" end-placeholder="结束时间"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{$t('button.search')}}</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{$t('button.reset')}}</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{$t('commons.button.search')}}</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{$t('commons.button.reset')}}</el-button>
       </el-form-item>
     </el-form>
 
@@ -39,7 +39,7 @@
     <el-table v-loading="loading" :data="list"
               @selection-change="handleSelectionChange" :header-cell-style="{'text-align':'center'}">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+      <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
         <template slot-scope="scope">
           <span>{{(queryParams.page - 1) * queryParams.pageSize + scope.$index + 1}}</span>
         </template>
@@ -64,7 +64,7 @@
           <span v-else-if="processStatus === 3">已结束</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t(`label.option`)" align="center" class-name="small-padding fixed-width">
+      <el-table-column :label="$t('commons.label.options')" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
@@ -99,8 +99,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">{{$t('button.confirm')}}</el-button>
-        <el-button @click="cancel">{{$t('button.cancel')}}</el-button>
+        <el-button type="primary" @click="submitForm">{{$t('commons.button.confirm')}}</el-button>
+        <el-button @click="cancel">{{$t('commons.button.cancel')}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -110,7 +110,7 @@
 import store from "@/store";
 import {checkPermit} from "@/utils/permission";
 import {addMeeting, delMeeting, listMeeting} from "@/api/workbench/meeting";
-import {getUsers} from "@/api/system/user";
+import {getDeptUserDiagram} from "@/api/system/dept";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
@@ -191,7 +191,7 @@ export default {
     },
     /** 获取部门人员树 */
     getUserOptions(){
-      getUsers().then(resp => {
+      getDeptUserDiagram().then(resp => {
         this.userOptions = resp.data
       });
     },
@@ -234,7 +234,7 @@ export default {
         return delMeeting(ids);
       }).then(() => {
         this.getList();
-        this.$modal.msgSuccess(this.$t(`msg.success_delete`));
+        this.$modal.msgSuccess(this.$t('commons.msg.success.delete'));
       }).catch(() => {});
     },
     /** 取消 */

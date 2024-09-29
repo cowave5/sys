@@ -1,10 +1,32 @@
+server:
+  port: ${app_port:19000}
+  servlet:
+    context-path: /
+
 spring:
   application:
     name: sys-gateway
   main:
     web-application-type: reactive
-  liquibase:
-    enabled: false
+  auth:
+    secret: access@cowave.com
+    ignoreUrls:
+      - /admin/favicon.ico
+      - /admin/doc/**
+      - /admin/actuator/**
+      - /admin/designer/**
+      - /admin/api/v1/auth/ldap
+      - /admin/api/v1/auth/login
+      - /admin/api/v1/auth/logon
+      - /admin/api/v1/auth/refresh
+      - /admin/api/v1/auth/register
+      - /admin/api/v1/auth/captcha
+      - /admin/api/v1/auth/captcha/email
+      - /admin/api/v1/auth/callback/**
+      - /admin/api/v1/flow/designer/**
+      - /code/favicon.ico
+      - /code/actuator/**
+      - /code/doc/**
   cloud:
     discovery:
       client:
@@ -18,14 +40,14 @@ spring:
     gateway:
       enabled: true
       routes:
-        - id: admin
-          uri: lb://sys-admin
-          predicates:
-            - Path=/admin/**
         - id: socket
           uri: lb:ws://sys-admin
           predicates:
             - Path=/socket.io/**
+        - id: admin
+          uri: lb://sys-admin
+          predicates:
+            - Path=/admin/**
         - id: quartz
           uri: lb://sys-quartz
           predicates:
@@ -38,28 +60,6 @@ spring:
           uri: lb://sys-code
           predicates:
             - Path=/code/**
-
-server:
-  port: ${server_port:19000}
-  servlet:
-    context-path: /
-
-info:
-  cluster:
-    id: 10
-    level: 1
-    name: default
-  application:
-    name: sys-gateway
-    version: 0.0.0
-    build: 1970-01-01 00:00:00
-  commit:
-    version: master xxxx
-    Author: xxx
-    Time: 1970-01-01 00:00:00
-    Msg: create
-  maintainer:
-    "[shanhuiming@cowave.com]": 单惠铭
 
 management:
   info:

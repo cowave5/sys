@@ -25,7 +25,7 @@
 
     <el-table v-loading="loading" :data="list" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+      <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
         <template slot-scope="scope">
           <span>{{(queryParams.page - 1) * queryParams.pageSize + scope.$index + 1}}</span>
         </template>
@@ -93,16 +93,14 @@
           <el-col :span="12">
             <el-form-item label="继承Access">
               <el-radio-group v-model="form.isAccess">
-                <el-radio v-if="$i18n.locale==='zh'" v-for="dict in dict.type.sys_yes_no" :key="dict.value" :label="dict.value">{{dict.label}}</el-radio>
-                <el-radio v-if="$i18n.locale==='en'" v-for="dict in dict.type.sys_yes_no" :key="dict.value" :label="dict.value">{{dict.labelEn}}</el-radio>
+                <el-radio v-for="dict in dict.type.yes_no" :key="dict.value" :label="dict.value">{{$t(dict.name)}}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="支持Excel导出">
               <el-radio-group v-model="form.isExcel">
-                <el-radio v-if="$i18n.locale==='zh'" v-for="dict in dict.type.sys_yes_no" :key="dict.value" :label="dict.value">{{dict.label}}</el-radio>
-                <el-radio v-if="$i18n.locale==='en'" v-for="dict in dict.type.sys_yes_no" :key="dict.value" :label="dict.value">{{dict.labelEn}}</el-radio>
+                <el-radio v-for="dict in dict.type.yes_no" :key="dict.value" :label="dict.value">{{$t(dict.name)}}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -111,8 +109,7 @@
           <el-col :span="12">
             <el-form-item label="记录操作日志">
               <el-radio-group v-model="form.isLog">
-                <el-radio v-if="$i18n.locale==='zh'" v-for="dict in dict.type.sys_yes_no" :key="dict.value" :label="dict.value">{{dict.label}}</el-radio>
-                <el-radio v-if="$i18n.locale==='en'" v-for="dict in dict.type.sys_yes_no" :key="dict.value" :label="dict.value">{{dict.labelEn}}</el-radio>
+                <el-radio v-for="dict in dict.type.yes_no" :key="dict.value" :label="dict.value">{{$t(dict.name)}}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -167,7 +164,6 @@ import {
 } from "@/api/tool/model";
 import hljs from "highlight.js/lib/highlight";
 import "highlight.js/styles/github-gist.css";
-import {options} from "@/api/monitor/operlog";
 hljs.registerLanguage("java", require("highlight.js/lib/languages/java"));
 hljs.registerLanguage("xml", require("highlight.js/lib/languages/xml"));
 hljs.registerLanguage("html", require("highlight.js/lib/languages/xml"));
@@ -177,7 +173,7 @@ hljs.registerLanguage("sql", require("highlight.js/lib/languages/sql"));
 
 export default {
   name: "Project",
-  dicts: ['sys_yes_no'],
+  dicts: ['yes_no'],
   data() {
     return {
       // 遮罩层
@@ -285,11 +281,6 @@ export default {
       this.ids = selection.map(item => item.id)
       this.single = selection.length !== 1
       this.multiple = !selection.length
-    },
-    getOptions() {
-      options().then( response => {
-        this.groupOptions = response.data;
-      });
     },
     /** 字段列表 */
     handleField(row){

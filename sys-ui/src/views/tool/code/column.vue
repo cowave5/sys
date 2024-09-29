@@ -30,7 +30,7 @@
 
     <el-table v-loading="loading" :data="list" @selection-change="handleSelectionChange" :header-cell-style="{'text-align':'center'}">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+      <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
         <template slot-scope="scope">
           <span>{{scope.$index + 1}}</span>
         </template>
@@ -108,8 +108,7 @@
           <el-col :span="12">
             <el-form-item label="是否主键">
               <el-radio-group v-model="form.isPrimary">
-                <el-radio v-if="$i18n.locale==='zh'" v-for="dict in dict.type.sys_yes_no" :key="dict.value" :label="dict.value">{{dict.label}}</el-radio>
-                <el-radio v-if="$i18n.locale==='en'" v-for="dict in dict.type.sys_yes_no" :key="dict.value" :label="dict.value">{{dict.labelEn}}</el-radio>
+                <el-radio v-for="dict in dict.type.yes_no" :key="dict.value" :label="dict.value">{{$t(dict.name)}}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -123,16 +122,14 @@
           <el-col :span="12">
             <el-form-item label="是否非空">
               <el-radio-group v-model="form.isNotnull">
-                <el-radio v-if="$i18n.locale==='zh'" v-for="dict in dict.type.sys_yes_no" :key="dict.value" :label="dict.value">{{dict.label}}</el-radio>
-                <el-radio v-if="$i18n.locale==='en'" v-for="dict in dict.type.sys_yes_no" :key="dict.value" :label="dict.value">{{dict.labelEn}}</el-radio>
+                <el-radio v-for="dict in dict.type.yes_no" :key="dict.value" :label="dict.value">{{$t(dict.name)}}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="是否自增">
               <el-radio-group v-model="form.isIncrement">
-                <el-radio v-if="$i18n.locale==='zh'" v-for="dict in dict.type.sys_yes_no" :key="dict.value" :label="dict.value">{{dict.label}}</el-radio>
-                <el-radio v-if="$i18n.locale==='en'" v-for="dict in dict.type.sys_yes_no" :key="dict.value" :label="dict.value">{{dict.labelEn}}</el-radio>
+                <el-radio v-for="dict in dict.type.yes_no" :key="dict.value" :label="dict.value">{{$t(dict.name)}}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -160,7 +157,7 @@ import {infoTable} from "@/api/tool/table";
 
 export default {
   name: "Project",
-  dicts: ['sys_yes_no'],
+  dicts: ['yes_no'],
   data() {
     return {
       // 遮罩层

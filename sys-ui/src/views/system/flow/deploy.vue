@@ -14,8 +14,8 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{$t('button.search')}}</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{$t('button.reset')}}</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{$t('commons.button.search')}}</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{$t('commons.button.reset')}}</el-button>
       </el-form-item>
     </el-form>
 
@@ -29,7 +29,7 @@
     <el-table v-loading="loading" :data="list"
               @selection-change="handleSelectionChange" :header-cell-style="{'text-align':'center'}">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+      <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
         <template slot-scope="scope">
           <span>{{(queryParams.page - 1) * queryParams.pageSize + scope.$index + 1}}</span>
         </template>
@@ -39,7 +39,7 @@
       <el-table-column label="流程名称" align="center" prop="name" :show-overflow-tooltip="true" />
       <el-table-column label="资源文件" align="center" prop="resourceName" width="380" :show-overflow-tooltip="true" />
       <el-table-column label="版本" align="center" prop="version" :show-overflow-tooltip="true" />
-      <el-table-column :label="$t(`label.option`)" align="center" class-name="small-padding" width="280">
+      <el-table-column :label="$t('commons.label.options')" align="center" class-name="small-padding" width="280">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handlePreview(scope.row)"><svg-icon icon-class="fd"/>流程定义</el-button>
           <el-button size="mini" type="text" @click="handleDiagram(scope.row)"><svg-icon icon-class="flow2"/>流程图</el-button>
@@ -64,14 +64,14 @@
         :auto-upload="false"
         drag>
         <i class="el-icon-upload"></i>
-        <div class="el-upload__text">{{$t('user.dialog.text_import1')}}<em>{{$t('user.dialog.text_import2')}}</em>{{$t('user.dialog.text_import3')}}</div>
+        <div class="el-upload__text">{{$t('user.dialog.import_text1')}}<em>{{$t('user.dialog.import_text2')}}</em>{{$t('user.dialog.import_text3')}}</div>
         <div class="el-upload__tip text-center" slot="tip">
           <span>提示：仅允许导入“bpmn”、“xml”或“zip”格式文件！</span>
         </div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitFileForm">{{$t('button.confirm')}}</el-button>
-        <el-button @click="upload.open = false">{{$t('button.cancel')}}</el-button>
+        <el-button type="primary" @click="submitFileForm">{{$t('commons.button.confirm')}}</el-button>
+        <el-button @click="upload.open = false">{{$t('commons.button.cancel')}}</el-button>
       </div>
     </el-dialog>
 
@@ -189,7 +189,7 @@ export default {
       this.upload.open = false;
       this.upload.isUploading = false;
       this.$refs.upload.clearFiles();
-      this.$alert("<div style='overflow-y: scroll;overflow-x: auto;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", this.$t(`user.dialog.text_import7`), { dangerouslyUseHTMLString: true });
+      this.$alert("<div style='overflow-y: scroll;overflow-x: auto;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", this.$t('user.dialog.import_text7'), { dangerouslyUseHTMLString: true });
       this.getList();
     },
     /** 提交上传文件 */
@@ -214,7 +214,7 @@ export default {
         return deleteDeploy(ids);
       }).then(() => {
         this.getList();
-        this.$modal.msgSuccess(this.$t(`msg.success_delete`));
+        this.$modal.msgSuccess(this.$t('commons.msg.success.delete'));
       }).catch(() => {});
     },
     /** 转为模型 */

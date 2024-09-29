@@ -6,7 +6,11 @@
           <el-form-item label="操作人：">{{ log.userName }}</el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="操作结果：">{{ log.logStatus === 1 ? '成功' : '失败'  }}</el-form-item>
+           <el-form-item label="操作结果：">
+            <template v-for="item in dict.type.success_failed">
+              <span v-if="log.logStatus === item.value">{{ $t(item.name) }}</span>
+            </template>
+          </el-form-item>
         </el-col>
       </el-row>
       <el-row>
@@ -29,12 +33,7 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item v-if="log.actionCode === 'readonly'" label="操作内容：">
-            <span v-if="log.logContent.req.readOnly === 1">设置角色[{{ log.logContent.req.roleName }}]为只读</span>
-            <span v-if="log.logContent.req.readOnly === 0">取消角色[{{ log.logContent.req.roleName }}]为只读</span>
-          </el-form-item>
-
-          <el-form-item v-if="log.actionCode === 'add'" label="角色信息：">
+          <el-form-item v-if="log.actionCode === 'create'" label="角色信息：">
             <el-form ref="form-add" :model="log.logContent.req" label-width="100px" style="background-color: #e5f3f3">
               <el-row>
                 <el-col :span="10">
@@ -104,6 +103,7 @@
 <script>
 import { info } from "@/api/monitor/operlog";
 export default {
+  dicts: ['success_failed'],
   data() {
     return {
       visible: false,

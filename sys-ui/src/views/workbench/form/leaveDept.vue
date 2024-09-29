@@ -6,8 +6,7 @@
       </el-form-item>
       <el-form-item label="请假类型" prop="leaveType">
         <el-select v-model="form.leaveType" placeholder="" disabled="disabled" style="width: 80%">
-          <el-option v-if="$i18n.locale==='zh'" v-for="dict in dict.type.flow_leave" :key="dict.value" :label="`${dict.label}`" :value="dict.value"/>
-          <el-option v-if="$i18n.locale==='en'" v-for="dict in dict.type.flow_leave" :key="dict.value" :label="`${dict.labelEn}`" :value="dict.value"/>
+          <el-option v-for="dict in dict.type.leave" :key="dict.value" :value="dict.value" :label="$t(dict.name)"/>
         </el-select>
       </el-form-item>
       <el-form-item label="开始时间" prop="beginTime">
@@ -63,11 +62,11 @@
 <script>
 import {taskComplete, taskRecords} from "@/api/workbench/task";
 import {infoLeave} from "@/api/workbench/leave";
-import {getDeptUsersByCode} from "@/api/system/dept";
+import {getDeptCandidatesByCode} from "@/api/system/dept";
 import {instanceJump} from "@/api/system/flow/instance";
 
 export default {
-  dicts: ['flow_leave'],
+  dicts: ['leave'],
   data() {
     return {
       visible: false,
@@ -110,7 +109,7 @@ export default {
         }else{
           this.form.deptAapproveResult = true;
         }
-        getDeptUsersByCode('HR').then( resp => {
+        getDeptCandidatesByCode('HR').then( resp => {
           if (resp.data && resp.data.length > 0) {
             this.approverOptions = resp.data;
             this.form.hrApprover = resp.data[0].userId;
