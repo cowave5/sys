@@ -75,7 +75,7 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/index'),
         name: 'Index',
-        meta: { title:  'route.dashboard', icon: 'dashboard', affix: true }
+        meta: { title:  'commons.menu.dashboard', icon: 'dashboard', affix: true }
       }
     ]
   },
@@ -89,7 +89,7 @@ export const constantRoutes = [
         path: 'profile',
         component: () => import('@/views/system/user/profile/index'),
         name: 'Profile',
-        meta: { title: '个人中心', icon: 'user' }
+        meta: { title: 'commons.theme.profile', icon: 'user' }
       }
     ]
   },
@@ -102,7 +102,7 @@ export const constantRoutes = [
         path: 'dept/:deptId(\\d+)',
         component: () => import('@/views/system/dept/deptPost'),
         name: 'DeptPost',
-        meta: { title: 'route.system.dept.positions', activeMenu: '/system/dept' }
+        meta: { title: 'dept.button.positions', activeMenu: '/system/dept' }
       }
     ]
   },
@@ -115,7 +115,7 @@ export const constantRoutes = [
         path: 'dept/:deptId(\\d+)',
         component: () => import('@/views/system/dept/deptUser'),
         name: 'DeptUser',
-        meta: { title: 'route.system.dept.members', activeMenu: '/system/dept' }
+        meta: { title: 'dept.button.members', activeMenu: '/system/dept' }
       }
     ]
   },
@@ -126,9 +126,9 @@ export const constantRoutes = [
     children: [
       {
         path: 'user/:roleId(\\d+)',
-        component: () => import('@/views/system/role/authUser'),
+        component: () => import('@/views/system/role/roleUser.vue'),
         name: 'AuthUser',
-        meta: { title: 'route.system.role.grant', activeMenu: '/system/role' }
+        meta: { title: 'role.button.grant', activeMenu: '/system/role' }
       }
     ]
   },
@@ -183,25 +183,25 @@ export const constantRoutes = [
         meta: { title: '模型字段', activeMenu: '/tool/code/model' }
       }
     ]
-  }
-]
-
-// 动态路由，基于用户权限动态去加载
-export const dynamicRoutes = [
+  },
   {
     path: '/system/user-auth',
     component: Layout,
     hidden: true,
-    permissions: ['sys:user:edit'],
     children: [
       {
         path: 'role/:userId(\\d+)',
-        component: () => import('@/views/system/user/authRole'),
+        component: () => import('@/views/system/user/userRole.vue'),
         name: 'AuthRole',
-        meta: { title: 'route.system.user.grant', activeMenu: '/system/user' }
+        meta: { title: 'user.button.grant', activeMenu: '/system/user' }
       }
     ]
   }
+]
+
+// 权限路由
+export const dynamicRoutes = [
+
 ]
 
 // 防止连续点击多次路由报错

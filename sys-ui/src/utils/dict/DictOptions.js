@@ -14,9 +14,10 @@ export const options = {
        * 字典响应数据转换器，方法签名为function(response: Object, dictMeta: DictMeta): DictData
        */
       responseConverter,
-      labelField: 'label',
+      labelField: 'dictLabel',
       labelEnField: 'dictEn',
       valueField: 'value',
+      cssField: 'css'
     },
   },
   /**
@@ -27,6 +28,10 @@ export const options = {
    * 默认值字段
    */
   DEFAULT_VALUE_FIELDS: ['value', 'id', 'uid', 'key'],
+  /**
+   * 默认值字段
+   */
+  DEFAULT_CSS_FIELDS: ['css'],
 }
 
 /**

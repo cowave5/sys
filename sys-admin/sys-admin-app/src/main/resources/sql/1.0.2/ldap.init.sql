@@ -1,0 +1,25 @@
+-- 配置
+insert into ldap_config (ldap_name, ldap_status, ldap_url, ldap_user, ldap_passwd, base_dn, user_class, account_property,name_property,email_property,phone_property,post_property,dept_property,leader_property,info_property, user_role, "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
+values ('cowave', 1, 'ldap://10.64.3.1:389', 'zhangyuliang@cowave.com', 'Cowave@123', 'OU=Cowavers,DC=cowave,DC=com', 'person', 'sAMAccountName','displayName','userPrincipalName','telephoneNumber','title','department','manager','distinguishedName', 3, 1, NULL, '2024-03-18 13:57:36.631', 1, NULL, '2024-03-18 13:59:53.624');
+
+-- 菜单
+delete from sys_menu where menu_type = 'C' and component = 'system/ldap/index';
+delete from sys_menu where menu_type = 'B' and menu_permit = 'sys:ldap:query';
+delete from sys_menu where menu_type = 'B' and menu_permit = 'sys:ldap:create';
+delete from sys_menu where menu_type = 'B' and menu_permit = 'sys:ldap:edit';
+delete from sys_menu where menu_type = 'B' and menu_permit = 'sys:ldap:delete';
+
+INSERT INTO "sys_menu" ("parent_id", "menu_name", "menu_order", "menu_permit", "menu_path", "menu_param", "menu_type", "menu_icon", "component", "menu_status", "is_frame", "is_cache", "is_visible", "is_protected", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
+VALUES ((select menu_id from sys_menu where menu_type = 'M' and menu_path = 'system'), 'Ldap目录', 10, 'sys:ldap:query', 'ldap', NULL, 'C', 'ldap', 'system/ldap/index', 1, 1, 1, 1, 1, NULL, 0, 1, NULL, '2024-03-18 13:57:36.631', 1, NULL, '2024-03-18 13:59:53.624');
+INSERT INTO "sys_menu" ("parent_id", "menu_name", "menu_order", "menu_permit", "menu_path", "menu_param", "menu_type", "menu_icon", "component", "menu_status", "is_frame", "is_cache", "is_visible", "is_protected", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
+VALUES ((select menu_id from sys_menu where menu_type = 'C' and component = 'system/ldap/index'), '查询', 1, 'sys:ldap:query', '#', NULL, 'B', '#', NULL, 1, 1, 1, 1, 1, NULL, 0, 1, NULL, '2024-03-20 16:38:18.118', 1, NULL, '2024-03-20 16:38:18.118');
+INSERT INTO "sys_menu" ("parent_id", "menu_name", "menu_order", "menu_permit", "menu_path", "menu_param", "menu_type", "menu_icon", "component", "menu_status", "is_frame", "is_cache", "is_visible", "is_protected", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
+VALUES ((select menu_id from sys_menu where menu_type = 'C' and component = 'system/ldap/index'), '新增', 2, 'sys:ldap:create', '#', NULL, 'B', '#', NULL, 1, 1, 1, 1, 1, NULL, 0, 1, NULL, '2024-03-20 16:39:01.56', 1, NULL, '2024-03-20 16:39:01.56');
+INSERT INTO "sys_menu" ("parent_id", "menu_name", "menu_order", "menu_permit", "menu_path", "menu_param", "menu_type", "menu_icon", "component", "menu_status", "is_frame", "is_cache", "is_visible", "is_protected", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
+VALUES ((select menu_id from sys_menu where menu_type = 'C' and component = 'system/ldap/index'), '修改', 3, 'sys:ldap:edit', '#', NULL, 'B', '#', NULL, 1, 1, 1, 1, 1, NULL, 0, 1, NULL, '2024-03-20 16:39:27.646', 1, NULL, '2024-03-20 16:39:27.646');
+INSERT INTO "sys_menu" ("parent_id", "menu_name", "menu_order", "menu_permit", "menu_path", "menu_param", "menu_type", "menu_icon", "component", "menu_status", "is_frame", "is_cache", "is_visible", "is_protected", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
+VALUES ((select menu_id from sys_menu where menu_type = 'C' and component = 'system/ldap/index'), '删除', 4, 'sys:ldap:delete', '#', NULL, 'B', '#', NULL, 1, 1, 1, 1, 1, NULL, 0, 1, NULL, '2024-03-20 16:39:59.614', 1, NULL, '2024-03-20 16:39:59.614');
+INSERT INTO "sys_menu" ("parent_id", "menu_name", "menu_order", "menu_permit", "menu_path", "menu_param", "menu_type", "menu_icon", "component", "menu_status", "is_frame", "is_cache", "is_visible", "is_protected", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
+VALUES ((select menu_id from sys_menu where menu_type = 'C' and component = 'system/ldap/index'), '测试', 5, 'sys:ldap:edit', '#', NULL, 'B', '#', NULL, 1, 1, 1, 1, 1, NULL, 0, 1, NULL, '2024-03-20 16:39:27.646', 1, NULL, '2024-03-20 16:39:27.646');
+INSERT INTO "sys_menu" ("parent_id", "menu_name", "menu_order", "menu_permit", "menu_path", "menu_param", "menu_type", "menu_icon", "component", "menu_status", "is_frame", "is_cache", "is_visible", "is_protected", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
+VALUES ((select menu_id from sys_menu where menu_type = 'C' and component = 'system/ldap/index'), '修改状态', 6, 'sys:ldap:edit', '#', NULL, 'B', '#', NULL, 1, 1, 1, 1, 1, NULL, 0, 1, NULL, '2024-03-20 16:39:27.646', 1, NULL, '2024-03-20 16:39:27.646');

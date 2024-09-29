@@ -5,15 +5,15 @@
         <el-input v-model="queryParams.ldapName" clearable style="width: 240px" @keyup.enter.native="handleQuery"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{$t('button.search')}}</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{$t('button.reset')}}</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{$t('commons.button.search')}}</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{$t('commons.button.reset')}}</el-button>
       </el-form-item>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-                   :disabled="!checkPermit(['sys:ldap:new'])">新增</el-button>
+                   :disabled="!checkPermit(['sys:ldap:create'])">新增</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="success" plain icon="el-icon-edit" size="mini" @click="handleUpdate"
@@ -29,7 +29,7 @@
     <el-table v-loading="loading" :data="list"
               @selection-change="handleSelectionChange" :header-cell-style="{'text-align':'center'}">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+      <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
         <template slot-scope="scope">
           <span>{{(queryParams.page - 1) * queryParams.pageSize + scope.$index + 1}}</span>
         </template>
@@ -49,7 +49,7 @@
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t(`label.option`)" align="center" class-name="small-padding" width="160">
+      <el-table-column :label="$t('commons.label.options')" align="center" class-name="small-padding" width="160">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
@@ -353,7 +353,7 @@ export default {
         return delLdap(idarray);
       }).then(() => {
         this.getList();
-        this.$modal.msgSuccess(this.$t(`msg.success_delete`));
+        this.$modal.msgSuccess(this.$t('commons.msg.success.delete'));
       }).catch(() => {});
     },
     /** 取消 */
@@ -367,13 +367,13 @@ export default {
         if (valid) {
           if (this.form.id !== undefined) {
             updateLdap(this.form).then(response => {
-              this.$modal.msgSuccess(this.$t(`msg.success_edit`));
+              this.$modal.msgSuccess(this.$t('commons.msg.success.edit'));
               this.open = false;
               this.getList();
             });
           } else {
             addLdap(this.form).then(response => {
-              this.$modal.msgSuccess(this.$t(`msg.success_create`));
+              this.$modal.msgSuccess(this.$t('commons.msg.success.create'));
               this.open = false;
               this.getList();
             });
@@ -394,7 +394,7 @@ export default {
       this.$modal.confirm(msg).then(function() {
         return changeStatus(row.id, row.ldapStatus);
       }).then(() => {
-        this.$modal.msgSuccess(text + this.$t(`content.success`));
+        this.$modal.msgSuccess(this.$t('commons.msg.success.edit'));
       }).catch(function() {
         row.ldapStatus = row.ldapStatus === 0 ? 1 : 0;
       });

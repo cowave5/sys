@@ -38,7 +38,7 @@
 
     <el-table v-loading="loading" :data="noticeList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+      <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
         <template slot-scope="scope">
           <span>{{(queryParams.page - 1) * queryParams.pageSize + scope.$index + 1}}</span>
         </template>
@@ -167,8 +167,8 @@
 
 <script>
 import {listNotice, getNotice, delNotice, addNotice, updateNotice, publishNotice} from "@/api/system/notice";
-import {getRoles, getUsers} from "@/api/system/user";
-import {getDeptTree} from "@/api/system/dept";
+import {getRoles} from "@/api/system/user";
+import {getDeptDiagramById, getDeptUserDiagram} from "@/api/system/dept";
 
 export default {
   name: "Notice",
@@ -344,16 +344,16 @@ export default {
     },
     /** 获取用户选项 */
     getUserOptions(){
-      getUsers().then(resp => {
+      getDeptUserDiagram().then(resp => {
         this.userTreeParams.data = resp.data
       });
     },
     /** 新增 */
     handleAdd() {
       this.reset();
-      getDeptTree("1").then(response => {
+      getDeptDiagramById(1).then(response => {
         this.deptTreeParams.data = response.data
-        getUsers().then(resp => {
+        getDeptUserDiagram().then(resp => {
           this.userTreeParams.data = resp.data
           this.title = "新增公告";
           this.open = true;
@@ -364,9 +364,9 @@ export default {
     handleUpdate(row) {
       this.reset();
       const noticeId = row.noticeId || this.ids
-      getDeptTree("1").then(response => {
+      getDeptDiagramById(1).then(response => {
         this.deptTreeParams.data = response.data
-        getUsers().then(resp => {
+        getDeptUserDiagram().then(resp => {
           this.userTreeParams.data = resp.data
           getNotice(noticeId).then(rsp => {
             this.form = rsp.data;

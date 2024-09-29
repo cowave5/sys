@@ -16,6 +16,7 @@ export default class DictMeta {
     this.labelField = options.labelField
     this.labelEnField = options.labelEnField
     this.valueField = options.valueField
+    this.cssField = options.cssField
     this.lazy = options.lazy === true
   }
 }

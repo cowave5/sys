@@ -2,12 +2,12 @@
   <div class="app-container home">
     <el-row :gutter="20">
       <el-col :sm="24" :lg="12" style="padding-left: 20px">
-        <h2>Cowave后台管理系统</h2>
+        <h2>Cowave管理系统</h2>
         <p>
-          我们希望写出一款适合自己业务，足够简单通用，并且方便扩展定制的管理系统。也看了一些优秀的开源项目，最后选择了若依来作为参考来进行设计开发。
+          初衷希望写出一款适合自己业务，简单通用且方便扩展定制的管理系统。也看了一些优秀的开源项目，最后选择了若依作为基础参考来进行设计开发。
         </p>
         <p>
-          站在别人的肩膀上，我们进行了一些自己的优化和设计，主要是对服务和存储进行了重写，前端直接复用了若依的框架。这里非常感谢若依的开源，比如它设计的动态路由菜单权限，给了我们不少的帮助和启发。
+          感谢若依的开源，站在别人的肩膀上进行了一些优化和重写，主要是对服务和存储进行了重写，前端基本复用了若依的框架。
         </p>
         <p>
           <b>若依版本:</b> <span>3.8.2@<a href="http://vue.ruoyi.vip" target="_blank" style="color: #409eff;">http://vue.ruoyi.vip</a></span>
@@ -26,7 +26,8 @@
           <el-col :span="5">
             <h4>服务模块</h4>
             <ul>
-              <li><label style="font-weight: normal; display:inline-block; width: 80px">sys-ui       </label>80</li>
+              <li><label style="font-weight: normal; display:inline-block; width: 80px">sys-blog     </label>80</li>
+              <li><label style="font-weight: normal; display:inline-block; width: 80px">sys-ui       </label>81</li>
               <li><label style="font-weight: normal; display:inline-block; width: 80px">nacos        </label>8848</li>
               <li><label style="font-weight: normal; display:inline-block; width: 80px">sys-gateway  </label>19000</li>
               <li><label style="font-weight: normal; display:inline-block; width: 80px">sys-admin    </label>19010</li>
@@ -72,7 +73,6 @@
             <ul>
               <li>Java 17</li>
               <li>Spring-boot 2.7.0</li>
-              <li>Spring-cloud-gateway</li>
               <li>MyBatis-Plus</li>
               <li>Nacos 2.3.0</li>
               <li>Flowable 6.8.0</li>

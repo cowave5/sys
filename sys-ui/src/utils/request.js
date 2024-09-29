@@ -68,7 +68,6 @@ service.interceptors.request.use(config => {
     Promise.reject(error)
 })
 
-let isRejected = false; // 是否以拒绝访问
 let isRefreshing = false; // 是否正在刷新Token
 let requestsQueue = [];     // 等待Token刷新的请求
 
@@ -101,15 +100,18 @@ service.interceptors.response.use(response => {
           });
         });
       }
-    }else if (code === "401") {
-      if(!isRejected){
-        isRejected = true;
-        cache.local.removeAccessToken();
+    } else if (code === '401') {
+      cache.local.removeAccessToken()
+      if (router.currentRoute.path !== '/login') {
         MessageBox.alert('授权已过期，请重新登录', { type: 'warning' }).then(() => {
-          router.push("/login");
-        });
+          router.push('/login')
+        })
+      } else {
+        Notification.error({
+          title: msg
+        })
       }
-      return Promise.reject('授权已过期')
+      return Promise.reject('认证失败')
     } else if (code === "500") {
       Message({
         message: msg,
@@ -146,7 +148,7 @@ service.interceptors.response.use(response => {
   }
 )
 
-// 通用下载方法
+// 下载
 export function download(url, params, filename) {
   downloadLoadingInstance = Loading.service({ text: "正在下载数据，请稍候", spinner: "el-icon-loading", background: "rgba(0, 0, 0, 0.7)", })
   return service.post(url, params, {

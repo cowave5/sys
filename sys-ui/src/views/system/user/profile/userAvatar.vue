@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="user-info-head" @click="editCropper()"><img v-bind:src="options.img" class="img-circle img-lg"  alt=""/></div>
-    <el-dialog :title="$t(`user.dialog.title_avatar`)" :visible.sync="open" width="800px" append-to-body @opened="modalOpened"  @close="closeDialog">
+    <el-dialog :title="$t('user.dialog.avatar')" :visible.sync="open" width="800px" append-to-body @opened="modalOpened"  @close="closeDialog">
       <el-row>
         <el-col :xs="24" :md="12" :style="{height: '350px'}">
           <vue-cropper
@@ -27,7 +27,7 @@
         <el-col :lg="2" :md="2">
           <el-upload action="#" :http-request="requestUpload" :show-file-list="false" :before-upload="beforeUpload">
             <el-button size="small">
-              {{$t('button.upload')}}
+              {{$t('commons.button.upload')}}
               <i class="el-icon-upload el-icon--right"></i>
             </el-button>
           </el-upload>
@@ -45,7 +45,7 @@
           <el-button icon="el-icon-refresh-right" size="small" @click="rotateRight()"></el-button>
         </el-col>
         <el-col :lg="{span: 2, offset: 6}" :md="2">
-          <el-button type="primary" size="small" @click="uploadImg()">{{$t('button.confirm')}}</el-button>
+          <el-button type="primary" size="small" @click="uploadImg()">{{$t('commons.button.confirm')}}</el-button>
         </el-col>
       </el-row>
     </el-dialog>
@@ -107,8 +107,8 @@ export default {
     },
     // 上传预处理
     beforeUpload(file) {
-      if (file.type.indexOf("image/") == -1) {
-        this.$modal.msgError(this.$t(`user.avatar_failed`));
+      if (file.type.indexOf("image/") === -1) {
+        this.$modal.msgError(this.$t('user.msg.avatar_failed'));
       } else {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -129,7 +129,7 @@ export default {
           this.open = false;
           this.options.img = resp.data;
           store.commit('SET_AVATAR', this.options.img);
-          this.$modal.msgSuccess(this.$t(`msg.success_edit`));
+          this.$modal.msgSuccess(this.$t('commons.msg.success.edit'));
           this.visible = false;
         });
       });

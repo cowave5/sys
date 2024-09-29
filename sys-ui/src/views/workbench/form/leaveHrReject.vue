@@ -54,7 +54,7 @@
 <script>
 import {taskComplete, taskRecords} from "@/api/workbench/task";
 import {editLeave, infoLeave} from "@/api/workbench/leave";
-import {getDeptUsersByCode} from "@/api/system/dept";
+import {getDeptCandidatesByCode} from "@/api/system/dept";
 
 export default {
   dicts: ['flow_leave'],
@@ -108,7 +108,7 @@ export default {
         }else{
           this.form.deptAapproveResult = true;
         }
-        getDeptUsersByCode('HR').then( resp => {
+        getDeptCandidatesByCode('HR').then( resp => {
           if (resp.data && resp.data.length > 0) {
             this.approverOptions = resp.data;
             this.form.hrApprover = resp.data[0].userId;

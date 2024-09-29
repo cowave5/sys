@@ -1,67 +1,67 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch">
-      <el-form-item :label="$t(`role.label.name`)" prop="roleName">
-        <el-input v-model="queryParams.roleName" :placeholder="$t(`role.placeholder.name`)" clearable style="width: 240px" @keyup.enter.native="handleQuery"/>
+      <el-form-item :label="$t('role.label.name')" prop="roleName">
+        <el-input v-model="queryParams.roleName" :placeholder="$t('role.placeholder.name')" clearable style="width: 240px" @keyup.enter.native="handleQuery"/>
       </el-form-item>
-      <el-form-item :label="$t(`role.label.code`)" prop="roleCode">
-        <el-input v-model="queryParams.roleCode" :placeholder="$t(`role.placeholder.code`)" clearable style="width: 240px" @keyup.enter.native="handleQuery"/>
+      <el-form-item :label="$t('role.label.code')" prop="roleCode">
+        <el-input v-model="queryParams.roleCode" :placeholder="$t('role.placeholder.code')" clearable style="width: 240px" @keyup.enter.native="handleQuery"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{$t('button.search')}}</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{$t('button.reset')}}</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{$t('commons.button.search')}}</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{$t('commons.button.reset')}}</el-button>
       </el-form-item>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-                   :disabled="!checkPermit(['sys:role:new'])">{{$t('route.system.role.new')}}</el-button>
+                   :disabled="!checkPermit(['sys:role:create'])">{{$t('commons.button.create')}}</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="success" plain icon="el-icon-edit" size="mini" @click="handleUpdate"
-                   :disabled="single || !checkPermit(['sys:role:edit'])">{{$t('route.system.role.edit')}}</el-button>
+                   :disabled="single || !checkPermit(['sys:role:edit'])">{{$t('commons.button.edit')}}</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="danger" plain icon="el-icon-delete" size="mini" @click="handleDelete"
-                   :disabled="multiple || !checkPermit(['sys:role:delete'])">{{$t('route.system.role.delete')}}</el-button>
+                   :disabled="multiple || !checkPermit(['sys:role:delete'])">{{$t('commons.button.delete')}}</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
-                   :disabled="!checkPermit(['sys:role:export'])">{{$t('route.system.role.export')}}</el-button>
+                   :disabled="!checkPermit(['sys:role:export'])">{{$t('commons.button.export')}}</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"/>
     </el-row>
 
     <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
       <el-table-column :selectable='selectable' type="selection" align="center" width="60" />
-      <el-table-column :label="$t(`label.index`)" type="index" align="center" width="60" >
+      <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="60" >
         <template slot-scope="scope">
           <span>{{(queryParams.page - 1) * queryParams.pageSize + scope.$index + 1}}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t(`role.label.name`)" prop="roleName" align="center" :show-overflow-tooltip="true"/>
-      <el-table-column :label="$t(`role.label.code`)" prop="roleCode" align="center" :show-overflow-tooltip="true"/>
-      <el-table-column :label="$t(`label.date_create`)" align="center" prop="createTime">
+      <el-table-column :label="$t('role.label.name')" prop="roleName" align="center" :show-overflow-tooltip="true"/>
+      <el-table-column :label="$t('role.label.code')" prop="roleCode" align="center" :show-overflow-tooltip="true"/>
+      <el-table-column :label="$t('commons.label.date.create')" align="center" prop="createTime">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t(`label.readonly`)" align="center" prop="readOnly">
+      <el-table-column :label="$t('commons.label.readonly')" align="center" prop="readOnly">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.readOnly" :active-value=1 :inactive-value=0 @change="handleReadOnly(scope.row)"
                      :disabled="scope.row.roleCode === 'sysAdmin' || !checkPermit(['route.common.readonly'])"/>
         </template>
       </el-table-column>
-      <el-table-column :label="$t(`label.option`)" align="center" class-name="small-padding fixed-width" width="350">
+      <el-table-column :label="$t('commons.label.options')" align="center" class-name="small-padding fixed-width" width="350">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">{{$t('route.system.role.edit')}}</el-button>
+          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">{{$t('commons.button.edit')}}</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
-                     :disabled="scope.row.readOnly === 1 || !checkPermit(['sys:role:delete'])">{{$t('route.system.role.delete')}}</el-button>
-          <el-button size="mini" type="text" @click="handleMenuScope(scope.row)"><svg-icon icon-class="pscope"/>{{$t('route.system.role.menus')}}</el-button>
+                     :disabled="scope.row.readOnly === 1 || !checkPermit(['sys:role:delete'])">{{$t('commons.button.delete')}}</el-button>
+          <el-button size="mini" type="text" @click="handleMenuScope(scope.row)"><svg-icon icon-class="pscope"/>{{$t('role.button.menus')}}</el-button>
           <el-button size="mini" type="text" @click="handleDataScope(scope.row)"
-                     :disabled="!checkPermit(['sys:role:scope'])"><svg-icon icon-class="vscope"/> {{$t('route.system.role.dataScope')}}</el-button>
-          <el-button size="mini" type="text" @click="handleAuthUser(scope.row)"><svg-icon icon-class="peoples"/> {{$t('route.system.role.grant')}}</el-button>
+                     :disabled="!checkPermit(['sys:role:scope'])"><svg-icon icon-class="vscope"/> {{$t('role.button.scope')}}</el-button>
+          <el-button size="mini" type="text" @click="handleAuthUser(scope.row)"><svg-icon icon-class="peoples"/> {{$t('role.button.grant')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -70,42 +70,42 @@
     <!-- 新增修改对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item :label="$t(`role.label.name`)" prop="roleName">
-          <el-input v-model="form.roleName" :placeholder="$t(`role.placeholder.name`)" />
+        <el-form-item :label="$t('role.label.name')" prop="roleName">
+          <el-input v-model="form.roleName" :placeholder="$t('role.placeholder.name')" />
         </el-form-item>
-        <el-form-item :label="$t(`role.label.code`)" prop="roleCode">
-          <el-input v-model="form.roleCode" :placeholder="$t(`role.placeholder.code`)" />
+        <el-form-item :label="$t('role.label.code')" prop="roleCode">
+          <el-input v-model="form.roleCode" :placeholder="$t('role.placeholder.code')" />
         </el-form-item>
-        <el-form-item :label="$t(`label.remark`)">
+        <el-form-item :label="$t('commons.label.remark')">
           <el-input v-model="form.remark" type="textarea" placeholder="..."></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm"
-                   :disabled="form.readOnly === 1 || !checkPermit(['sys:role:edit'])">{{$t('button.confirm')}}</el-button>
-        <el-button @click="cancel">{{$t('button.cancel')}}</el-button>
+                   :disabled="form.readOnly === 1 || !checkPermit(['sys:role:edit'])">{{$t('commons.button.confirm')}}</el-button>
+        <el-button @click="cancel">{{$t('commons.button.cancel')}}</el-button>
       </div>
     </el-dialog>
 
     <!-- 菜单权限对话框 -->
-    <el-dialog :title="$t(`role.menus`)" :visible.sync="openMenuScope" width="700px" append-to-body>
+    <el-dialog :title="$t('role.button.menus')" :visible.sync="openMenuScope" width="700px" append-to-body>
       <el-form ref="form" :model="form" label-width="100px">
         <el-row>
           <el-col :span="8" :offset="0">
-            <el-form-item :label="$t(`role.label.name`)" prop="roleName">
+            <el-form-item :label="$t('role.label.name')" prop="roleName">
               <el-input  v-model="form.roleName" disabled />
             </el-form-item>
           </el-col>
           <el-col :span="8" :offset="2">
-            <el-form-item :label="$t(`role.label.code`)" prop="roleCode">
+            <el-form-item :label="$t('role.label.code')" prop="roleCode">
               <el-input v-model="form.roleCode" disabled />
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item :label="$t(`role.menu_choose`)">
-          <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">{{$t('button.expand')}}/{{$t('button.collapse')}}</el-checkbox>
-          <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">{{$t('button.check')}}</el-checkbox>
-          <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">{{$t('button.parent')}}</el-checkbox>
+        <el-form-item :label="$t('menu.button.select')">
+          <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">{{$t('commons.button.expand')}}/{{$t('commons.button.collapse')}}</el-checkbox>
+          <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">{{$t('commons.button.check')}}</el-checkbox>
+          <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">{{$t('commons.button.parent')}}</el-checkbox>
           <el-tree ref="menu" :data="menuOptions" node-key="id" class="tree-border" show-checkbox
                    :check-strictly="!form.menuCheckStrictly" empty-text="..." :props="defaultProps">
             <span class="el-tree-node__label" slot-scope="{data}">{{$t(data.label)}}</span>
@@ -114,25 +114,25 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitMenuScope"
-                   :disabled="!checkPermit(['sys:role:menus'])">{{$t('button.confirm')}}</el-button>
-        <el-button @click="cancelMenuScope">{{$t('button.cancel')}}</el-button>
+                   :disabled="!checkPermit(['sys:role:menus'])">{{$t('commons.button.confirm')}}</el-button>
+        <el-button @click="cancelMenuScope">{{$t('commons.button.cancel')}}</el-button>
       </div>
     </el-dialog>
 
     <!-- 数据权限对话框 -->
-    <el-dialog :title="$t(`role.scope`)" :visible.sync="openDataScope" width="500px" append-to-body>
+    <el-dialog :title="$t('role.button.scope')" :visible.sync="openDataScope" width="500px" append-to-body>
       <span>Todo in the future.</span>
 <!--      <el-form :model="form" label-width="100px">-->
-<!--        <el-form-item :label="$t(`role.label.name`)">-->
+<!--        <el-form-item :label="$t('role.label.name')">-->
 <!--          <el-input v-model="form.roleName" :disabled="true" />-->
 <!--        </el-form-item>-->
-<!--        <el-form-item :label="$t(`role.label.code`)">-->
+<!--        <el-form-item :label="$t('role.label.code')">-->
 <!--          <el-input v-model="form.roleCode" :disabled="true" />-->
 <!--        </el-form-item>-->
 <!--      </el-form>-->
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitDataScope">{{$t('button.confirm')}}</el-button>
-        <el-button @click="cancelDataScope">{{$t('button.cancel')}}</el-button>
+        <el-button type="primary" @click="submitDataScope">{{$t('commons.button.confirm')}}</el-button>
+        <el-button @click="cancelDataScope">{{$t('commons.button.cancel')}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -140,15 +140,15 @@
 
 <script>
 import {
-  listRole,
-  getRole,
+  getRoleList,
+  getRoleInfo,
   delRole,
   addRole,
   updateRole,
-  changeReadonly,
-  changeRoleMenus
+  updateReadonly,
+  updateRoleMenus
 } from "@/api/system/role";
-import {treeselect} from "@/api/system/menu";
+import {getMenuTree} from "@/api/system/menu";
 import {checkPermit} from "@/utils/permission";
 
 export default {
@@ -204,10 +204,10 @@ export default {
     rules() {
       return {
         roleName: [
-          { required: true, message: this.$t(`role.rules.name`), trigger: "blur" }
+          { required: true, message: this.$t('role.rules.name'), trigger: "blur" }
         ],
         roleCode: [
-          { required: true, message: this.$t(`role.rules.code`), trigger: "blur" }
+          { required: true, message: this.$t('role.rules.code'), trigger: "blur" }
         ],
       };
     }
@@ -255,7 +255,7 @@ export default {
     /** 角色列表 */
     getList() {
       this.loading = true;
-      listRole(this.queryParams).then(response => {
+      getRoleList(this.queryParams).then(response => {
           this.roleList = response.data.list;
           this.total = response.data.total;
           this.loading = false;
@@ -266,36 +266,40 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = this.$t(`role.dialog.new`);
+      this.title = this.$t('role.dialog.new');
     },
     /** 修改 */
     handleUpdate(row) {
       this.reset();
       const roleId = row.roleId || this.ids
-      getRole(roleId).then(response => {
+      getRoleInfo(roleId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = this.$t(`role.dialog.edit`);
+        this.title = this.$t('role.dialog.edit');
       });
     },
     /** 删除 */
     handleDelete(row) {
       const roleIds = row.roleId || this.ids;
-      const msg = row.roleId ? this.$t(`role.msg.confirm_delete`, { var1: row.roleName }) : this.$t(`role.msg.select_delete`);
+      const msg = row.roleId
+          ? this.$t('role.confirm.delete', { arg1: row.roleName })
+          : this.$t('role.confirm.delete_select');
       this.$modal.confirm(msg).then(function() {
         return delRole(roleIds);
       }).then(() => {
         this.getList();
-        this.$modal.msgSuccess(this.$t(`msg.success_delete`));
+        this.$modal.msgSuccess(this.$t('commons.msg.success.delete'));
       }).catch(() => {});
     },
     /** 角色只读修改 */
     handleReadOnly(row) {
-      let text = row.readOnly === 1 ? this.$t(`content.set`) : this.$t(`content.cancel`);
-      this.$modal.confirm(this.$t(`role.msg.confirm_readonly`, { var1: text, var2: row.roleName })).then(function() {
-        return changeReadonly(row.roleId, row.readOnly, row.roleName);
+      let text = row.readOnly === 1
+          ? this.$t('role.confirm.readonly_set', { arg1: row.roleName })
+          : this.$t('role.confirm.readonly_cancel', { arg1: row.roleName });
+      this.$modal.confirm(text).then(function() {
+        return updateReadonly(row.roleId, row.readOnly, row.roleName);
       }).then(() => {
-        this.$modal.msgSuccess(text + this.$t(`content.success`));
+        this.$modal.msgSuccess(this.$t('commons.msg.success.edit'));
       }).catch(function() {
         row.readOnly = row.readOnly === 0 ? 1 : 0;
       });
@@ -315,13 +319,13 @@ export default {
         if (valid) {
           if (this.form.roleId !== undefined) {
             updateRole(this.form).then(response => {
-              this.$modal.msgSuccess(this.$t(`msg.success_edit`));
+              this.$modal.msgSuccess(this.$t('commons.msg.success.edit'));
               this.open = false;
               this.getList();
             });
           } else {
             addRole(this.form).then(response => {
-              this.$modal.msgSuccess(this.$t(`msg.success_create`));
+              this.$modal.msgSuccess(this.$t('commons.msg.success.create'));
               this.open = false;
               this.getList();
             });
@@ -332,9 +336,9 @@ export default {
     /** 角色菜单 */
     handleMenuScope(row){
       this.reset();
-      treeselect().then(response => {
+      getMenuTree().then(response => {
         this.menuOptions = response.data;
-        getRole(row.roleId).then(response => {
+        getRoleInfo(row.roleId).then(response => {
           this.form.roleId = response.data.roleId;
           this.form.roleName = response.data.roleName;
           this.form.roleCode = response.data.roleCode;
@@ -356,8 +360,8 @@ export default {
     /** 角色菜单提交 */
     submitMenuScope(){
       this.form.menuIds = this.getCheckedMenus();
-      changeRoleMenus(this.form).then(response => {
-        this.$modal.msgSuccess(this.$t(`msg.success_edit`));
+      updateRoleMenus(this.form).then(response => {
+        this.$modal.msgSuccess(this.$t('commons.msg.success.edit'));
         this.openMenuScope = false;
         this.getList();
       });
@@ -389,7 +393,7 @@ export default {
     /** 数据权限 */
     handleDataScope(row) {
       this.reset();
-      getRole(row.roleId).then(response => {
+      getRoleInfo(row.roleId).then(response => {
         this.form.roleId = response.data.roleId;
         this.form.roleName = response.data.roleName;
         this.form.roleCode = response.data.roleCode;

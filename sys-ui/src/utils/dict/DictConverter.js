@@ -5,7 +5,8 @@ export default function(dict, dictMeta) {
   const label = determineDictField(dict, dictMeta.labelField, ...DictOptions.DEFAULT_LABEL_FIELDS)
   const labelEn = determineDictField(dict, dictMeta.labelEnField, ...DictOptions.DEFAULT_LABEL_FIELDS)
   const value = determineDictField(dict, dictMeta.valueField, ...DictOptions.DEFAULT_VALUE_FIELDS)
-  return new DictData(dict[label], dict[labelEn], dict[value], dict)
+  const css = determineDictField(dict, dictMeta.cssField, ...DictOptions.DEFAULT_CSS_FIELDS)
+  return new DictData(dict[label], dict[labelEn], dict[value], dict[css], dict)
 }
 
 /**

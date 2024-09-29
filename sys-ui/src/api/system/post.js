@@ -1,65 +1,61 @@
 import request from '@/utils/request'
 
-// 查询岗位列表
-export function listPost(data) {
+/**
+ * 岗位列表
+ */
+export function listPost(params) {
   return request({
-    url: '/admin/api/v1/post/list',
-    method: 'post',
-    data: data
+    url: '/admin/api/v1/post',
+    method: 'get',
+    params: params
   })
 }
 
-// 岗位关系
-export function getTree() {
-  return request({
-    url: '/admin/api/v1/post/tree',
-    method: 'get'
-  })
-}
-
-// 刷新缓存
-export function refreshCache() {
-  return request({
-    url: '/admin/api/v1/post/refresh',
-    method: 'get'
-  })
-}
-
-// 岗位详情
+/**
+ * 岗位详情
+ */
 export function getPost(postId) {
   return request({
-    url: '/admin/api/v1/post/info/' + postId,
+    url: '/admin/api/v1/post/' + postId,
     method: 'get'
   })
 }
 
-// 新增岗位
+/**
+ * 新增岗位
+ */
 export function addPost(data) {
   return request({
-    url: '/admin/api/v1/post/add',
+    url: '/admin/api/v1/post',
     method: 'post',
     data: data
   })
 }
 
-// 修改岗位
+/**
+ * 删除岗位
+ */
+export function delPost(postIds) {
+  return request({
+    url: '/admin/api/v1/post/' + postIds,
+    method: 'delete'
+  })
+}
+
+/**
+ * 修改岗位
+ */
 export function updatePost(data) {
   return request({
-    url: '/admin/api/v1/post/edit',
-    method: 'post',
+    url: '/admin/api/v1/post',
+    method: 'patch',
     data: data
   })
 }
 
-// 删除岗位
-export function delPost(postId) {
-  return request({
-    url: '/admin/api/v1/post/delete?postId=' + postId,
-    method: 'get'
-  })
-}
-
-// 岗位只读修改
+/**
+ * 修改只读
+ */
 export function changeReadonly(postId, readOnly, postName) {
   const data = {
     postId,
@@ -67,16 +63,38 @@ export function changeReadonly(postId, readOnly, postName) {
     postName
   }
   return request({
-    url: '/admin/api/v1/post/change/readonly',
-    method: 'post',
+    url: '/admin/api/v1/post/readonly',
+    method: 'patch',
     data: data
   })
 }
 
-// 获取岗位人员
-export function getPostUsersByCode(postCode) {
+/**
+ * 岗位组织架构
+ */
+export function getPostDiagram() {
   return request({
-    url: '/admin/api/v1/post/users/code/' + postCode,
+    url: '/admin/api/v1/post/diagram',
+    method: 'get'
+  })
+}
+
+/**
+ * 刷新岗位组织
+ */
+export function refreshDiagram() {
+  return request({
+    url: '/admin/api/v1/post/diagram/refresh',
+    method: 'get'
+  })
+}
+
+/**
+ * 岗位流程候选人
+ */
+export function getPostCandidatesByCode(postCode) {
+  return request({
+    url: '/admin/api/v1/post/candidates/' + postCode,
     method: 'get'
   })
 }

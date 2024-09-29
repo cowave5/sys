@@ -71,7 +71,7 @@ export default {
         ],
         userEmail: [
           { required: true, trigger: "blur", message: "请输入邮箱" },
-          {type: "email", message: this.$t(`user.rules.email`), trigger: ["blur", "change"]}
+          {type: "email", message: this.$t('user.rules.email'), trigger: ["blur", "change"]}
         ],
         code: [{ required: true, trigger: "blur", message: "请输入验证码" }]
       },

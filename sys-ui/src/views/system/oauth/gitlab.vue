@@ -6,8 +6,8 @@
                   clearable style="width: 180px" @keyup.enter.native="handleQuery"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{$t('button.search')}}</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{$t('button.reset')}}</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{$t('commons.button.search')}}</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{$t('commons.button.reset')}}</el-button>
       </el-form-item>
     </el-form>
 
@@ -20,7 +20,7 @@
     </el-row>
 
     <el-table v-loading="loading" :data="list" :header-cell-style="{'text-align':'center'}">
-      <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+      <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
         <template slot-scope="scope">
           <span>{{(queryParams.page - 1) * queryParams.pageSize + scope.$index + 1}}</span>
         </template>
@@ -31,7 +31,7 @@
       <el-table-column label="邮箱" align="center" prop="userEmail" width="280" :show-overflow-tooltip="true" />
       <el-table-column label="部门" align="center" prop="userDept" :show-overflow-tooltip="true" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="180" />
-      <el-table-column :label="$t(`label.option`)" align="center" width="160" class-name="small-padding">
+      <el-table-column :label="$t('commons.label.options')" align="center" width="160" class-name="small-padding">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"

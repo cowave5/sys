@@ -4,7 +4,7 @@
       <el-col :span="8" :xs="24">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
-            <span>{{$t('user.profile')}}</span>
+            <span>{{$t('user.text.profile')}}</span>
           </div>
           <div>
             <div class="text-center">
@@ -36,7 +36,7 @@
                 <div class="pull-right" v-if="user.parents.length>0">{{ user.parents }} </div>
               </li>
               <li class="list-group-item">
-                <svg-icon icon-class="date"/> {{$t('label.date_create')}}
+                <svg-icon icon-class="date"/> {{$t('commons.label.date.create')}}
                 <div class="pull-right">{{ user.createTime }}</div>
               </li>
             </ul>
@@ -46,13 +46,13 @@
       <el-col :span="16" :xs="24">
         <el-card>
           <div slot="header" class="clearfix">
-            <span>{{$t('button.edit')}}</span>
+            <span>{{$t('commons.button.edit')}}</span>
           </div>
           <el-tabs v-model="activeTab">
-            <el-tab-pane :label="$t(`user.basic`)" name="userinfo">
+            <el-tab-pane :label="$t('user.text.basic')" name="userinfo">
               <userInfo :user="user" />
             </el-tab-pane>
-            <el-tab-pane v-if="user.isoauth === 0" :label="$t(`route.system.user.passwd`)" name="resetPwd">
+            <el-tab-pane v-if="user.isoauth === 0" :label="$t('user.button.passwd')" name="resetPwd">
               <resetPwd :user="user" />
             </el-tab-pane>
           </el-tabs>

@@ -5,10 +5,11 @@
  * @property {Object} raw 原始数据
  */
 export default class DictData {
-  constructor(label, labelEn, value, raw) {
+  constructor(label, labelEn, value, css, raw) {
     this.label = label
     this.labelEn = labelEn
     this.value = value
+    this.css = css
     this.raw = raw
   }
 }

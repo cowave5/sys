@@ -42,7 +42,7 @@
             <span v-if="log.logContent.req.userStatus === 1">启用用户[{{ log.logContent.req.userName }}]</span>
             <span v-if="log.logContent.req.userStatus === 0">停用用户[{{ log.logContent.req.userName }}]</span>
           </el-form-item>
-          <el-form-item v-if="log.actionCode === 'add'" label="用户信息：">
+          <el-form-item v-if="log.actionCode === 'create'" label="用户信息：">
             <el-form ref="form-add" :model="log.logContent.req" label-width="100px" style="background-color: #e5f3f3">
               <el-row>
                 <el-col :span="10">
@@ -221,9 +221,9 @@
 
       <el-row v-if="log.actionCode === 'delete'">
         <el-table :data="log.logContent.resp" :header-cell-style="{'text-align':'center'}">
-          <el-table-column :label="$t(`user.label.name`)" align="center" key="userName" prop="userName" :show-overflow-tooltip="true" />
-          <el-table-column :label="$t(`user.label.account`)" align="center" key="userAccount" prop="userAccount" :show-overflow-tooltip="true"/>
-          <el-table-column :label="$t(`user.label.sex`)" align="center">
+          <el-table-column :label="$t('user.label.name')" align="center" key="userName" prop="userName" :show-overflow-tooltip="true" />
+          <el-table-column :label="$t('user.label.account')" align="center" key="userAccount" prop="userAccount" :show-overflow-tooltip="true"/>
+          <el-table-column :label="$t('user.label.sex')" align="center">
             <template slot-scope="{row: {userSex}}">
               <template v-for="item in dict.type.user_sex">
                 <span v-if="userSex === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
@@ -231,9 +231,9 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column :label="$t(`user.label.phone`)" align="left" key="userPhone" prop="userPhone"/>
-          <el-table-column :label="$t(`user.label.email`)" align="left" key="userEmail" prop="userEmail" :show-overflow-tooltip="true"/>
-          <el-table-column :label="$t(`user.label.rank`)" align="center" :show-overflow-tooltip="true">
+          <el-table-column :label="$t('user.label.phone')" align="left" key="userPhone" prop="userPhone"/>
+          <el-table-column :label="$t('user.label.email')" align="left" key="userEmail" prop="userEmail" :show-overflow-tooltip="true"/>
+          <el-table-column :label="$t('user.label.rank')" align="center" :show-overflow-tooltip="true">
             <template slot-scope="{row: {rank}}">
               <template v-for="item in dict.type.post_level">
                 <span v-if="rank === item.value && $i18n.locale==='zh'">{{ item.value }}/{{ item.label }}</span>
@@ -275,7 +275,7 @@ export default {
     getDetail(id) {
       info(id).then(res => {
         this.log = res.data;
-        if(this.log.actionCode === 'add'){
+        if(this.log.actionCode === 'create'){
           userQuery(this.log.logContent.req).then(response => {
             this.req = response.data;
           });
