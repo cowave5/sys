@@ -6,7 +6,7 @@
       </el-form-item>
       <el-form-item label="任务分组" prop="jobGroup">
         <el-select v-model="queryParams.taskGroup" placeholder="请选择任务组名" clearable>
-          <el-option v-for="dict in dict.type.quartz_group" :key="dict.value" :label="dict.label" :value="dict.value"/>
+          <el-option v-for="dict in dict.type.quartz_group" :key="dict.code" :value="dict.code" :label="$t(dict.name)" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -18,7 +18,7 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-                   :disabled="!checkPermit(['monitor:quartz:new'])">新增</el-button>
+                   :disabled="!checkPermit(['monitor:quartz:create'])">新增</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="success" plain icon="el-icon-edit" size="mini" @click="handleUpdate"
@@ -54,8 +54,7 @@
       <el-table-column label="任务分组" align="center" prop="taskGroup" width="80" :show-overflow-tooltip="true">
         <template slot-scope="{row: {taskGroup}}">
           <template v-for="item in dict.type.quartz_group">
-            <span v-if="taskGroup === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-            <span v-if="taskGroup === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+            <span v-if="taskGroup === item.code">{{ $t(item.name) }}</span>
           </template>
         </template>
       </el-table-column>
@@ -96,7 +95,7 @@
           <el-col :span="12">
             <el-form-item label="任务分组" prop="taskGroup">
               <el-select v-model="form.taskGroup" placeholder="请选择任务分组" style="width: 260px">
-                <el-option v-for="dict in dict.type.quartz_group" :key="dict.value" :label="dict.label" :value="dict.value"/>
+                <el-option v-for="dict in dict.type.quartz_group" :key="dict.code" :value="dict.code" :label="$t(dict.name)"/>
               </el-select>
             </el-form-item>
           </el-col>

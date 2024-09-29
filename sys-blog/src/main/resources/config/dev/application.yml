@@ -3,17 +3,26 @@ server:
   servlet:
     context-path: /
 
-info:
-  cluster:
-    id: 10
-    level: 1
-    name: default
-
 spring:
+  application:
+    name: sys-blog
+  access:
+    always-success: true
+    auth:
+      enable: true
+      mode: access
+      tokenStore: cookie
+      authUrls:
+        - /post/**
+        - /category/**
+        - /comment/**
   datasource:
     url: jdbc:postgresql://127.0.0.1:5432/sys-blog
     username: postgres
     password: postgres
+  liquibase:
+    enabled: true
+    change-log: sql/changelog.yml
   redis:
     host: 127.0.0.1
     port: 6379
@@ -31,7 +40,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 10.64.4.74:8848
+        server-addr: 192.168.141.74:8848
 
 blog:
   # IP地址获取

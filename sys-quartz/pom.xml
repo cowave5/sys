@@ -14,15 +14,14 @@
 	<url>https://www.cowave.com/</url>
 	<description>定时任务</description>
 
-	<properties>
-		<skip.changelog>true</skip.changelog>
-	</properties>
-
 	<dependencies>
 		<dependency>
-			<groupId>com.cowave.sys</groupId>
-			<artifactId>sys-model</artifactId>
-			<version>1.0.3</version>
+            <groupId>com.cowave.commons</groupId>
+            <artifactId>commons-framework</artifactId>
+        </dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>easyexcel</artifactId>
 		</dependency>
 		<!-- quartz -->
 		<dependency>

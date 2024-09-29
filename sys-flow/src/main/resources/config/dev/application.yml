@@ -3,16 +3,11 @@ server:
   servlet:
     context-path: /flow
 
-info:
-  cluster:
-    id: 10
-    level: 1
-    name: default
-
 spring:
-  liquibase:
-    enabled: true
-    change-log: sql/changelog.yml
+  application:
+    name: sys-flow
+  access:
+    always-success: true
   main:
     allow-bean-definition-overriding: true
   datasource:
@@ -20,10 +15,13 @@ spring:
     url: jdbc:postgresql://127.0.0.1:5432/sys-admin
     username: postgres
     password: postgres
+  liquibase:
+    enabled: true
+    change-log: sql/changelog.yml
   cloud:
     nacos:
       discovery:
-        server-addr: 10.64.4.74:8848
+        server-addr: 192.168.141.74:8848
 
 flowable:
   database-schema-update: true
