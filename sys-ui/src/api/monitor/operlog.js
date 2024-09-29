@@ -11,7 +11,7 @@ export function list(data) {
 
 export function options() {
   return request({
-    url: '/admin/api/v1/dict/group/options?groupCode=sys_log',
+    url: '/admin/api/v1/dict/group/types/sys_log',
     method: 'get'
   })
 }

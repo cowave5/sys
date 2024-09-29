@@ -54,9 +54,9 @@
 <script>
 import {taskComplete, taskRecords} from "@/api/workbench/task";
 import {editLeave, infoLeave} from "@/api/workbench/leave";
-import {getDeptUsersByCode} from "@/api/system/dept";
+import {getDeptCandidatesByCode} from "@/api/system/dept";
 import {instanceJump} from "@/api/system/flow/instance";
-import {userLeaders} from "@/api/system/user";
+import {getUserCandidates} from "@/api/system/user";
 
 export default {
   dicts: ['flow_leave'],
@@ -110,7 +110,7 @@ export default {
         }else{
           this.form.deptAapproveResult = true;
         }
-        userLeaders().then(resp => {
+        getUserCandidates().then(resp => {
           if (resp.data && resp.data.length > 0) {
             this.approverOptions = resp.data;
             this.form.deptApprover = resp.data[0].userId;

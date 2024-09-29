@@ -1,13 +1,14 @@
 <template>
   <div class="navbar">
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" v-if="!topNav"/>
     <top-nav id="topmenu-container" class="topmenu-container" v-if="topNav"/>
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
         <search id="header-search" class="right-menu-item"/>
+        <messages id="messages"  class="right-menu-item hover-effect"/>
+        <notification id="notification" @click.native="showNotification()" class="right-menu-item hover-effect"/>
         <language-select id="language-select" class="right-menu-item hover-effect"/>
         <size-select id="size-select" class="right-menu-item hover-effect"/>
         <screenfull id="screenfull" class="right-menu-item hover-effect"/>
@@ -22,14 +23,46 @@
             <el-dropdown-item>{{ name }}</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided  @click.native="setting = true">
-            <span>{{$t('content.layout')}}</span>
+            <span>{{$t('commons.theme.preference')}}</span>
           </el-dropdown-item>
           <el-dropdown-item @click.native="logout">
-            <span>{{$t('content.logout')}}</span>
+            <span>{{$t('commons.button.logout')}}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+
+    <el-dialog title=">>系统消息" :visible.sync="notifyOpen" width="60%" append-to-body>
+      <el-table :data="msgList" :show-header="false" @row-click="handleRowClick" style="margin-top: 15px;">
+          <el-table-column prop="publishTime" align="center" width="160">
+            <template slot-scope="scope">
+              <span v-if="scope.row.readStatus === 0" class="red-point">{{ scope.row.publishTime }}</span>
+              <span v-else>{{ scope.row.publishTime }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" width="100">
+            <template slot-scope="scope">
+              <template v-for="item in dict.type.notice_level">
+                <span v-if="scope.row.noticeLevel === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
+                <span v-if="scope.row.noticeLevel === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+              </template>
+            </template>
+          </el-table-column>
+          <el-table-column prop="createBy" align="center" width="120"/>
+          <el-table-column align="center" width="100">
+            <template slot-scope="scope">
+              <template v-for="item in dict.type.notice_type">
+                <span v-if="scope.row.noticeType === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
+                <span v-if="scope.row.noticeType === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+              </template>
+            </template>
+          </el-table-column>
+          <el-table-column prop="noticeTitle" align="left" :show-overflow-tooltip="true"/>
+        </el-table>
+        <pagination v-show="total>0" :total="total" :page.sync="queryParams.page" :limit.sync="queryParams.pageSize" @pagination="getList"/>
+    </el-dialog>
+
+    <notice-info ref="noticeInfo"/>
   </div>
 </template>
 
@@ -41,9 +74,12 @@ import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import LanguageSelect from '@/components/LanguageSelect'
+import Notification from '@/components/notification'
+import Messages from '@/components/messages'
 import Search from '@/components/HeaderSearch'
 import RuoYiGit from '@/components/RuoYi/Git'
 import RuoYiDoc from '@/components/RuoYi/Doc'
+import { getNoticeMsg, readNoticeMsg } from '@/api/system/notice'
 
 export default {
   components: {
@@ -53,9 +89,12 @@ export default {
     Screenfull,
     SizeSelect,
     LanguageSelect,
+    Notification,
+    Messages,
     Search,
     RuoYiGit,
-    RuoYiDoc
+    RuoYiDoc,
+    noticeInfo: ()=> import('./msg.vue')
   },
   computed: {
     ...mapGetters([
@@ -81,12 +120,45 @@ export default {
       }
     }
   },
+  dicts: ['notice_level', 'notice_type'],
+  data() {
+    return {
+      notifyOpen: false,
+      msgList: [],
+      total: 0,
+      queryParams: {
+        page: 1,
+        pageSize: 10
+      },
+    }
+  },
   methods: {
+    showNotification() {
+      this.notifyOpen = true;
+      this.getList();
+    },
+    getList() {
+      getNoticeMsg(this.queryParams).then(response => {
+        this.msgList = response.data.list;
+        this.total = response.data.total;
+      });
+    },
+    handleRowClick(row, column, event){
+      if(row.readStatus === 0){
+        readNoticeMsg(row.noticeId).then(() => {
+          row.readStatus = 10;
+          this.$refs.noticeInfo.show(row);
+        });
+      }else{
+        this.$refs.noticeInfo.show(row);
+      }
+    },
+
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
     async logout() {
-      this.$confirm(this.$t(`msg.logout`),  {
+      this.$confirm(this.$t('commons.confirm.logout'),  {
         type: 'warning'
       }).then(() => {
         this.$store.dispatch('LogOut').then(() => {
@@ -185,5 +257,24 @@ export default {
       }
     }
   }
+}
+
+.el-table {
+  cursor: pointer;
+}
+
+.red-point{
+  position: relative;
+}
+
+.red-point::before{
+  content: " ";
+  border: 4px solid #1890ff;
+  border-radius:3px;
+  position: absolute;
+  z-index: 1000;
+  left: 0;
+  top: 1px;
+  margin-left: -10px;
 }
 </style>

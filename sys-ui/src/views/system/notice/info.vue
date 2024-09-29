@@ -32,7 +32,7 @@
   </el-dialog>
 </template>
 <script>
-import {getNotice, getReads} from "@/api/system/notice";
+import {getNoticeInfo, getReads} from "@/api/system/notice";
 export default {
   dicts: ['notice_type', 'notice_level'],
   data() {
@@ -55,7 +55,7 @@ export default {
       this.getDetail();
     },
     getDetail() {
-      getNotice(this.noticeId).then(rsp => {
+      getNoticeInfo(this.noticeId).then(rsp => {
         this.notice = rsp.data;
         this.visible = true;
         if(this.notice.noticeStatus > 0){

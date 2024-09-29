@@ -12,12 +12,13 @@ export default  {
     return {
       title: this.$store.state.settings.dynamicTitle && this.$store.state.settings.title,
       titleTemplate: title => {
-        return title ? this.$t(title) + "/" + this.$t(`route.title`) : this.$t(`route.title`)
+        return title ? this.$t(title) + "/" + this.$t('commons.menu.root') : this.$t('commons.menu.root')
       }
     }
   },
-
-
+  created() {
+    this.$store.dispatch('OpenSocket');
+  },
   beforeDestroy() {
     this.$store.dispatch('CloseSocket');
   },

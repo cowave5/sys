@@ -13511,7 +13511,7 @@ const wb = {
             {
                 icon: "Cloud",
                 name: "后台管理",
-                link: "http://10.64.4.74:81"
+                link: "http://192.168.141.74:81"
             },
             {
                 icon: "LaptopCode",

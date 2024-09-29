@@ -1,19 +1,19 @@
 <template>
   <div class="top-right-btn">
     <el-row>
-      <el-tooltip class="item" effect="dark" :content="showSearch ? $t(`content.search_hide`) : $t(`content.search_show`)" placement="top">
+      <el-tooltip class="item" effect="dark" :content="showSearch ? $t('commons.button.search_hide') : $t('commons.button.search_show')" placement="top">
         <el-button size="mini" circle icon="el-icon-search" @click="toggleSearch()" />
       </el-tooltip>
-      <el-tooltip class="item" effect="dark" :content="$t(`button.refresh`)" placement="top">
+      <el-tooltip class="item" effect="dark" :content="$t('commons.button.refresh')" placement="top">
         <el-button size="mini" circle icon="el-icon-refresh" @click="refresh()" />
       </el-tooltip>
-      <el-tooltip class="item" effect="dark" :content="$t(`content.column_choose`)" placement="top" v-if="columns">
+      <el-tooltip class="item" effect="dark" :content="$t('commons.button.select_column')" placement="top" v-if="columns">
         <el-button size="mini" circle icon="el-icon-menu" @click="showColumn()" />
       </el-tooltip>
     </el-row>
     <el-dialog :visible.sync="open" append-to-body>
       <el-transfer
-        :titles="[$t(`content.show`), $t(`content.hide`)]"
+        :titles="[$t('commons.button.show'), $t('commons.button.hide')]"
         v-model="value"
         :data="columns"
         @change="dataChange"

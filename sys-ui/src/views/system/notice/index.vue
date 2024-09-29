@@ -22,28 +22,25 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-                   >新增</el-button>
+        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate"
-                   >修改</el-button>
+        <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate">修改</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
-                   >删除</el-button>
+        <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="noticeList" @selection-change="handleSelectionChange">
+    <el-table :data="list" @selection-change="handleSelectionChange" v-loading="loading">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+      <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
         <template slot-scope="scope">
           <span>{{(queryParams.page - 1) * queryParams.pageSize + scope.$index + 1}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="标题" align="center" prop="noticeTitle" width="380" :show-overflow-tooltip="true"/>
+      <el-table-column label="标题" align="center" prop="noticeTitle" width="280" :show-overflow-tooltip="true"/>
       <el-table-column label="类型" align="center" prop="noticeType">
         <template slot-scope="{row: {noticeType}}">
           <template v-for="item in dict.type.notice_type">
@@ -149,8 +146,7 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="内容">
-              <editor v-model="form.content" :min-height="240"
-                      @notice="recordattach" attachUrl="/admin/api/v1/notice/image"/>
+              <editor v-model="form.content" :min-height="240" @notice="recordAttach" attachUrl="/admin/api/v1/notice/image"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -166,9 +162,9 @@
 </template>
 
 <script>
-import {listNotice, getNotice, delNotice, addNotice, updateNotice, publishNotice} from "@/api/system/notice";
-import {getRoles, getUsers} from "@/api/system/user";
-import {getDeptTree} from "@/api/system/dept";
+import {getNoticeList, getNoticeInfo, delNotice, addNotice, updateNotice, publishNotice} from "@/api/system/notice";
+import {getRoles} from "@/api/system/user";
+import {getDeptDiagramById, getDeptUserDiagram} from "@/api/system/dept";
 
 export default {
   name: "Notice",
@@ -189,7 +185,7 @@ export default {
       // 总条数
       total: 0,
       // 公告表格数据
-      noticeList: [],
+      list: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -280,13 +276,16 @@ export default {
         goalsDept: [],
         goalsRole: [],
         goalsUser: [],
-        attachs: []
+        attaches: []
       };
       this.resetForm("form");
     },
     /** 附件记录 */
-    recordattach(attach) {
-      this.form.attachs.push(attach);
+    recordAttach(attach) {
+      this.form.attaches.push({
+        "attachId" : attach.attachId,
+        "attachPath" : attach.attachPath
+      });
     },
     /** 用户Tree */
     userTreeRender(h, { node, data, store }) {
@@ -309,8 +308,8 @@ export default {
     /** 公告列表 */
     getList() {
       this.loading = true;
-      listNotice(this.queryParams).then(response => {
-        this.noticeList = response.data.list;
+      getNoticeList(this.queryParams).then(response => {
+        this.list = response.data.list;
         this.total = response.data.total;
         this.loading = false;
       });
@@ -344,16 +343,16 @@ export default {
     },
     /** 获取用户选项 */
     getUserOptions(){
-      getUsers().then(resp => {
+      getDeptUserDiagram().then(resp => {
         this.userTreeParams.data = resp.data
       });
     },
     /** 新增 */
     handleAdd() {
       this.reset();
-      getDeptTree("1").then(response => {
+      getDeptDiagramById(1).then(response => {
         this.deptTreeParams.data = response.data
-        getUsers().then(resp => {
+        getDeptUserDiagram().then(resp => {
           this.userTreeParams.data = resp.data
           this.title = "新增公告";
           this.open = true;
@@ -364,11 +363,11 @@ export default {
     handleUpdate(row) {
       this.reset();
       const noticeId = row.noticeId || this.ids
-      getDeptTree("1").then(response => {
+      getDeptDiagramById(1).then(response => {
         this.deptTreeParams.data = response.data
-        getUsers().then(resp => {
+        getDeptUserDiagram().then(resp => {
           this.userTreeParams.data = resp.data
-          getNotice(noticeId).then(rsp => {
+          getNoticeInfo(noticeId).then(rsp => {
             this.form = rsp.data;
             if(rsp.data.goalsDept === null){
               this.form.goalsDept = [];

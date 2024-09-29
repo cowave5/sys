@@ -22,13 +22,13 @@
                               range-separator="-" start-placeholder="开始时间" end-placeholder="结束时间"/>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleAllQuery">{{$t('button.search')}}</el-button>
-              <el-button icon="el-icon-refresh" size="mini" @click="resetAllQuery">{{$t('button.reset')}}</el-button>
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleAllQuery">{{$t('commons.button.search')}}</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetAllQuery">{{$t('commons.button.reset')}}</el-button>
             </el-form-item>
           </el-form>
           <el-row class="mb8">
             <el-button type="danger" plain icon="el-icon-delete" size="mini" @click="handleDelete"
-                       :disabled="multiple">{{$t('route.system.config.delete')}}</el-button>
+                       :disabled="multiple">{{$t('commons.button.delete')}}</el-button>
             <right-toolbar :showSearch.sync="showSearch" @queryTable="getAllLeaves"/>
           </el-row>
         </el-row>
@@ -36,7 +36,7 @@
         <el-table v-loading="allLoading" :data="allLeaves" @selection-change="handleSelectionChange"
                   :header-cell-style="{'text-align':'center'}">
           <el-table-column type="selection" width="55" align="center" />
-          <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+          <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
             <template slot-scope="scope">
               <span>{{(allParams.page - 1) * allParams.pageSize + scope.$index + 1}}</span>
             </template>
@@ -70,7 +70,7 @@
             </template>
           </el-table-column>
           <el-table-column label="当前办理人" align="center" prop="processTaskUser" :show-overflow-tooltip="true" />
-          <el-table-column :label="$t(`label.option`)" align="center" class-name="small-padding" width="200">
+          <el-table-column :label="$t('commons.label.options')" align="center" class-name="small-padding" width="200">
             <template slot-scope="scope">
               <el-button size="mini" type="text" @click="handleDiagram(scope.row)"><svg-icon icon-class="flowhistory"/>流程进度</el-button>
               <el-button size="mini" type="text" @click="handleHistory(scope.row)"><svg-icon icon-class="history"/>流程记录</el-button>
@@ -102,19 +102,19 @@
                               range-separator="-" start-placeholder="开始时间" end-placeholder="结束时间"/>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleMyQuery">{{$t('button.search')}}</el-button>
-              <el-button icon="el-icon-refresh" size="mini" @click="resetMyQuery">{{$t('button.reset')}}</el-button>
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleMyQuery">{{$t('commons.button.search')}}</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetMyQuery">{{$t('commons.button.reset')}}</el-button>
             </el-form-item>
           </el-form>
           <el-row class="mb8">
             <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-            >{{$t('route.system.config.new')}}</el-button>
+            >{{$t('commons.button.create')}}</el-button>
             <right-toolbar :showSearch.sync="showSearch" @queryTable="getMyLeaves"/>
           </el-row>
         </el-row>
         <!-- 我的请假 -->
         <el-table v-loading="myLoading" :data="myLeaves" :header-cell-style="{'text-align':'center'}">
-          <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+          <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
             <template slot-scope="scope">
               <span>{{(myParams.page - 1) * myParams.pageSize + scope.$index + 1}}</span>
             </template>
@@ -148,7 +148,7 @@
             </template>
           </el-table-column>
           <el-table-column label="当前办理人" align="center" prop="processTaskUser" :show-overflow-tooltip="true" />
-          <el-table-column :label="$t(`label.option`)" align="center" class-name="small-padding" width="260">
+          <el-table-column :label="$t('commons.label.options')" align="center" class-name="small-padding" width="260">
             <template slot-scope="scope">
               <el-button size="mini" type="text" @click="handleDiagram(scope.row)"><svg-icon icon-class="flowhistory"/>流程进度</el-button>
               <el-button size="mini" type="text" @click="handleHistory(scope.row)"><svg-icon icon-class="history"/>流程记录</el-button>
@@ -188,8 +188,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm"
-                   >{{$t('button.confirm')}}</el-button>
-        <el-button @click="cancel">{{$t('button.cancel')}}</el-button>
+                   >{{$t('commons.button.confirm')}}</el-button>
+        <el-button @click="cancel">{{$t('commons.button.cancel')}}</el-button>
       </div>
     </el-dialog>
 
@@ -201,7 +201,7 @@
     <!-- 流程历史 -->
     <el-dialog title="流程历史" :visible.sync="history.open" width="75%" append-to-body>
       <el-table v-loading="history.loading" :data="history.list" :header-cell-style="{'text-align':'center'}">
-        <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+        <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
           <template slot-scope="scope">
             <span>{{(history.page - 1) * history.pageSize + scope.$index + 1}}</span>
           </template>
@@ -235,7 +235,7 @@ import {
   listMyLeave,
   revocateLeave
 } from "@/api/workbench/leave";
-import {userLeaders} from "@/api/system/user";
+import {getUserCandidates} from "@/api/system/user";
 import {instanceHistory, instanceProgress} from "@/api/system/flow/instance";
 import {taskPress} from "@/api/workbench/task";
 import store from "@/store";
@@ -416,7 +416,7 @@ export default {
     /** 新增 */
     handleAdd() {
       this.reset();
-      userLeaders().then(resp => {
+      getUserCandidates().then(resp => {
         this.form.applyUserName = store.getters.name;
         if (resp.data && resp.data.length > 0) {
           this.approverOptions = resp.data;
@@ -432,7 +432,7 @@ export default {
         return delLeave(ids);
       }).then(() => {
         this.getAllLeaves();
-        this.$modal.msgSuccess(this.$t(`msg.success_delete`));
+        this.$modal.msgSuccess(this.$t('commons.msg.success.delete'));
       }).catch(() => {});
     },
     /** 提交 */
@@ -440,7 +440,7 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           addLeave(this.addDateRange(this.form, this.dateRange)).then(response => {
-            this.$modal.msgSuccess(this.$t(`msg.success_create`));
+            this.$modal.msgSuccess(this.$t('commons.msg.success.create'));
             this.open = false;
             this.getMyLeaves();
           });
