@@ -1,43 +1,54 @@
 import request from '@/utils/request'
 
-// 保存配置
-export function saveConfig(data) {
-  return request({
-    url: '/admin/api/v1/oauth/config/save',
-    method: 'post',
-    data: data
-  })
-}
-
-// 获取配置
+/**
+ * 获取配置
+ */
 export function getConfig(appType) {
   return request({
-    url: '/admin/api/v1/oauth/config/get/' + appType,
+    url: '/admin/api/v1/oauth/config/' + appType,
     method: 'get'
   })
 }
 
-// 用户列表
-export function listUser(data) {
+/**
+ * 保存配置
+ */
+export function saveConfig(data) {
   return request({
-    url: '/admin/api/v1/oauth/user/list',
-    method: 'post',
+    url: '/admin/api/v1/oauth/config',
+    method: 'patch',
     data: data
   })
 }
 
-// 修改用户角色
-export function changeUserRole(userId, roleId) {
+/**
+ * 用户列表
+ */
+export function listUser(params) {
   return request({
-    url: '/admin/api/v1/oauth/user/role/change?userId=' + userId + '&roleId=' + roleId,
-    method: 'get'
+    url: '/admin/api/v1/oauth/user',
+    method: 'get',
+    params: params
+
   })
 }
 
-// 修改用户角色
-export function deleteUser(userId) {
+/**
+ * 修改用户角色
+ */
+export function changeGitlabRole(userId, roleCode) {
   return request({
-    url: '/admin/api/v1/oauth/user/delete?userId=' + userId,
-    method: 'get'
+    url: '/admin/api/v1/oauth/user/role/' + userId + '/' + roleCode,
+    method: 'patch'
+  })
+}
+
+/**
+ * 删除用户
+ */
+export function deleteGitlabUser(userId) {
+  return request({
+    url: '/admin/api/v1/oauth/user/' + userId,
+    method: 'delete'
   })
 }

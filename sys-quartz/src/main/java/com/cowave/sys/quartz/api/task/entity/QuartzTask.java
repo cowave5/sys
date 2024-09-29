@@ -1,10 +1,11 @@
 /*
- * Copyright (c) 2017～2099 Cowave All Rights Reserved.
+ * Copyright (c) 2017～2024 Cowave All Rights Reserved.
  *
- * For licensing information, please contact: https://www.cowave.com.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
- * This code is proprietary and confidential.
- * Unauthorized copying of this file, via any medium is strictly prohibited.
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 package com.cowave.sys.quartz.api.task.entity;
 
@@ -16,11 +17,11 @@ import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import com.alibaba.excel.enums.poi.HorizontalAlignmentEnum;
 import com.alibaba.fastjson.annotation.JSONField;
-import com.cowave.commons.framework.access.AccessUser;
+import com.cowave.commons.client.http.asserts.Asserts;
+import com.cowave.commons.framework.access.security.AccessInfo;
 import com.cowave.commons.framework.support.excel.DateConverter;
 import com.cowave.commons.framework.support.excel.StatusConverter;
 import com.cowave.commons.framework.support.excel.YesNoConverter;
-import com.cowave.commons.tools.Asserts;
 import com.cowave.commons.tools.DateUtils;
 import com.cowave.sys.quartz.api.task.job.ParallelJob;
 import com.cowave.sys.quartz.api.task.job.SerialJob;
@@ -47,7 +48,7 @@ import java.util.Date;
 @ContentStyle(horizontalAlignment = HorizontalAlignmentEnum.LEFT)
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class QuartzTask extends AccessUser implements Serializable {
+public class QuartzTask extends AccessInfo implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 5823564567511005149L;
@@ -136,12 +137,12 @@ public class QuartzTask extends AccessUser implements Serializable {
     /**
      * 创建人
      */
-    private Long createUser;
+    private Integer createUser;
 
     /**
      * 创建部门
      */
-    private Long createDept;
+    private Integer createDept;
 
     /**
      * 创建时间
@@ -152,12 +153,12 @@ public class QuartzTask extends AccessUser implements Serializable {
     /**
      * 更新人
      */
-    private Long updateUser;
+    private Integer updateUser;
 
     /**
      * 更新部门
      */
-    private Long updateDept;
+    private Integer updateDept;
 
     /**
      * 更新时间

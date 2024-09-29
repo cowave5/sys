@@ -7,9 +7,8 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="操作结果：">
-            <template v-for="item in dict.type.sys_is_success">
-              <span v-if="log.logStatus === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-              <span v-if="log.logStatus === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+            <template v-for="item in dict.type.success_failed">
+              <span v-if="log.logStatus === item.value">{{ $t(item.name) }}</span>
             </template>
           </el-form-item>
         </el-col>
@@ -34,12 +33,7 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item v-if="log.actionCode === 'readonly'" label="操作内容：">
-            <span v-if="log.logContent.req.readOnly === 1">设置岗位[{{ log.logContent.req.postName }}]为只读</span>
-            <span v-if="log.logContent.req.readOnly === 0">取消岗位[{{ log.logContent.req.postName }}]为只读</span>
-          </el-form-item>
-
-          <el-form-item v-if="log.actionCode === 'add'" label="岗位信息：">
+          <el-form-item v-if="log.actionCode === 'create'" label="岗位信息：">
             <el-form ref="form-add" :model="log.logContent.req" label-width="100px" style="background-color: #e5f3f3">
               <el-row>
                 <el-col :span="10">
@@ -48,8 +42,7 @@
                 <el-col :span="10">
                   <el-form-item label="岗位类型：">
                     <template v-for="item in dict.type.post_type">
-                      <span v-if="log.logContent.req.postType === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-                      <span v-if="log.logContent.req.postType === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+                      <span v-if="log.logContent.req.postType === item.code">{{ $t(item.name) }}</span>
                     </template>
                   </el-form-item>
                 </el-col>
@@ -60,9 +53,8 @@
                 </el-col>
                 <el-col :span="10">
                   <el-form-item label="岗位状态：">
-                    <template v-for="item in dict.type.sys_is_enable">
-                      <span v-if="log.logContent.req.postStatus === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-                      <span v-if="log.logContent.req.postStatus === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+                    <template v-for="item in dict.type.enable_disable">
+                      <span v-if="log.logContent.req.postStatus === item.value">{{ $t(item.name) }}</span>
                     </template>
                   </el-form-item>
                 </el-col>
@@ -84,8 +76,7 @@
                 <el-col :span="10">
                   <el-form-item label="岗位类型：">
                     <template v-for="item in dict.type.post_type">
-                      <span v-if="log.logContent.resp.postType === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-                      <span v-if="log.logContent.resp.postType === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+                      <span v-if="log.logContent.resp.postType === item.code">{{ $t(item.name) }}</span>
                     </template>
                   </el-form-item>
                 </el-col>
@@ -96,9 +87,8 @@
                 </el-col>
                 <el-col :span="10">
                   <el-form-item label="岗位状态：">
-                    <template v-for="item in dict.type.sys_is_enable">
-                      <span v-if="log.logContent.resp.postStatus === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-                      <span v-if="log.logContent.resp.postStatus === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+                    <template v-for="item in dict.type.enable_disable">
+                      <span v-if="log.logContent.resp.postStatus === item.value">{{ $t(item.name) }}</span>
                     </template>
                   </el-form-item>
                 </el-col>
@@ -120,8 +110,7 @@
                 <el-col :span="10">
                   <el-form-item label="岗位类型：">
                     <template v-for="item in dict.type.post_type">
-                      <span v-if="log.logContent.req.postType === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-                      <span v-if="log.logContent.req.postType === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+                      <span v-if="log.logContent.req.postType === item.code">{{ $t(item.name) }}</span>
                     </template>
                   </el-form-item>
                 </el-col>
@@ -132,9 +121,8 @@
                 </el-col>
                 <el-col :span="10">
                   <el-form-item label="岗位状态：">
-                    <template v-for="item in dict.type.sys_is_enable">
-                      <span v-if="log.logContent.req.postStatus === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-                      <span v-if="log.logContent.req.postStatus === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+                    <template v-for="item in dict.type.enable_disable">
+                      <span v-if="log.logContent.req.postStatus === item.value">{{ $t(item.name) }}</span>
                     </template>
                   </el-form-item>
                 </el-col>
@@ -155,16 +143,14 @@
           <el-table-column prop="postType" align="center" label="岗位类型">
             <template slot-scope="{row: {postType}}">
               <template v-for="item in dict.type.post_type">
-                <span v-if="postType === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-                <span v-if="postType === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+                <span v-if="postType === item.code">{{ $t(item.name) }}</span>
               </template>
             </template>
           </el-table-column>
           <el-table-column prop="postStatus" align="center" label="岗位状态">
             <template slot-scope="{row: {postStatus}}">
-              <template v-for="item in dict.type.sys_is_enable">
-                <span v-if="postStatus === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-                <span v-if="postStatus === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+              <template v-for="item in dict.type.enable_disable">
+                <span v-if="postStatus === item.value">{{ $t(item.name) }}</span>
               </template>
             </template>
           </el-table-column>
@@ -177,7 +163,7 @@
 <script>
 import {info, postQuery} from "@/api/monitor/operlog";
 export default {
-  dicts: ['sys_is_success', 'post_type', 'sys_is_enable'],
+  dicts: ['success_failed', 'enable_disable', 'post_type'],
   data() {
     return {
       visible: false,
@@ -198,7 +184,7 @@ export default {
     getDetail(id) {
       info(id).then(res => {
         this.log = res.data;
-        if(this.log.actionCode === 'add'){
+        if(this.log.actionCode === 'create'){
           postQuery(this.log.logContent.req).then(response => {
             this.req = response.data;
           });

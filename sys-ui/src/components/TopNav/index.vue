@@ -1,21 +1,17 @@
 <template>
-  <el-menu
-    :default-active="activeMenu"
-    mode="horizontal"
-    @select="handleSelect"
-  >
+  <el-menu :default-active="activeMenu" mode="horizontal" @select="handleSelect">
     <template v-for="(item, index) in topMenus">
       <el-menu-item :style="{'--theme': theme}" :index="item.path" :key="index" v-if="index < visibleNumber">
-        <svg-icon :icon-class="item.meta.icon" /> {{ $t(item.meta.title) }}
+        <svg-icon :icon-class="item.meta.icon"/> {{ $t(item.meta.title) }}
       </el-menu-item>
     </template>
 
     <!-- 顶部菜单超出数量折叠 -->
     <el-submenu :style="{'--theme': theme}" index="more" v-if="topMenus.length > visibleNumber">
-      <template slot="title">{{ $t(button.more) }}</template>
+      <template slot="title">{{ $t('commons.button.more') }}</template>
       <template v-for="(item, index) in topMenus">
         <el-menu-item :index="item.path" :key="index" v-if="index >= visibleNumber">
-          <svg-icon :icon-class="item.meta.icon" /> {{ $t(item.meta.title) }}
+          <svg-icon :icon-class="item.meta.icon"/> {{ $t(item.meta.title) }}
         </el-menu-item>
       </template>
     </el-submenu>

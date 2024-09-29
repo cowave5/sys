@@ -13,8 +13,7 @@
             </el-form-item>
             <el-form-item label="请假类型" prop="leaveType">
               <el-select v-model="allParams.leaveType" placeholder="选择请假类型">
-                <el-option v-if="$i18n.locale==='zh'" v-for="dict in dict.type.flow_leave" :key="dict.value" :label="`${dict.label}`" :value="dict.value"/>
-                <el-option v-if="$i18n.locale==='en'" v-for="dict in dict.type.flow_leave" :key="dict.value" :label="`${dict.labelEn}`" :value="dict.value"/>
+                <el-option v-for="dict in dict.type.leave" :key="dict.value" :value="dict.value" :label="$t(dict.name)"/>
               </el-select>
             </el-form-item>
             <el-form-item label="请假时间" label-width="120">
@@ -22,13 +21,13 @@
                               range-separator="-" start-placeholder="开始时间" end-placeholder="结束时间"/>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleAllQuery">{{$t('button.search')}}</el-button>
-              <el-button icon="el-icon-refresh" size="mini" @click="resetAllQuery">{{$t('button.reset')}}</el-button>
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleAllQuery">{{$t('commons.button.search')}}</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetAllQuery">{{$t('commons.button.reset')}}</el-button>
             </el-form-item>
           </el-form>
           <el-row class="mb8">
             <el-button type="danger" plain icon="el-icon-delete" size="mini" @click="handleDelete"
-                       :disabled="multiple">{{$t('route.system.config.delete')}}</el-button>
+                       :disabled="multiple">{{$t('commons.button.delete')}}</el-button>
             <right-toolbar :showSearch.sync="showSearch" @queryTable="getAllLeaves"/>
           </el-row>
         </el-row>
@@ -36,16 +35,15 @@
         <el-table v-loading="allLoading" :data="allLeaves" @selection-change="handleSelectionChange"
                   :header-cell-style="{'text-align':'center'}">
           <el-table-column type="selection" width="55" align="center" />
-          <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+          <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
             <template slot-scope="scope">
               <span>{{(allParams.page - 1) * allParams.pageSize + scope.$index + 1}}</span>
             </template>
           </el-table-column>
           <el-table-column label="请假类型" align="center">
             <template slot-scope="{row: {leaveType}}">
-              <template v-for="item in dict.type.flow_leave">
-                <span v-if="leaveType === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-                <span v-if="leaveType === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+              <template v-for="item in dict.type.leave">
+                <span v-if="leaveType === item.value">{{ $t(item.name) }}</span>
               </template>
             </template>
           </el-table-column>
@@ -70,7 +68,7 @@
             </template>
           </el-table-column>
           <el-table-column label="当前办理人" align="center" prop="processTaskUser" :show-overflow-tooltip="true" />
-          <el-table-column :label="$t(`label.option`)" align="center" class-name="small-padding" width="200">
+          <el-table-column :label="$t('commons.label.options')" align="center" class-name="small-padding" width="200">
             <template slot-scope="scope">
               <el-button size="mini" type="text" @click="handleDiagram(scope.row)"><svg-icon icon-class="flowhistory"/>流程进度</el-button>
               <el-button size="mini" type="text" @click="handleHistory(scope.row)"><svg-icon icon-class="history"/>流程记录</el-button>
@@ -93,8 +91,7 @@
             </el-form-item>
             <el-form-item label="请假类型" prop="leaveType">
               <el-select v-model="myParams.leaveType" placeholder="选择请假类型">
-                <el-option v-if="$i18n.locale==='zh'" v-for="dict in dict.type.flow_leave" :key="dict.value" :label="`${dict.label}`" :value="dict.value"/>
-                <el-option v-if="$i18n.locale==='en'" v-for="dict in dict.type.flow_leave" :key="dict.value" :label="`${dict.labelEn}`" :value="dict.value"/>
+                <el-option v-for="dict in dict.type.leave" :key="dict.value" :value="dict.value" :label="$t(dict.name)"/>
               </el-select>
             </el-form-item>
             <el-form-item label="请假时间" label-width="120">
@@ -102,28 +99,27 @@
                               range-separator="-" start-placeholder="开始时间" end-placeholder="结束时间"/>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleMyQuery">{{$t('button.search')}}</el-button>
-              <el-button icon="el-icon-refresh" size="mini" @click="resetMyQuery">{{$t('button.reset')}}</el-button>
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleMyQuery">{{$t('commons.button.search')}}</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetMyQuery">{{$t('commons.button.reset')}}</el-button>
             </el-form-item>
           </el-form>
           <el-row class="mb8">
             <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-            >{{$t('route.system.config.new')}}</el-button>
+            >{{$t('commons.button.create')}}</el-button>
             <right-toolbar :showSearch.sync="showSearch" @queryTable="getMyLeaves"/>
           </el-row>
         </el-row>
         <!-- 我的请假 -->
         <el-table v-loading="myLoading" :data="myLeaves" :header-cell-style="{'text-align':'center'}">
-          <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+          <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
             <template slot-scope="scope">
               <span>{{(myParams.page - 1) * myParams.pageSize + scope.$index + 1}}</span>
             </template>
           </el-table-column>
           <el-table-column label="请假类型" align="center">
             <template slot-scope="{row: {leaveType}}">
-              <template v-for="item in dict.type.flow_leave">
-                <span v-if="leaveType === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-                <span v-if="leaveType === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+              <template v-for="item in dict.type.leave">
+                <span v-if="leaveType === item.value">{{ $t(item.name) }}</span>
               </template>
             </template>
           </el-table-column>
@@ -148,7 +144,7 @@
             </template>
           </el-table-column>
           <el-table-column label="当前办理人" align="center" prop="processTaskUser" :show-overflow-tooltip="true" />
-          <el-table-column :label="$t(`label.option`)" align="center" class-name="small-padding" width="260">
+          <el-table-column :label="$t('commons.label.options')" align="center" class-name="small-padding" width="260">
             <template slot-scope="scope">
               <el-button size="mini" type="text" @click="handleDiagram(scope.row)"><svg-icon icon-class="flowhistory"/>流程进度</el-button>
               <el-button size="mini" type="text" @click="handleHistory(scope.row)"><svg-icon icon-class="history"/>流程记录</el-button>
@@ -166,13 +162,12 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="请假类型" prop="leaveType">
           <el-select v-model="form.leaveType" placeholder="">
-            <el-option v-if="$i18n.locale==='zh'" v-for="dict in dict.type.flow_leave" :key="dict.value" :label="`${dict.label}`" :value="dict.value"/>
-            <el-option v-if="$i18n.locale==='en'" v-for="dict in dict.type.flow_leave" :key="dict.value" :label="`${dict.labelEn}`" :value="dict.value"/>
+            <el-option v-for="dict in dict.type.leave" :key="dict.value" :value="dict.value" :label="$t(dict.name)"/>
           </el-select>
         </el-form-item>
         <el-form-item label="审批人" prop="deptApprover">
           <el-select v-model="form.deptApprover" placeholder="" style="width: 100%">
-            <el-option v-for="item in approverOptions" :key="item.userId" :label="item.userName" :value="item.userId"/>
+            <el-option v-for="item in approverOptions" :key="item.userId" :value="item.userId" :label="item.userName"/>
           </el-select>
         </el-form-item>
         <el-form-item label="请假人" prop="applyUserName">
@@ -188,8 +183,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm"
-                   >{{$t('button.confirm')}}</el-button>
-        <el-button @click="cancel">{{$t('button.cancel')}}</el-button>
+                   >{{$t('commons.button.confirm')}}</el-button>
+        <el-button @click="cancel">{{$t('commons.button.cancel')}}</el-button>
       </div>
     </el-dialog>
 
@@ -201,7 +196,7 @@
     <!-- 流程历史 -->
     <el-dialog title="流程历史" :visible.sync="history.open" width="75%" append-to-body>
       <el-table v-loading="history.loading" :data="history.list" :header-cell-style="{'text-align':'center'}">
-        <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+        <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
           <template slot-scope="scope">
             <span>{{(history.page - 1) * history.pageSize + scope.$index + 1}}</span>
           </template>
@@ -235,14 +230,14 @@ import {
   listMyLeave,
   revocateLeave
 } from "@/api/workbench/leave";
-import {userLeaders} from "@/api/system/user";
+import {getUserCandidates} from "@/api/system/user";
 import {instanceHistory, instanceProgress} from "@/api/system/flow/instance";
 import {taskPress} from "@/api/workbench/task";
 import store from "@/store";
 
 export default {
   name: "leave",
-  dicts: ['flow_leave'],
+  dicts: ['leave'],
   data() {
     return {
       activeTab: 'myLeave',
@@ -416,7 +411,7 @@ export default {
     /** 新增 */
     handleAdd() {
       this.reset();
-      userLeaders().then(resp => {
+      getUserCandidates().then(resp => {
         this.form.applyUserName = store.getters.name;
         if (resp.data && resp.data.length > 0) {
           this.approverOptions = resp.data;
@@ -432,7 +427,7 @@ export default {
         return delLeave(ids);
       }).then(() => {
         this.getAllLeaves();
-        this.$modal.msgSuccess(this.$t(`msg.success_delete`));
+        this.$modal.msgSuccess(this.$t('commons.msg.success.delete'));
       }).catch(() => {});
     },
     /** 提交 */
@@ -440,7 +435,7 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           addLeave(this.addDateRange(this.form, this.dateRange)).then(response => {
-            this.$modal.msgSuccess(this.$t(`msg.success_create`));
+            this.$modal.msgSuccess(this.$t('commons.msg.success.create'));
             this.open = false;
             this.getMyLeaves();
           });
