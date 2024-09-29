@@ -1,0 +1,19 @@
+groups:
+- name: Canal
+  rules:
+  - alert: 宕机
+    expr: absent(canal_instance) or canal_instance == 0
+    for: 0m 
+    labels:
+      severity: 故障
+    annotations:
+      description: "Canal出现宕机"
+
+  - alert: 消息积压
+    expr: increase(canal_instance_get_rows[3m]) - increase(canal_instance_put_rows[3m]) > 0
+    for: 3m
+    labels:
+      severity: 警告
+    annotations:
+      value: '{{ printf "%.2f" $value }}'      
+      description: "最近3min中内出现消息积压"

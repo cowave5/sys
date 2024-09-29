@@ -14,11 +14,11 @@
       </el-form-item>
       <el-form-item label="流程发起时间" label-width="120">
         <el-date-picker v-model="dateRange" style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss" type="datetimerange"
-                        range-separator="-" :start-placeholder="$t(`label.date_begin`)" :end-placeholder="$t(`label.date_end`)"/>
+                        range-separator="-" :start-placeholder="$t('commons.label.beginDate')" :end-placeholder="$t('commons.label.endDate')"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{$t('button.search')}}</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{$t('button.reset')}}</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">{{$t('commons.button.search')}}</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">{{$t('commons.button.reset')}}</el-button>
       </el-form-item>
     </el-form>
 
@@ -33,7 +33,7 @@
     <el-table v-loading="loading" :data="list"
               @selection-change="handleSelectionChange" :header-cell-style="{'text-align':'center'}">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+      <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
         <template slot-scope="scope">
           <span>{{(queryParams.page - 1) * queryParams.pageSize + scope.$index + 1}}</span>
         </template>
@@ -68,7 +68,7 @@
           <div v-for="task in scope.row.taskList">{{ task.taskName }} | {{ task.assigneeName }}</div>
         </template>
       </el-table-column>
-      <el-table-column :label="$t(`label.option`)" align="center" class-name="small-padding" width="340">
+      <el-table-column :label="$t('commons.label.options')" align="center" class-name="small-padding" width="340">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleDiagram(scope.row)"><svg-icon icon-class="flowhistory"/>流程进度</el-button>
           <el-button size="mini" type="text" @click="handleHistory(scope.row)"><svg-icon icon-class="history"/>流程记录</el-button>
@@ -89,7 +89,7 @@
     <!-- 流程历史 -->
     <el-dialog title="流程历史" :visible.sync="history.open" width="75%" append-to-body>
       <el-table v-loading="history.loading" :data="history.list" :header-cell-style="{'text-align':'center'}">
-        <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+        <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
           <template slot-scope="scope">
             <span>{{(history.page - 1) * history.pageSize + scope.$index + 1}}</span>
           </template>
@@ -115,7 +115,7 @@
     <!-- 流程变量 -->
     <el-dialog title="流程变量" :visible.sync="variable.open" width="60%" append-to-body>
         <el-table v-loading="variable.loading" :data="variable.list" :header-cell-style="{'text-align':'center'}">
-          <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+          <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
             <template slot-scope="scope">
               <span>{{(variable.page - 1) * variable.pageSize + scope.$index + 1}}</span>
             </template>
@@ -357,7 +357,7 @@ export default {
         return instanceDelete(ids);
       }).then(() => {
         this.getList();
-        this.$modal.msgSuccess(this.$t(`msg.success_delete`));
+        this.$modal.msgSuccess(this.$t('commons.msg.success.delete'));
       }).catch(() => {});
     },
     /** 流程挂起 */

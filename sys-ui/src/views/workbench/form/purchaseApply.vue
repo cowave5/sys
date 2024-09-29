@@ -38,7 +38,7 @@
 <script>
 import {taskComplete, taskRecords} from "@/api/workbench/task";
 import {infoLeave} from "@/api/workbench/leave";
-import {getDeptUsersByCode} from "@/api/system/dept";
+import {getDeptCandidatesByCode} from "@/api/system/dept";
 import {instanceJump} from "@/api/system/flow/instance";
 import {editPurchase, infoPurchase} from "@/api/workbench/purchase";
 

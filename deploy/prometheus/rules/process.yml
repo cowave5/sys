@@ -1,0 +1,29 @@
+groups:
+  - name: process
+    rules:
+      - alert: 重启
+        expr: ceil(time() - max by(cluster, app, instance, groupname) (namedprocess_namegroup_oldest_start_time_seconds)) < 60
+        for: 1m
+        labels:
+          severity: 警告
+        annotations:
+          description: "进程重启"
+
+      - alert: 退出
+        expr: namedprocess_namegroup_num_procs < 1
+        for: 1m
+        labels:
+          severity: 警告
+        annotations:
+          description: "进程退出"   
+
+      - alert: 占用CPU过高
+        expr: sum(rate(namedprocess_namegroup_cpu_seconds_total{groupname=~".+"}[3m])) by (cluster, app, instance, groupname) * 100 > 80
+        for: 0m
+        labels:
+          severity: 警告 
+        annotations:
+          value: '{{ printf "%.2f" $value }}%'      
+          description: "近3min内进程占用CPU过高"  
+
+

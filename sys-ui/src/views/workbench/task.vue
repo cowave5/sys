@@ -11,11 +11,11 @@
             </el-form-item>
             <el-form-item label="任务开始时间" label-width="120">
               <el-date-picker v-model="allDateRange" style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss" type="datetimerange"
-                              range-separator="-" :start-placeholder="$t(`label.date_begin`)" :end-placeholder="$t(`label.date_end`)"/>
+                              range-separator="-" :start-placeholder="$t('commons.label.beginDate')" :end-placeholder="$t('commons.label.endDate')"/>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleAllQuery">{{$t('button.search')}}</el-button>
-              <el-button icon="el-icon-refresh" size="mini" @click="resetAllQuery">{{$t('button.reset')}}</el-button>
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleAllQuery">{{$t('commons.button.search')}}</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetAllQuery">{{$t('commons.button.reset')}}</el-button>
             </el-form-item>
             <right-toolbar :showSearch.sync="showSearch" @queryTable="getAllTasks"/>
           </el-form>
@@ -23,7 +23,7 @@
         <el-table v-loading="allLoading" :data="allTasks"
                   @selection-change="handleSelectionChange" :header-cell-style="{'text-align':'center'}">
           <el-table-column type="selection" width="55" align="center" />
-          <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+          <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
             <template slot-scope="scope">
               <span>{{(allParams.page - 1) * allParams.pageSize + scope.$index + 1}}</span>
             </template>
@@ -47,7 +47,7 @@
               <span>{{ parseTime(scope.row.dueTime) }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="$t(`label.option`)" align="center" class-name="small-padding fixed-width" width="280">
+          <el-table-column :label="$t('commons.label.options')" align="center" class-name="small-padding fixed-width" width="280">
             <template slot-scope="scope">
               <el-button size="mini" type="text" @click="handleAssignee(scope.row)"><svg-icon icon-class="flow-admin"/>修改办理人</el-button>
               <el-button size="mini" type="text" @click="handleHistory(scope.row)"><svg-icon icon-class="history"/>办理记录</el-button>
@@ -68,11 +68,11 @@
             </el-form-item>
             <el-form-item label="任务开始时间" label-width="120">
               <el-date-picker v-model="myDateRange" style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss" type="datetimerange"
-                              range-separator="-" :start-placeholder="$t(`label.date_begin`)" :end-placeholder="$t(`label.date_end`)"/>
+                              range-separator="-" :start-placeholder="$t('commons.label.beginDate')" :end-placeholder="$t('commons.label.endDate')"/>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleMyQuery">{{$t('button.search')}}</el-button>
-              <el-button icon="el-icon-refresh" size="mini" @click="resetMyQuery">{{$t('button.reset')}}</el-button>
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleMyQuery">{{$t('commons.button.search')}}</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetMyQuery">{{$t('commons.button.reset')}}</el-button>
             </el-form-item>
             <right-toolbar :showSearch.sync="showSearch" @queryTable="getMyTasks"/>
           </el-form>
@@ -80,7 +80,7 @@
         <el-table v-loading="myLoading" :data="myTasks"
                   @selection-change="handleSelectionChange" :header-cell-style="{'text-align':'center'}">
           <el-table-column type="selection" width="55" align="center" />
-          <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+          <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
             <template slot-scope="scope">
               <span>{{(myParams.page - 1) * myParams.pageSize + scope.$index + 1}}</span>
             </template>
@@ -104,7 +104,7 @@
               <span>{{ parseTime(scope.row.dueTime) }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="$t(`label.option`)" align="center" class-name="small-padding fixed-width">
+          <el-table-column :label="$t('commons.label.options')" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button size="mini" type="text" icon="el-icon-edit" @click="handleForm(scope.row, false)">办理</el-button>
             </template>
@@ -123,11 +123,11 @@
             </el-form-item>
             <el-form-item label="办理时间" label-width="120">
               <el-date-picker v-model="historyDateRange" style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss" type="datetimerange"
-                              range-separator="-" :start-placeholder="$t(`label.date_begin`)" :end-placeholder="$t(`label.date_end`)"/>
+                              range-separator="-" :start-placeholder="$t('commons.label.beginDate')" :end-placeholder="$t('commons.label.endDate')"/>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleHistoryQuery">{{$t('button.search')}}</el-button>
-              <el-button icon="el-icon-refresh" size="mini" @click="resetHistoryQuery">{{$t('button.reset')}}</el-button>
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleHistoryQuery">{{$t('commons.button.search')}}</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetHistoryQuery">{{$t('commons.button.reset')}}</el-button>
             </el-form-item>
             <right-toolbar :showSearch.sync="showSearch" @queryTable="getHistoryTasks"/>
           </el-form>
@@ -135,7 +135,7 @@
         <el-table v-loading="historyLoading" :data="historyTasks"
                   @selection-change="handleSelectionChange" :header-cell-style="{'text-align':'center'}">
           <el-table-column type="selection" width="55" align="center" />
-          <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+          <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
             <template slot-scope="scope">
               <span>{{(historyParams.page - 1) * historyParams.pageSize + scope.$index + 1}}</span>
             </template>
@@ -173,7 +173,7 @@
     <!-- 办理记录 -->
     <el-dialog title="流程历史" :visible.sync="history.open" width="75%" append-to-body>
       <el-table v-loading="history.loading" :data="history.list" :header-cell-style="{'text-align':'center'}">
-        <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
+        <el-table-column :label="$t('commons.label.index')" type="index" align="center" width="55">
           <template slot-scope="scope">
             <span>{{(history.page - 1) * history.pageSize + scope.$index + 1}}</span>
           </template>
@@ -235,7 +235,7 @@ import {checkPermit} from "@/utils/permission";
 import {listAllTask, listHistoryTask, listMyTask, taskAssignee, taskPress} from "@/api/workbench/task";
 import {optionsDeploy} from "@/api/system/flow/deploy";
 import {instanceHistory} from "@/api/system/flow/instance";
-import {getUsers} from "@/api/system/user";
+import {getDeptUserDiagram} from "@/api/system/user";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
@@ -358,7 +358,7 @@ export default {
     },
     /** 获取部门人员树 */
     getUserOptions(){
-      getUsers().then(resp => {
+      getDeptUserDiagram().then(resp => {
         this.assignee.userOptions = resp.data
       });
     },

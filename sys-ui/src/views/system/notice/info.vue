@@ -2,13 +2,11 @@
   <el-dialog :title="notice.noticeTitle" :visible.sync="visible" width="900px" top="5vh">
     <div style="position: absolute; left: 20px; top: 50px; color: #9b9595; font-size: small;">
       <template v-for="item in dict.type.notice_type">
-        <span v-if="notice.noticeType === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-        <span v-if="notice.noticeType === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+        <span v-if="notice.noticeType === item.value">{{ $t(item.name) }}</span>
       </template>
       /
       <template v-for="item in dict.type.notice_level">
-        <span v-if="notice.noticeLevel === item.value && $i18n.locale==='zh'">{{ item.label }}</span>
-        <span v-if="notice.noticeLevel === item.value && $i18n.locale==='en'">{{ item.labelEn }}</span>
+        <span v-if="notice.noticeLevel === item.value">{{ $t(item.name) }}</span>
       </template>
       <span style="padding-left: 40px;">创建人：{{ notice.createUserName }}</span>
       <span style="padding-left: 40px;">发布时间：{{ notice.publishTime }}</span>
@@ -32,7 +30,7 @@
   </el-dialog>
 </template>
 <script>
-import {getNotice, getReads} from "@/api/system/notice";
+import {getNoticeInfo, getReads} from "@/api/system/notice";
 export default {
   dicts: ['notice_type', 'notice_level'],
   data() {
@@ -55,7 +53,7 @@ export default {
       this.getDetail();
     },
     getDetail() {
-      getNotice(this.noticeId).then(rsp => {
+      getNoticeInfo(this.noticeId).then(rsp => {
         this.notice = rsp.data;
         this.visible = true;
         if(this.notice.noticeStatus > 0){
