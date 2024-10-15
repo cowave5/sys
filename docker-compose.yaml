@@ -1,0 +1,305 @@
+version: '3'
+
+services:
+  sys-blog:
+    image: cowave/sys-blog:1.0.3
+    container_name: sys-blog
+    ports:
+      - 80:80
+    volumes:
+      - ./sys-blog/log:/opt/cowave/sys-blog/log
+      - ./sys-blog/public:/opt/cowave/sys-blog/public
+    environment:
+      TZ: Asia/Shanghai
+      jvm_option: -Xms256m -Xmx256m -XX:MetaspaceSize=128m -XX:+HeapDumpOnOutOfMemoryError
+      server_port: 80
+      redis_host: redis
+      redis_port: 6379
+      datasource_username: postgres
+      datasource_password: postgres
+      datasource_url: jdbc:postgresql://postgres:5432/sys-blog
+    depends_on:
+      sys-nacos:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  sys-ui:
+    image: cowave/sys-ui:1.0.3
+    container_name: sys-ui
+    ports:
+      - 81:81
+      - 82:82
+    volumes:
+      - ./sys-ui:/var/log/nginx
+      - /etc/localtime:/etc/localtime
+
+  sys-nacos:
+    image: cowave/sys-nacos:2.3.0
+    container_name: sys-nacos
+    environment:
+      - MODE=standalone
+    volumes:
+      - ./sys-nacos:/home/nacos/logs
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8848/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  sys-gateway:
+    image: cowave/sys-gateway:1.0.3
+    container_name: sys-gateway
+    ports:
+      - 19000:19000
+    volumes:
+      - ./sys-gateway:/opt/cowave/sys-gateway/log
+    environment:
+      TZ: Asia/Shanghai
+      jvm_option: -Xms256m -Xmx256m -XX:MetaspaceSize=128m -XX:+HeapDumpOnOutOfMemoryError
+      server_port: 19000
+      nacos_server: sys-nacos:8848
+    depends_on:
+      sys-nacos:
+        condition: service_healthy
+
+  sys-admin:
+    image: cowave/sys-admin:1.0.3
+    container_name: sys-admin
+    ports:
+      - 19010:19010
+      - 19011:19011
+      - 19012:19012
+    volumes:
+      - ./sys-admin:/opt/cowave/sys-admin/log
+    environment:
+      TZ: Asia/Shanghai
+      jvm_option: -Xms256m -Xmx256m -XX:MetaspaceSize=128m -XX:+HeapDumpOnOutOfMemoryError -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:19012
+      server_port: 19010
+      socket_port: 19011
+      redis_host: redis
+      redis_port: 6379
+      nacos_server: sys-nacos:8848
+      kafka_servers: kafka1:9092,kafka2:9093,kafka3:9094
+      datasource_username: postgres
+      datasource_password: postgres
+      datasource_url: jdbc:postgresql://postgres:5432/sys-admin
+      minio_endpoint: http://192.168.141.74:39000
+      minio_accessKey: admin
+      minio_secretKey: admin123
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      sys-nacos:
+        condition: service_healthy
+
+  sys-flow:
+    image: cowave/sys-flow:1.0.3
+    container_name: sys-flow
+    ports:
+      - 19020:19020
+      - 19021:19021
+    volumes:
+      - ./sys-flow:/opt/cowave/sys-flow/log
+    environment:
+      TZ: Asia/Shanghai
+      jvm_option: -Xms256m -Xmx256m -XX:MetaspaceSize=128m -XX:+HeapDumpOnOutOfMemoryError -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:19021
+      server_port: 19020
+      nacos_server: sys-nacos:8848
+      datasource_username: postgres
+      datasource_password: postgres
+      datasource_url: jdbc:postgresql://postgres:5432/sys-admin
+    depends_on:
+      postgres:
+        condition: service_healthy
+      sys-nacos:
+        condition: service_healthy
+
+  sys-code:
+    image: cowave/sys-code:1.0.3
+    container_name: sys-code
+    ports:
+      - 19030:19030
+      - 19031:19031
+    volumes:
+      - ./sys-code:/opt/cowave/sys-code/log
+    environment:
+      TZ: Asia/Shanghai
+      jvm_option: -Xms256m -Xmx256m -XX:MetaspaceSize=128m -XX:+HeapDumpOnOutOfMemoryError -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:19031
+      server_port: 19030
+      nacos_server: sys-nacos:8848
+      datasource_username: postgres
+      datasource_password: postgres
+      datasource_url: jdbc:postgresql://postgres:5432/sys-code
+    depends_on:
+      postgres:
+        condition: service_healthy
+      sys-nacos:
+        condition: service_healthy
+
+  sys-quartz:
+    image: cowave/sys-quartz:1.0.3
+    container_name: sys-quartz
+    ports:
+      - 19040:19040
+      - 19041:19041
+    volumes:
+      - ./sys-quartz:/opt/cowave/sys-quartz/log
+    environment:
+      TZ: Asia/Shanghai
+      jvm_option: -Xms256m -Xmx256m -XX:MetaspaceSize=128m -XX:+HeapDumpOnOutOfMemoryError -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:19041
+      server_port: 19040
+      nacos_server: sys-nacos:8848
+      datasource_username: postgres
+      datasource_password: postgres
+      datasource_url: jdbc:postgresql://postgres:5432/sys-quartz
+    depends_on:
+      postgres:
+        condition: service_healthy
+      sys-nacos:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:13.1
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7.0
+    container_name: redis
+    privileged: true
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis/conf/redis.conf:/etc/redis/redis.conf
+      - ./redis/data:/data:rw
+      - /etc/localtime:/etc/localtime
+    command: redis-server /etc/redis/redis.conf
+    healthcheck:
+      test: ["CMD", "redis-cli", "-h", "localhost", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    privileged: true
+    ports:
+      - 39000:9000
+      - 39001:9001
+    environment:
+      MINIO_ACCESS_KEY: admin
+      MINIO_SECRET_KEY: admin123
+    volumes:
+      - ./minio/data:/data
+      - ./minio/config:/root/.minio/
+      - /etc/localtime:/etc/localtime
+    command: server --console-address ':9001' /data
+
+  kafka1:
+    image: wurstmeister/kafka:2.13-2.8.1
+    container_name: kafka1
+    ports:
+      - "9092:9092"
+      - "9097:9097"
+      - "7072:7072"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.141.74:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: true
+      KAFKA_LOG_RETENTION_HOURS: 48
+      JMX_PORT: 9097
+      KAFKA_OPTS: -javaagent:/opt/jmx_prometheus_javaagent-0.12.0.jar=7072:/opt/kafka-2_0_0.yml
+    depends_on:
+      - zookeeper
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./kafka/jmx_prometheus_javaagent-0.12.0.jar:/opt/jmx_prometheus_javaagent-0.12.0.jar
+      - ./kafka/kafka-2_0_0.yml:/opt/kafka-2_0_0.yml
+
+  kafka2:
+    image: wurstmeister/kafka:2.13-2.8.1
+    container_name: kafka2
+    ports:
+      - "9093:9093"
+      - "9098:9098"
+      - "7073:7073"
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.141.74:9093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9093
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: true
+      KAFKA_LOG_RETENTION_HOURS: 48
+      JMX_PORT: 9098
+      KAFKA_OPTS: -javaagent:/opt/jmx_prometheus_javaagent-0.12.0.jar=7073:/opt/kafka-2_0_0.yml
+    depends_on:
+      - zookeeper
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./kafka/jmx_prometheus_javaagent-0.12.0.jar:/opt/jmx_prometheus_javaagent-0.12.0.jar
+      - ./kafka/kafka-2_0_0.yml:/opt/kafka-2_0_0.yml
+
+  kafka3:
+    image: wurstmeister/kafka:2.13-2.8.1
+    container_name: kafka3
+    ports:
+      - "9094:9094"
+      - "9099:9099"
+      - "7074:7074"
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.141.74:9094
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9094
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: true
+      KAFKA_LOG_RETENTION_HOURS: 48
+      JMX_PORT: 9099
+      KAFKA_OPTS: -javaagent:/opt/jmx_prometheus_javaagent-0.12.0.jar=7074:/opt/kafka-2_0_0.yml
+    depends_on:
+      - zookeeper
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./kafka/jmx_prometheus_javaagent-0.12.0.jar:/opt/jmx_prometheus_javaagent-0.12.0.jar
+      - ./kafka/kafka-2_0_0.yml:/opt/kafka-2_0_0.yml
+
+  zookeeper:
+    image: wurstmeister/zookeeper:3.4.6
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - /etc/localtime:/etc/localtime
+
+  kafka-eagle:
+    image: nickzurich/kafka-eagle:2.1.0
+    container_name: kafka-eagle
+    ports:
+      - 8048:8048
+    volumes:
+      - /etc/localtime:/etc/localtime

@@ -55,10 +55,10 @@
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
 		<!-- oscar -->
-		<dependency>
-			<groupId>org.cowave</groupId>
-			<artifactId>oscarJDBC</artifactId>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.cowave</groupId>-->
+<!--			<artifactId>oscarJDBC</artifactId>-->
+<!--		</dependency>-->
 		<!-- pagehelper -->
 		<dependency>
 			<groupId>com.github.pagehelper</groupId>

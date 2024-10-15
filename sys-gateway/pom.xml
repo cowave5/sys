@@ -36,11 +36,6 @@
 			<artifactId>spring-cloud-loadbalancer</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>io.github.chen-gliu</groupId>
-			<artifactId>nacos-consul-adapter</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
@@ -49,6 +44,11 @@
 			<artifactId>netty-resolver-dns-native-macos</artifactId>
 			<version>4.1.90.Final</version>
 			<classifier>osx-aarch_64</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 </project>
