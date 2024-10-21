@@ -10,9 +10,9 @@
 package com.cowave.sys.admin.api.service.flow;
 
 import com.cowave.commons.framework.access.Access;
-import com.cowave.sys.admin.api.entity.flow.FlowTask;
-import com.cowave.sys.admin.api.entity.flow.TaskComplete;
-import com.cowave.sys.admin.api.mapper.SysUserMapper;
+import com.cowave.sys.admin.core.entity.flow.FlowTask;
+import com.cowave.sys.admin.core.entity.flow.TaskComplete;
+import com.cowave.sys.admin.core.mapper.SysUserMapper;
 import com.cowave.sys.admin.api.service.SysNoticeService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.MapUtils;

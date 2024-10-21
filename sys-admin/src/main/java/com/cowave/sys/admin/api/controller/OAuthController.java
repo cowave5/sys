@@ -9,10 +9,10 @@
  */
 package com.cowave.sys.admin.api.controller;
 
-import com.cowave.commons.framework.filter.security.AccessToken;
-import com.cowave.sys.admin.api.entity.oauth.OAuthConfig;
-import com.cowave.sys.admin.api.entity.oauth.OAuthUser;
+import com.cowave.commons.framework.access.security.AccessToken;
 import com.cowave.sys.admin.api.service.OAuthService;
+import com.cowave.sys.admin.core.entity.oauth.OAuthConfig;
+import com.cowave.sys.admin.core.entity.oauth.OAuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.feign.codec.Response;
 import org.springframework.security.access.prepost.PreAuthorize;

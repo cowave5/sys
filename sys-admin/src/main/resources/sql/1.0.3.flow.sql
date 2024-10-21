@@ -115,19 +115,19 @@ VALUES ('dict_group', 'dict_flow', '流程字典', 'Flow Dict', 'group_flow', NU
 INSERT INTO "sys_dict" ("parent_code", "dict_code", "dict_label", "dict_en", "dict_value", "value_parser", "value_param", "dict_order", "is_default", "css", "status", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
 VALUES ('dict_flow', 'flow_leave', '请假类型', 'Leave Type', 'leave_type', NULL, NULL, 2, 0, NULL, 1, NULL, 1, 1, NULL, '2022-04-25 09:00:00', 1, NULL, '2022-04-25 09:00:00');
 INSERT INTO "sys_dict" ("parent_code", "dict_code", "dict_label", "dict_en", "dict_value", "value_parser", "value_param", "dict_order", "is_default", "css", "status", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
-VALUES ('flow_leave', 'annual', '年假', 'Annual Leave', '1', 'com.cowave.commons.framework.helper.dict.DefaultValueParser', 'int', 181, 0, NULL, 1, NULL, 1, 1, NULL, '2022-04-25 09:00:00', 1, NULL, '2022-04-25 09:00:00');
+VALUES ('flow_leave', 'annual', '年假', 'Annual Leave', '1', 'com.cowave.commons.framework.helper.redis.dict.DefaultValueParser', 'int', 181, 0, NULL, 1, NULL, 1, 1, NULL, '2022-04-25 09:00:00', 1, NULL, '2022-04-25 09:00:00');
 INSERT INTO "sys_dict" ("parent_code", "dict_code", "dict_label", "dict_en", "dict_value", "value_parser", "value_param", "dict_order", "is_default", "css", "status", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
-VALUES ('flow_leave', 'personal', '事假', 'Personal Leave', '2', 'com.cowave.commons.framework.helper.dict.DefaultValueParser', 'int', 182, 0, NULL, 1, NULL, 1, 1, NULL, '2022-04-25 09:00:00', 1, NULL, '2022-04-25 09:00:00');
+VALUES ('flow_leave', 'personal', '事假', 'Personal Leave', '2', 'com.cowave.commons.framework.helper.redis.dict.DefaultValueParser', 'int', 182, 0, NULL, 1, NULL, 1, 1, NULL, '2022-04-25 09:00:00', 1, NULL, '2022-04-25 09:00:00');
 INSERT INTO "sys_dict" ("parent_code", "dict_code", "dict_label", "dict_en", "dict_value", "value_parser", "value_param", "dict_order", "is_default", "css", "status", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
-VALUES ('flow_leave', 'sick', '病假', 'Sick Leave', '3', 'com.cowave.commons.framework.helper.dict.DefaultValueParser', 'int', 183, 0, NULL, 1, NULL, 1, 1, NULL, '2022-04-25 09:00:00', 1, NULL, '2022-04-25 09:00:00');
+VALUES ('flow_leave', 'sick', '病假', 'Sick Leave', '3', 'com.cowave.commons.framework.helper.redis.dict.DefaultValueParser', 'int', 183, 0, NULL, 1, NULL, 1, 1, NULL, '2022-04-25 09:00:00', 1, NULL, '2022-04-25 09:00:00');
 INSERT INTO "sys_dict" ("parent_code", "dict_code", "dict_label", "dict_en", "dict_value", "value_parser", "value_param", "dict_order", "is_default", "css", "status", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
-VALUES ('flow_leave', 'bereavement', '丧假', 'Bereavement Leave', '4', 'com.cowave.commons.framework.helper.dict.DefaultValueParser', 'int', 184, 0, NULL, 1, NULL, 1, 1, NULL, '2022-04-25 09:00:00', 1, NULL, '2022-04-25 09:00:00');
+VALUES ('flow_leave', 'bereavement', '丧假', 'Bereavement Leave', '4', 'com.cowave.commons.framework.helper.redis.dict.DefaultValueParser', 'int', 184, 0, NULL, 1, NULL, 1, 1, NULL, '2022-04-25 09:00:00', 1, NULL, '2022-04-25 09:00:00');
 INSERT INTO "sys_dict" ("parent_code", "dict_code", "dict_label", "dict_en", "dict_value", "value_parser", "value_param", "dict_order", "is_default", "css", "status", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
-VALUES ('flow_leave', 'maternity', '产假', 'Maternity Leave', '5', 'com.cowave.commons.framework.helper.dict.DefaultValueParser', 'int', 185, 0, NULL, 1, NULL, 1, 1, NULL, '2022-04-25 09:00:00', 1, NULL, '2022-04-25 09:00:00');
+VALUES ('flow_leave', 'maternity', '产假', 'Maternity Leave', '5', 'com.cowave.commons.framework.helper.redis.dict.DefaultValueParser', 'int', 185, 0, NULL, 1, NULL, 1, 1, NULL, '2022-04-25 09:00:00', 1, NULL, '2022-04-25 09:00:00');
 
 delete from sys_dict where dict_code = 'type_press';
 INSERT INTO "sys_dict" ("parent_code", "dict_code", "dict_label", "dict_en", "dict_value", "value_parser", "value_param", "dict_order", "is_default", "css", "status", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
-VALUES ('notice_type', 'type_press', '催办提醒', 'press', '3', 'com.cowave.commons.framework.helper.dict.DefaultValueParser', 'int', 153, 0, NULL, 1, NULL, 0, 1, NULL, '2023-08-11 14:21:50.681', 1, NULL, '2023-08-11 14:35:58.346');
+VALUES ('notice_type', 'type_press', '催办提醒', 'press', '3', 'com.cowave.commons.framework.helper.redis.dict.DefaultValueParser', 'int', 153, 0, NULL, 1, NULL, 0, 1, NULL, '2023-08-11 14:21:50.681', 1, NULL, '2023-08-11 14:35:58.346');
 
 
 -- 序列

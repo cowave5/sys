@@ -9,7 +9,7 @@
  */
 package com.cowave.sys.blog.api.controller;
 
-import com.cowave.commons.framework.helper.file.FileService;
+import com.cowave.commons.framework.helper.FileHelper;
 import com.cowave.sys.blog.api.entity.PostInfo;
 import com.cowave.sys.blog.api.service.PostService;
 import com.cowave.sys.blog.configuration.BlogConfiguration;
@@ -39,7 +39,7 @@ public class PostController {
 
     private final PostService postService;
 
-    private final FileService fileService;
+    private final FileHelper fileHelper;
 
     private final BlogConfiguration blogConfiguration;
 
@@ -48,7 +48,7 @@ public class PostController {
      */
     @RequestMapping("/upload")
     public Response<String> uploadFile(MultipartFile file) throws Exception {
-        String localPath = fileService.localUpload(file, blogConfiguration.getPostImagePath());
+        String localPath = fileHelper.upload(file, blogConfiguration.getPostImagePath());
         localPath = localPath.replaceFirst(blogConfiguration.getProfile(), ViewConfiguration.RESOURCE_PREFIX);
         return Response.success(localPath);
     }
@@ -58,7 +58,7 @@ public class PostController {
      */
     @RequestMapping("/md/upload")
     public Map<String, Object> uploadMdFile(@RequestParam(value = "editormd-image-file") MultipartFile file) throws Exception {
-        String localPath = fileService.localUpload(file, blogConfiguration.getMdImagePath());
+        String localPath = fileHelper.upload(file, blogConfiguration.getMdImagePath());
         localPath = localPath.replaceFirst(blogConfiguration.getProfile(), ViewConfiguration.RESOURCE_PREFIX);
         Map<String, Object> map = new HashMap<>();
         map.put("success", 1);

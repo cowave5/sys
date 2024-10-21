@@ -9,12 +9,15 @@
  */
 package com.cowave.sys.admin.api.service.impl;
 
-import com.cowave.commons.framework.filter.security.AccessToken;
-import com.cowave.commons.framework.filter.security.Permission;
-import com.cowave.commons.framework.filter.security.TokenService;
-import com.cowave.sys.admin.api.entity.oauth.*;
-import com.cowave.sys.admin.api.mapper.OAuthMapper;
+import com.cowave.commons.framework.access.security.AccessToken;
+import com.cowave.commons.framework.access.security.Permission;
+import com.cowave.commons.framework.access.security.TokenService;
 import com.cowave.sys.admin.api.service.OAuthService;
+import com.cowave.sys.admin.core.entity.oauth.GitlabUser;
+import com.cowave.sys.admin.core.entity.oauth.OAuthConfig;
+import com.cowave.sys.admin.core.entity.oauth.OAuthToken;
+import com.cowave.sys.admin.core.entity.oauth.OAuthUser;
+import com.cowave.sys.admin.core.mapper.OAuthMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

@@ -10,13 +10,13 @@
 package com.cowave.sys.admin.api.service.impl;
 
 import com.cowave.commons.framework.access.Access;
-import com.cowave.commons.framework.filter.security.AccessToken;
+import com.cowave.commons.framework.access.security.AccessToken;
 import com.cowave.commons.tools.Asserts;
-import com.cowave.sys.admin.api.entity.UserProfile;
-import com.cowave.sys.admin.api.entity.ldap.LdapUser;
-import com.cowave.sys.admin.api.mapper.LdapMapper;
-import com.cowave.sys.admin.api.mapper.ProfileMapper;
 import com.cowave.sys.admin.api.service.ProfileService;
+import com.cowave.sys.admin.core.entity.UserProfile;
+import com.cowave.sys.admin.core.entity.ldap.LdapUser;
+import com.cowave.sys.admin.core.mapper.LdapMapper;
+import com.cowave.sys.admin.core.mapper.ProfileMapper;
 import com.cowave.sys.model.admin.SysUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

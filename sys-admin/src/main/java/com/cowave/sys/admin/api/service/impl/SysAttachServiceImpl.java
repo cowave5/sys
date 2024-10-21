@@ -9,26 +9,23 @@
  */
 package com.cowave.sys.admin.api.service.impl;
 
-import java.io.File;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
-import com.cowave.commons.framework.helper.file.MinioConfiguration;
+import cn.hutool.core.util.IdUtil;
+import com.cowave.commons.framework.helper.minio.MinioHelper;
+import com.cowave.commons.framework.helper.minio.MinioProperties;
 import com.cowave.commons.tools.Asserts;
 import com.cowave.commons.tools.DateUtils;
 import com.cowave.sys.admin.api.service.SysAttachService;
+import com.cowave.sys.admin.core.mapper.SysAttachMapper;
+import com.cowave.sys.model.admin.SysAttach;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cowave.sys.admin.api.mapper.SysAttachMapper;
-import com.cowave.sys.model.admin.SysAttach;
-import com.cowave.commons.framework.helper.file.FileService;
-
-import cn.hutool.core.util.IdUtil;
-import lombok.RequiredArgsConstructor;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -39,9 +36,9 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class SysAttachServiceImpl implements SysAttachService {
 
-    private final MinioConfiguration minioConfiguration;
+    private final MinioProperties minioProperties;
 
-    private final FileService fileService;
+    private final MinioHelper minioHelper;
 
     private final SysAttachMapper sysAttachMapper;
 
@@ -58,7 +55,7 @@ public class SysAttachServiceImpl implements SysAttachService {
         sysAttach.setAttachPath(filePath);
         sysAttachMapper.insert(sysAttach);
 
-        fileService.minioUpload(file, sysAttach.getAttachGroup(), filePath, isPublic);
+        minioHelper.upload(file, sysAttach.getAttachGroup(), filePath, isPublic);
         return sysAttach;
     }
 
@@ -72,9 +69,9 @@ public class SysAttachServiceImpl implements SysAttachService {
     @Override
     public String preview(SysAttach sysAttach) throws Exception {
         if(sysAttach.getIsPublic() == 1){
-            return minioConfiguration.getEndpoint() + "/" + sysAttach.getAttachGroup() + "/" + sysAttach.getAttachPath();
+            return minioProperties.getEndpoint() + "/" + sysAttach.getAttachGroup() + "/" + sysAttach.getAttachPath();
         }else{
-            return fileService.minioPreview(sysAttach.getAttachGroup(), sysAttach.getAttachPath());
+            return minioHelper.preview(sysAttach.getAttachGroup(), sysAttach.getAttachPath());
         }
     }
 
@@ -94,14 +91,14 @@ public class SysAttachServiceImpl implements SysAttachService {
             return;
         }
         sysAttachMapper.delete(sysAttach.getAttachId());
-        fileService.minioDelete(sysAttach.getAttachGroup(), sysAttach.getAttachPath());
+        minioHelper.delete(sysAttach.getAttachGroup(), sysAttach.getAttachPath());
     }
 
     @Override
     public void download(HttpServletResponse response, Long attachId) throws Exception {
         SysAttach sysAttach = sysAttachMapper.info(attachId);
         Asserts.notNull(sysAttach, "{attach.notexist}");
-        fileService.minioDownload(response, sysAttach.getAttachGroup(), sysAttach.getAttachPath(), sysAttach.getAttachName());
+        minioHelper.download(response, sysAttach.getAttachGroup(), sysAttach.getAttachPath(), sysAttach.getAttachName());
     }
 
     @Override
@@ -120,7 +117,7 @@ public class SysAttachServiceImpl implements SysAttachService {
         sysAttachMapper.masterDelete(masterId, attachGroup, attachType);
         List<SysAttach> list = sysAttachMapper.list(masterId, attachGroup, attachType);
         for(SysAttach sysAttach : list) {
-            fileService.minioDelete(attachGroup, sysAttach.getAttachPath());
+            minioHelper.delete(attachGroup, sysAttach.getAttachPath());
         }
     }
 
@@ -131,7 +128,7 @@ public class SysAttachServiceImpl implements SysAttachService {
         for(int i = reserve; i < list.size(); i++){
             SysAttach attach = list.get(i);
             sysAttachMapper.delete(attach.getAttachId());
-            fileService.minioDelete(attachGroup, attach.getAttachPath());
+            minioHelper.delete(attachGroup, attach.getAttachPath());
         }
     }
 

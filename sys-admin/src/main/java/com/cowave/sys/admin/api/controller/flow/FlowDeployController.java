@@ -16,7 +16,7 @@ import org.springframework.feign.codec.Response;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.cowave.sys.admin.api.entity.flow.FlowDeploy;
+import com.cowave.sys.admin.core.entity.flow.FlowDeploy;
 
 import java.io.IOException;
 import java.util.*;

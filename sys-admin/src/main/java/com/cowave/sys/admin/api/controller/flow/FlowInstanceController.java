@@ -9,9 +9,9 @@
  */
 package com.cowave.sys.admin.api.controller.flow;
 
-import com.cowave.sys.admin.api.entity.flow.FlowInstance;
-import com.cowave.sys.admin.api.entity.flow.FlowTask;
-import com.cowave.sys.admin.api.entity.flow.FlowVariable;
+import com.cowave.sys.admin.core.entity.flow.FlowInstance;
+import com.cowave.sys.admin.core.entity.flow.FlowTask;
+import com.cowave.sys.admin.core.entity.flow.FlowVariable;
 import com.cowave.sys.admin.api.service.flow.FlowInstanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.feign.codec.Response;

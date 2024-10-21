@@ -11,7 +11,7 @@ package com.cowave.sys.admin.api.service.flow;
 
 import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.tools.AssertsException;
-import com.cowave.sys.admin.api.entity.flow.FlowDeploy;
+import com.cowave.sys.admin.core.entity.flow.FlowDeploy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;

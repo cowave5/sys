@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.excel.EasyExcel;
-import com.cowave.sys.admin.api.entity.AlarmHandles;
+import com.cowave.sys.admin.core.entity.AlarmHandles;
 import com.cowave.commons.framework.support.excel.CellWidthHandler;
 
 import lombok.RequiredArgsConstructor;

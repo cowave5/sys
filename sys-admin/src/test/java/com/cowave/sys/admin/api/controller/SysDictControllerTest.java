@@ -9,8 +9,8 @@
  */
 package com.cowave.sys.admin.api.controller;
 
-import com.cowave.commons.framework.filter.access.AccessFilter;
-import com.cowave.commons.framework.filter.security.TokenAuthenticationFilter;
+import com.cowave.commons.framework.access.filter.AccessFilter;
+import com.cowave.commons.framework.access.security.TokenAuthenticationFilter;
 import com.cowave.sys.admin.SpringTest;
 import com.cowave.sys.admin.api.controller.sys.SysDictController;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +33,7 @@ public class SysDictControllerTest extends SpringTest {
     @BeforeEach
     public void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(sysDictController)
-                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, true))
+                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, accessConfiguration))
                 .addFilter(new TokenAuthenticationFilter(tokenService))
                 .setControllerAdvice(accessAdvice).build();
     }
@@ -110,7 +110,7 @@ public class SysDictControllerTest extends SpringTest {
     @Transactional
     public void add() throws Exception {
         mockPost("/api/v1/dict/add", "{\"typeCode\":\"sys_yes_no\",\"dictCode\":\"sys_test\",\"dictValue\":1,\"status\":1,\"dictOrder\":29," +
-                "\"dictLabel\":\"测试字典\",\"valueParser\":\"com.cowave.commons.framework.helper.dict.DefaultValueParser\",\"valueParam\":\"int\"}");
+                "\"dictLabel\":\"测试字典\",\"valueParser\":\"com.cowave.commons.framework.helper.redis.dict.DefaultValueParser\",\"valueParam\":\"int\"}");
     }
 
     /**
@@ -121,7 +121,7 @@ public class SysDictControllerTest extends SpringTest {
     @Transactional
     public void edit() throws Exception {
         mockPost("/api/v1/dict/edit", "{\"id\":6,\"typeCode\":\"dict_sys\",\"dictCode\":\"sys_no_yes\",\"dictValue\":1,\"status\":1,\"dictOrder\":29," +
-                "\"dictLabel\":\"测试字典\",\"valueParser\":\"com.cowave.commons.framework.helper.dict.DefaultValueParser\",\"valueParam\":\"int\"}");
+                "\"dictLabel\":\"测试字典\",\"valueParser\":\"com.cowave.commons.framework.helper.redis.dict.DefaultValueParser\",\"valueParam\":\"int\"}");
     }
 
     /**

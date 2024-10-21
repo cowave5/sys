@@ -9,26 +9,20 @@
  */
 package com.cowave.sys.flow.configuration;
 
-import java.io.IOException;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.alibaba.fastjson.JSON;
-import com.cowave.commons.framework.filter.security.AccessToken;
-import com.cowave.commons.framework.filter.security.TokenService;
+import com.cowave.commons.framework.access.security.AccessToken;
+import com.cowave.commons.framework.access.security.TokenService;
+import lombok.RequiredArgsConstructor;
 import org.flowable.engine.IdentityService;
 import org.springframework.feign.codec.HttpCode;
 import org.springframework.feign.codec.Response;
 import org.springframework.feign.codec.ResponseCode;
 import org.springframework.http.MediaType;
 
-import lombok.RequiredArgsConstructor;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 import static org.springframework.feign.codec.ResponseCode.SUCCESS;
 

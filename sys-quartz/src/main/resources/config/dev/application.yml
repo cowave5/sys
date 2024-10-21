@@ -19,7 +19,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 10.64.4.74:8848
+        server-addr: 192.168.141.74:8848
   quartz:
     job-store-type: jdbc
     properties:

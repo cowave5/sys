@@ -9,7 +9,7 @@
  */
 package com.cowave.sys.admin.core;
 
-import com.cowave.commons.framework.helper.operation.OperationInfo;
+import com.cowave.commons.framework.access.operation.OperationInfo;
 import com.cowave.sys.admin.api.service.SysLogService;
 import com.cowave.sys.model.admin.SysLog;
 import lombok.RequiredArgsConstructor;

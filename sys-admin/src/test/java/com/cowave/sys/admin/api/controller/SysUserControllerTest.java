@@ -9,8 +9,8 @@
  */
 package com.cowave.sys.admin.api.controller;
 
-import com.cowave.commons.framework.filter.access.AccessFilter;
-import com.cowave.commons.framework.filter.security.TokenAuthenticationFilter;
+import com.cowave.commons.framework.access.filter.AccessFilter;
+import com.cowave.commons.framework.access.security.TokenAuthenticationFilter;
 import com.cowave.sys.admin.SpringTest;
 import com.cowave.sys.admin.api.controller.sys.SysUserController;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +33,7 @@ public class SysUserControllerTest extends SpringTest {
     @BeforeEach
     public void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(sysUserController)
-                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, true))
+                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, accessConfiguration))
                 .addFilter(new TokenAuthenticationFilter(tokenService))
                 .setControllerAdvice(accessAdvice).build();
     }

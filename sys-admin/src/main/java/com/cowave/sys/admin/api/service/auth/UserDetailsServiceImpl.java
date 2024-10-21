@@ -9,25 +9,22 @@
  */
 package com.cowave.sys.admin.api.service.auth;
 
-import java.util.List;
-
-import com.cowave.commons.framework.filter.security.AccessToken;
-import com.cowave.commons.framework.filter.security.Permission;
-import com.cowave.commons.framework.filter.security.TokenService;
+import com.cowave.commons.framework.access.security.AccessToken;
+import com.cowave.commons.framework.access.security.Permission;
+import com.cowave.commons.framework.access.security.TokenService;
 import com.cowave.commons.tools.Asserts;
 import com.cowave.sys.admin.api.service.SysLogService;
+import com.cowave.sys.admin.core.mapper.SysUserMapper;
 import com.cowave.sys.model.admin.SysLog;
+import com.cowave.sys.model.admin.SysUser;
 import com.cowave.sys.model.admin.SysUserRole;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.cowave.sys.admin.api.mapper.SysUserMapper;
-import com.cowave.commons.framework.configuration.ClusterInfo;
-import com.cowave.sys.model.admin.SysUser;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 /**
  *
@@ -41,8 +38,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	private final TokenService tokenService;
 
     private final SysUserMapper sysUserMapper;
-
-    private final ClusterInfo clusterInfo;
 
     private final SysLogService sysLogService;
 
@@ -65,9 +60,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         AccessToken accessToken = SysUser.accessToken(sysUser);
         accessToken.setRoles(roleCodes);
         accessToken.setPermissions(permits);
-        accessToken.setClusterId(clusterInfo.getId());
-        accessToken.setClusterName(clusterInfo.getName());
-        accessToken.setClusterLevel(clusterInfo.getLevel());
         tokenService.assignToken(accessToken);
         // 登录日志
         SysLog sysLog = new SysLog();

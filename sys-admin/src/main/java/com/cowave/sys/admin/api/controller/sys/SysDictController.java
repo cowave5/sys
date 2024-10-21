@@ -17,8 +17,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
-import com.cowave.sys.admin.api.caches.SysDictCaches;
-import com.cowave.sys.admin.api.entity.SelectOption;
+import com.cowave.sys.admin.core.caches.SysDictCaches;
+import com.cowave.sys.admin.core.entity.SelectOption;
 import com.cowave.sys.admin.api.service.SysDictService;
 import org.springframework.feign.codec.Response;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -61,7 +61,7 @@ public class SysDictController {
 	 */
 	@GetMapping("/cache/dict")
 	public Response<SysDict> cacheDict(String dictCode) {
-		return Response.success(sysDictCaches.getDictHelper(dictCode));
+		return Response.success(sysDictCaches.getDict(dictCode));
 	}
 
 	/**

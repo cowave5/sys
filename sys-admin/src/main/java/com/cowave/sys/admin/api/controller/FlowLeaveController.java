@@ -10,7 +10,7 @@
 package com.cowave.sys.admin.api.controller;
 
 import com.cowave.commons.framework.access.Access;
-import com.cowave.sys.admin.api.entity.flow.Leave;
+import com.cowave.sys.admin.core.entity.flow.Leave;
 import com.cowave.sys.admin.api.service.FlowLeaveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.feign.codec.Response;

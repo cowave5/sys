@@ -11,7 +11,7 @@ package com.cowave.sys.admin.api.service;
 
 import java.util.List;
 
-import com.cowave.sys.admin.api.entity.RoleAuthed;
+import com.cowave.sys.admin.core.entity.RoleAuthed;
 import com.cowave.sys.model.admin.SysMenu;
 import com.cowave.sys.model.admin.SysRole;
 

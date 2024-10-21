@@ -12,7 +12,7 @@ package com.cowave.sys.admin.api.service;
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cowave.sys.admin.api.entity.SelectOption;
+import com.cowave.sys.admin.core.entity.SelectOption;
 import com.cowave.sys.model.admin.SysDict;
 
 /**

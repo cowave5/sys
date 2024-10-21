@@ -11,11 +11,11 @@ package com.cowave.sys.blog.api.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cowave.commons.framework.access.Access;
-import com.cowave.commons.framework.access.AccessLogger;
 import com.cowave.commons.tools.Asserts;
 import com.cowave.commons.tools.DateUtils;
 import com.cowave.sys.blog.api.cache.BlogCache;
-import com.cowave.sys.blog.api.entity.*;
+import com.cowave.sys.blog.api.entity.AboutInfo;
+import com.cowave.sys.blog.api.entity.PostInfo;
 import com.cowave.sys.blog.api.mapper.CategoryMapper;
 import com.cowave.sys.blog.api.mapper.PostMapper;
 import com.cowave.sys.blog.api.service.BlogService;
@@ -24,6 +24,7 @@ import com.cowave.sys.blog.configuration.BlogConfiguration;
 import com.cowave.sys.blog.configuration.ViewConfiguration;
 import com.cowave.sys.blog.utils.MarkdownUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.feign.codec.Response;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,10 @@ import org.thymeleaf.context.WebContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.*;
@@ -46,6 +50,7 @@ import java.util.stream.Collectors;
  * @author shanhuiming
  *
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class BlogServiceImpl implements BlogService {
@@ -107,7 +112,7 @@ public class BlogServiceImpl implements BlogService {
     private CompletableFuture<Void> loadPost(ModelMap modelMap, PostInfo postInfo) {
         return CompletableFuture.runAsync(
                 () -> modelMap.put("postPage", blogCache.getPostPage(postInfo)), applicationExecutor)
-                .exceptionally(e -> {AccessLogger.error("", e); return null;});
+                .exceptionally(e -> {log.error("", e); return null;});
     }
 
     /**
@@ -116,7 +121,7 @@ public class BlogServiceImpl implements BlogService {
     private CompletableFuture<Void> loadTagPost(ModelMap modelMap, String tag) {
         return CompletableFuture.runAsync(
                         () -> modelMap.put("postPage", blogCache.getTagPostPage(tag)), applicationExecutor)
-                .exceptionally(e -> {AccessLogger.error("", e); return null;});
+                .exceptionally(e -> {log.error("", e); return null;});
     }
 
     /**
@@ -125,7 +130,7 @@ public class BlogServiceImpl implements BlogService {
     private CompletableFuture<Void> loadNavigation(ModelMap modelMap) {
         return CompletableFuture.runAsync(
                 () -> modelMap.put("navigations", blogCache.getNavigations()), applicationExecutor)
-                .exceptionally(e -> {AccessLogger.error("", e); return null;});
+                .exceptionally(e -> {log.error("", e); return null;});
     }
 
     /**
@@ -145,7 +150,7 @@ public class BlogServiceImpl implements BlogService {
                     modelMap.put("recommendPosts", blogCache.getRecommendPosts()); // 推荐文章
                     modelMap.put("hotPosts", blogCache.getHotPosts());             // 浏览排行
                 }, applicationExecutor)
-                .exceptionally(e -> {AccessLogger.error("", e); return null;});
+                .exceptionally(e -> {log.error("", e); return null;});
     }
 
     /**
@@ -154,7 +159,7 @@ public class BlogServiceImpl implements BlogService {
     private CompletableFuture<Void> loadSlideshow(ModelMap modelMap) {
         return CompletableFuture.runAsync(
                 () -> modelMap.put("slideshow", blogCache.getSlideshow()), applicationExecutor)
-                .exceptionally(e -> {AccessLogger.error("", e); return null;});
+                .exceptionally(e -> {log.error("", e); return null;});
     }
 
     /**
@@ -355,7 +360,7 @@ public class BlogServiceImpl implements BlogService {
             postPage.setPage(Access.pageIndex());
             postPage.setPageSize(Access.pageSize(15));
             modelMap.put("postPage", postPage);
-        }, applicationExecutor).exceptionally(e -> {AccessLogger.error("", e); return null;});
+        }, applicationExecutor).exceptionally(e -> {log.error("", e); return null;});
         CompletableFuture.allOf(navFuture, sideFuture, postFuture).join();
         return "blog/focus";
     }

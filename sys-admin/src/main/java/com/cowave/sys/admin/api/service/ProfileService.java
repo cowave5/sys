@@ -9,7 +9,7 @@
  */
 package com.cowave.sys.admin.api.service;
 
-import com.cowave.sys.admin.api.entity.UserProfile;
+import com.cowave.sys.admin.core.entity.UserProfile;
 
 /**
  *

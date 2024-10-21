@@ -9,8 +9,8 @@
  */
 package com.cowave.sys.admin.api.controller.flow;
 
-import com.cowave.sys.admin.api.entity.flow.FlowTask;
-import com.cowave.sys.admin.api.entity.flow.TaskComplete;
+import com.cowave.sys.admin.core.entity.flow.FlowTask;
+import com.cowave.sys.admin.core.entity.flow.TaskComplete;
 import com.cowave.sys.admin.api.service.flow.FlowTaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.feign.codec.Response;
@@ -18,7 +18,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 流程任务

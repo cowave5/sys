@@ -12,7 +12,7 @@ package com.cowave.sys.admin.api.service.impl;
 import java.util.*;
 
 import com.cowave.commons.tools.Asserts;
-import com.cowave.sys.admin.api.caches.SysConfigCaches;
+import com.cowave.sys.admin.core.caches.SysConfigCaches;
 import com.cowave.sys.admin.api.service.SysUserService;
 import com.cowave.sys.model.admin.SysUserDept;
 import org.apache.commons.collections4.CollectionUtils;
@@ -20,7 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cowave.sys.admin.api.mapper.SysUserMapper;
+import com.cowave.sys.admin.core.mapper.SysUserMapper;
 import com.cowave.commons.framework.access.Access;
 import com.cowave.sys.model.admin.SysUser;
 

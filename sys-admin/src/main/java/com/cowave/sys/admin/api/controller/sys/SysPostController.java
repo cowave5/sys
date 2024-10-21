@@ -9,30 +9,27 @@
  */
 package com.cowave.sys.admin.api.controller.sys;
 
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
-
 import cn.hutool.core.lang.tree.Tree;
-import com.cowave.commons.framework.helper.operation.Operation;
-import com.cowave.sys.admin.api.caches.SysPostCaches;
+import com.alibaba.excel.EasyExcel;
+import com.cowave.commons.framework.access.operation.Operation;
+import com.cowave.commons.framework.support.excel.CellWidthHandler;
 import com.cowave.sys.admin.api.service.SysPostService;
 import com.cowave.sys.admin.core.OplogHandler;
+import com.cowave.sys.admin.core.caches.SysPostCaches;
+import com.cowave.sys.model.admin.SysPost;
 import com.cowave.sys.model.admin.SysUser;
+import lombok.RequiredArgsConstructor;
 import org.springframework.feign.codec.Response;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import com.alibaba.excel.EasyExcel;
-import com.cowave.sys.model.admin.SysPost;
-import com.cowave.commons.framework.support.excel.CellWidthHandler;
-
-import lombok.RequiredArgsConstructor;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * 岗位

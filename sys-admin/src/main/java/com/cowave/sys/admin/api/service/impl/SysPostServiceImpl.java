@@ -18,7 +18,7 @@ import com.cowave.sys.admin.api.service.SysPostService;
 import com.cowave.sys.model.admin.SysUser;
 import org.springframework.stereotype.Service;
 
-import com.cowave.sys.admin.api.mapper.SysPostMapper;
+import com.cowave.sys.admin.core.mapper.SysPostMapper;
 import com.cowave.sys.model.admin.SysPost;
 
 import lombok.RequiredArgsConstructor;

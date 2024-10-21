@@ -9,8 +9,8 @@
  */
 package com.cowave.sys.admin.api.service.delegate;
 
-import com.cowave.sys.admin.api.entity.flow.Leave;
-import com.cowave.sys.admin.api.mapper.FlowLeaveMapper;
+import com.cowave.sys.admin.core.entity.flow.Leave;
+import com.cowave.sys.admin.core.mapper.FlowLeaveMapper;
 import lombok.RequiredArgsConstructor;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.delegate.DelegateExecution;

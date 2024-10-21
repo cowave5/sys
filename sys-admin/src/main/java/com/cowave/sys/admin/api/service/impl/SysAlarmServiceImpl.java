@@ -17,8 +17,8 @@ import com.cowave.sys.model.admin.SysAlarm;
 import com.cowave.sys.model.admin.SysAlarmType;
 import org.springframework.stereotype.Service;
 
-import com.cowave.sys.admin.api.entity.AlarmHandles;
-import com.cowave.sys.admin.api.mapper.SysAlarmMapper;
+import com.cowave.sys.admin.core.entity.AlarmHandles;
+import com.cowave.sys.admin.core.mapper.SysAlarmMapper;
 
 import lombok.RequiredArgsConstructor;
 

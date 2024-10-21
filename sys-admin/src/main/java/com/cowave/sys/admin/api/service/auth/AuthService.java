@@ -9,25 +9,20 @@
  */
 package com.cowave.sys.admin.api.service.auth;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
 import cn.hutool.crypto.digest.DigestUtil;
-import com.cowave.commons.framework.filter.security.AccessToken;
-import com.cowave.commons.framework.filter.security.TokenService;
+import com.cowave.commons.framework.access.Access;
+import com.cowave.commons.framework.access.security.AccessToken;
+import com.cowave.commons.framework.access.security.TokenService;
 import com.cowave.commons.tools.AssertsException;
-import com.cowave.sys.admin.api.caches.SysConfigCaches;
-import com.cowave.sys.admin.api.entity.Route;
-import com.cowave.sys.admin.api.entity.RouteMeta;
-import com.cowave.sys.admin.api.entity.UserRegister;
-import com.cowave.sys.admin.api.mapper.ProfileMapper;
 import com.cowave.sys.admin.api.service.LdapService;
 import com.cowave.sys.admin.api.service.SysMenuService;
+import com.cowave.sys.admin.core.caches.SysConfigCaches;
+import com.cowave.sys.admin.core.entity.Route;
+import com.cowave.sys.admin.core.entity.RouteMeta;
+import com.cowave.sys.admin.core.entity.UserRegister;
+import com.cowave.sys.admin.core.mapper.ProfileMapper;
 import com.cowave.sys.model.admin.SysMenu;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -36,11 +31,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import com.cowave.commons.framework.access.Access;
-
-import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -117,7 +114,7 @@ public class AuthService {
      * 退出
      */
     public void logout(HttpServletResponse response) throws IOException {
-    	 String token = Access.tokenAccessValue();
+    	 String token = Access.accessToken();
     	 if(token != null) {
     		 tokenService.deleteToken(response, token);
     	 }

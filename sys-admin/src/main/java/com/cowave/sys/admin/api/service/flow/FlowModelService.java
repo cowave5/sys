@@ -11,7 +11,7 @@ package com.cowave.sys.admin.api.service.flow;
 
 import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.tools.Asserts;
-import com.cowave.sys.admin.api.entity.flow.FlowModel;
+import com.cowave.sys.admin.core.entity.flow.FlowModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

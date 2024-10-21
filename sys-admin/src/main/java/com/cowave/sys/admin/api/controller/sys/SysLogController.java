@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
-import com.cowave.sys.admin.api.entity.LogQuery;
+import com.cowave.sys.admin.core.entity.LogQuery;
 import com.cowave.sys.admin.api.service.SysLogService;
 import com.cowave.sys.model.admin.SysLog;
 import org.springframework.feign.codec.Response;

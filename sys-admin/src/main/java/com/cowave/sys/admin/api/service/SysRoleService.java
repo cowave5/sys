@@ -12,7 +12,7 @@ package com.cowave.sys.admin.api.service;
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cowave.sys.admin.api.entity.UserAuthed;
+import com.cowave.sys.admin.core.entity.UserAuthed;
 import com.cowave.sys.model.admin.SysRole;
 import com.cowave.sys.model.admin.SysUser;
 

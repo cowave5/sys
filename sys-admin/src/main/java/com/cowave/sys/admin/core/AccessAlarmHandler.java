@@ -12,7 +12,7 @@ package com.cowave.sys.admin.core;
 import com.alibaba.fastjson.JSON;
 import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.framework.access.AccessExceptionHandler;
-import com.cowave.commons.framework.configuration.ApplicationConfiguration;
+import com.cowave.commons.framework.configuration.ApplicationProperties;
 import com.cowave.sys.admin.api.service.SysAlarmService;
 import com.cowave.sys.model.admin.SysAlarm;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ import java.util.Map;
 @Component
 public class AccessAlarmHandler implements AccessExceptionHandler {
 
-    private final ApplicationConfiguration applicationConfiguration;
+    private final ApplicationProperties applicationProperties;
 
     private final SysAlarmService sysAlarmService;
 
@@ -48,7 +48,7 @@ public class AccessAlarmHandler implements AccessExceptionHandler {
         content.put("responseData", response.getData());
 
         SysAlarm sysAlarm = new SysAlarm();
-        String group = applicationConfiguration.getName();
+        String group = applicationProperties.getName();
         String type = "access_failed";
 
         String param = "";

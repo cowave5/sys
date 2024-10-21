@@ -10,13 +10,13 @@
 package com.cowave.sys.admin.api.service.auth.captcha;
 
 import cn.hutool.core.util.IdUtil;
-import com.cowave.commons.framework.support.redis.RedisHelper;
+import com.cowave.commons.framework.helper.redis.RedisHelper;
 import com.cowave.commons.tools.Asserts;
 import com.cowave.commons.tools.Messages;
-import com.cowave.sys.admin.api.caches.SysConfigCaches;
-import com.cowave.sys.admin.api.entity.UserRegister;
-import com.cowave.sys.admin.api.entity.oauth.OAuthConfig;
 import com.cowave.sys.admin.api.service.OAuthService;
+import com.cowave.sys.admin.core.caches.SysConfigCaches;
+import com.cowave.sys.admin.core.entity.UserRegister;
+import com.cowave.sys.admin.core.entity.oauth.OAuthConfig;
 import com.cowave.sys.model.admin.Login;
 import com.google.code.kaptcha.Producer;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +48,7 @@ public class CaptchaService {
     private static final int     SIGN                 = -128;
     private static final char    PAD                  = '=';
     private static final char[] LOOKUP_BASE64_ALPHABET = new char[LOOKUPLENGTH];
-    private static final String CAPTCHA_KEY = "captcha:";
+    private static final String CAPTCHA_KEY = "sys:captcha:";
     private static final Integer CAPTCHA_EXPIRATION = 3;
 
     static {

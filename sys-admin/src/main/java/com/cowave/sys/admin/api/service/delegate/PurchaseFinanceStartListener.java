@@ -9,8 +9,8 @@
  */
 package com.cowave.sys.admin.api.service.delegate;
 
-import com.cowave.sys.admin.api.entity.flow.Purchase;
-import com.cowave.sys.admin.api.mapper.FlowPurchaseMapper;
+import com.cowave.sys.admin.core.entity.flow.Purchase;
+import com.cowave.sys.admin.core.mapper.FlowPurchaseMapper;
 import lombok.RequiredArgsConstructor;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.delegate.TaskListener;

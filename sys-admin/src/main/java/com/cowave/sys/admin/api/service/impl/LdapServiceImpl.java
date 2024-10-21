@@ -9,19 +9,18 @@
  */
 package com.cowave.sys.admin.api.service.impl;
 
-import com.cowave.commons.framework.configuration.ClusterInfo;
-import com.cowave.commons.framework.filter.security.AccessToken;
-import com.cowave.commons.framework.filter.security.Permission;
-import com.cowave.commons.framework.filter.security.TokenService;
+import com.cowave.commons.framework.access.security.AccessToken;
+import com.cowave.commons.framework.access.security.Permission;
+import com.cowave.commons.framework.access.security.TokenService;
 import com.cowave.commons.tools.Asserts;
 import com.cowave.commons.tools.AssertsException;
-import com.cowave.sys.admin.api.entity.ldap.LdapAttributesMapper;
-import com.cowave.sys.admin.api.entity.ldap.LdapConfig;
-import com.cowave.sys.admin.api.entity.ldap.LdapUser;
-import com.cowave.sys.admin.api.mapper.LdapMapper;
-import com.cowave.sys.admin.api.mapper.SysRoleMapper;
-import com.cowave.sys.admin.api.mapper.SysUserMapper;
 import com.cowave.sys.admin.api.service.LdapService;
+import com.cowave.sys.admin.core.entity.ldap.LdapAttributesMapper;
+import com.cowave.sys.admin.core.entity.ldap.LdapConfig;
+import com.cowave.sys.admin.core.entity.ldap.LdapUser;
+import com.cowave.sys.admin.core.mapper.LdapMapper;
+import com.cowave.sys.admin.core.mapper.SysRoleMapper;
+import com.cowave.sys.admin.core.mapper.SysUserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.context.properties.PropertyMapper;
@@ -46,8 +45,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class LdapServiceImpl implements LdapService {
-
-    private final ClusterInfo clusterInfo;
 
     private final TokenService tokenService;
 
@@ -118,9 +115,6 @@ public class LdapServiceImpl implements LdapService {
         AccessToken accessToken = LdapUser.accessToken(ldapUser);
         accessToken.setRoles(List.of(roleCode));
         accessToken.setPermissions(permits);
-        accessToken.setClusterId(clusterInfo.getId());
-        accessToken.setClusterName(clusterInfo.getName());
-        accessToken.setClusterLevel(clusterInfo.getLevel());
         tokenService.assignToken(accessToken);
         return accessToken;
     }

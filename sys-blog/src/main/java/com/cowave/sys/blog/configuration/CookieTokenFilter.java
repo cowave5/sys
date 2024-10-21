@@ -10,7 +10,7 @@
 package com.cowave.sys.blog.configuration;
 
 import com.cowave.commons.framework.access.Access;
-import com.cowave.commons.framework.filter.security.AccessToken;
+import com.cowave.commons.framework.access.security.AccessToken;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

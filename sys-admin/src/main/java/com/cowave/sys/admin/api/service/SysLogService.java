@@ -10,7 +10,7 @@
 package com.cowave.sys.admin.api.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cowave.sys.admin.api.entity.LogQuery;
+import com.cowave.sys.admin.core.entity.LogQuery;
 import com.cowave.sys.model.admin.SysLog;
 
 /**

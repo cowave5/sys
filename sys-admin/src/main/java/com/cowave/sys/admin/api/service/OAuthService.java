@@ -9,9 +9,9 @@
  */
 package com.cowave.sys.admin.api.service;
 
-import com.cowave.commons.framework.filter.security.AccessToken;
-import com.cowave.sys.admin.api.entity.oauth.OAuthConfig;
-import com.cowave.sys.admin.api.entity.oauth.OAuthUser;
+import com.cowave.commons.framework.access.security.AccessToken;
+import com.cowave.sys.admin.core.entity.oauth.OAuthConfig;
+import com.cowave.sys.admin.core.entity.oauth.OAuthUser;
 
 import java.util.List;
 

@@ -9,9 +9,9 @@
  */
 package com.cowave.sys.code.security;
 
-import com.cowave.commons.framework.configuration.AccessConfiguration;
-import com.cowave.commons.framework.filter.security.TokenAuthenticationFilter;
-import com.cowave.commons.framework.filter.security.TokenService;
+import com.cowave.commons.framework.access.AccessConfiguration;
+import com.cowave.commons.framework.access.security.TokenAuthenticationFilter;
+import com.cowave.commons.framework.access.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;

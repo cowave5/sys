@@ -11,12 +11,11 @@ package com.cowave.sys.admin.api.service.impl;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cowave.commons.framework.access.Access;
-import com.cowave.sys.admin.api.entity.flow.Meeting;
-import com.cowave.sys.admin.api.mapper.FlowMeetingMapper;
+import com.cowave.sys.admin.core.entity.flow.Meeting;
+import com.cowave.sys.admin.core.mapper.FlowMeetingMapper;
 import com.cowave.sys.admin.api.service.FlowMeetingService;
 import lombok.RequiredArgsConstructor;
 import org.flowable.engine.HistoryService;

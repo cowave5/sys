@@ -9,43 +9,36 @@
  */
 package com.cowave.sys.admin.api.controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
 import com.cowave.commons.framework.access.Access;
-import com.cowave.commons.framework.filter.security.AccessToken;
-import com.cowave.commons.framework.helper.operation.Operation;
-import com.cowave.sys.admin.api.entity.UserProfile;
-import com.cowave.sys.admin.api.entity.UserRegister;
-import com.cowave.sys.admin.api.entity.oauth.OAuthUser;
+import com.cowave.commons.framework.access.operation.Operation;
+import com.cowave.commons.framework.access.security.AccessToken;
+import com.cowave.commons.framework.configuration.ApplicationProperties;
+import com.cowave.commons.framework.helper.redis.RedisHelper;
 import com.cowave.sys.admin.api.service.OAuthService;
 import com.cowave.sys.admin.api.service.SysAttachService;
 import com.cowave.sys.admin.api.service.SysLogService;
-import com.cowave.sys.admin.api.service.auth.captcha.CaptchaInfo;
-import com.cowave.sys.admin.api.entity.Route;
 import com.cowave.sys.admin.api.service.auth.AuthService;
+import com.cowave.sys.admin.api.service.auth.captcha.CaptchaInfo;
 import com.cowave.sys.admin.api.service.auth.captcha.CaptchaService;
 import com.cowave.sys.admin.core.OplogHandler;
+import com.cowave.sys.admin.core.entity.OnlineUser;
+import com.cowave.sys.admin.core.entity.Route;
+import com.cowave.sys.admin.core.entity.UserProfile;
+import com.cowave.sys.admin.core.entity.UserRegister;
+import com.cowave.sys.admin.core.entity.oauth.OAuthUser;
 import com.cowave.sys.model.admin.Login;
 import com.cowave.sys.model.admin.SysAttach;
 import com.cowave.sys.model.admin.SysLog;
+import lombok.RequiredArgsConstructor;
 import org.springframework.feign.codec.Response;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.cowave.sys.admin.api.entity.OnlineUser;
-import com.cowave.commons.framework.support.redis.RedisHelper;
-
-import lombok.RequiredArgsConstructor;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 鉴权
@@ -68,6 +61,8 @@ public class AuthController {
     private final OAuthService oAuthService;
 
     private final SysLogService sysLogService;
+
+    private final ApplicationProperties applicationProperties;
 
     /**
      * 获取验证码
@@ -136,7 +131,7 @@ public class AuthController {
      */
     @GetMapping("/info")
     public Response<UserProfile> info() throws Exception {
-        AccessToken accessToken = Access.accessToken();
+        AccessToken accessToken = Access.token();
         UserProfile userProfile = new UserProfile();
         userProfile.setUserId(accessToken.getUserId());
         userProfile.setUserName(accessToken.getUserNick());
@@ -198,7 +193,7 @@ public class AuthController {
     @PreAuthorize("@permit.hasPermit('monitor:online:force')")
     @GetMapping("/outline/{tokenType}/{userAccount}")
     public Response<String> outline(@PathVariable String tokenType, @PathVariable String userAccount) {
-        String tokenKey = AccessToken.KEY + tokenType + ":" + userAccount;
+        String tokenKey = applicationProperties.getTokenNamespace() + tokenType + ":" + userAccount;
     	AccessToken accessToken = redisHelper.getValue(tokenKey);
     	if(accessToken == null){
     		return Response.success();

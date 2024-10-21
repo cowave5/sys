@@ -11,7 +11,7 @@ package com.cowave.sys.admin.core.socket;
 
 import com.cowave.commons.framework.helper.socketio.ConnectedHandler;
 import com.cowave.commons.framework.helper.socketio.SocketServer;
-import com.cowave.sys.admin.api.mapper.SysNoticeMapper;
+import com.cowave.sys.admin.core.mapper.SysNoticeMapper;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;

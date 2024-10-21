@@ -9,12 +9,6 @@
  */
 package com.cowave.sys.model.admin;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.validation.constraints.NotBlank;
-
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
@@ -23,11 +17,15 @@ import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import com.alibaba.excel.enums.poi.HorizontalAlignmentEnum;
 import com.cowave.commons.framework.access.AccessUser;
-import com.cowave.commons.framework.filter.security.Permission;
+import com.cowave.commons.framework.access.security.Permission;
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 角色

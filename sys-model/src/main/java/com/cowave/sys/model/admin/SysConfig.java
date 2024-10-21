@@ -17,7 +17,7 @@ import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import com.alibaba.excel.enums.poi.HorizontalAlignmentEnum;
 import com.cowave.commons.framework.access.AccessUser;
-import com.cowave.commons.framework.helper.dict.DictValueParser;
+import com.cowave.commons.framework.helper.redis.dict.DictValueParser;
 import com.cowave.commons.framework.support.excel.YesNoConverter;
 import com.cowave.commons.tools.AssertsException;
 import com.fasterxml.jackson.annotation.JsonFormat;

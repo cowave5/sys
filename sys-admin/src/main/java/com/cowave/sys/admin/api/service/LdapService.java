@@ -9,9 +9,9 @@
  */
 package com.cowave.sys.admin.api.service;
 
-import com.cowave.commons.framework.filter.security.AccessToken;
-import com.cowave.sys.admin.api.entity.ldap.LdapConfig;
-import com.cowave.sys.admin.api.entity.ldap.LdapUser;
+import com.cowave.commons.framework.access.security.AccessToken;
+import com.cowave.sys.admin.core.entity.ldap.LdapConfig;
+import com.cowave.sys.admin.core.entity.ldap.LdapUser;
 
 import java.util.List;
 

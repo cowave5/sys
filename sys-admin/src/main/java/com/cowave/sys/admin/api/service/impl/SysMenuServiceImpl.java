@@ -15,8 +15,8 @@ import com.cowave.commons.tools.Asserts;
 import com.cowave.sys.admin.api.service.SysMenuService;
 import org.springframework.stereotype.Service;
 
-import com.cowave.sys.admin.api.entity.RoleAuthed;
-import com.cowave.sys.admin.api.mapper.SysMenuMapper;
+import com.cowave.sys.admin.core.entity.RoleAuthed;
+import com.cowave.sys.admin.core.mapper.SysMenuMapper;
 import com.cowave.commons.framework.access.Access;
 import com.cowave.sys.model.admin.SysMenu;
 import com.cowave.sys.model.admin.SysRole;

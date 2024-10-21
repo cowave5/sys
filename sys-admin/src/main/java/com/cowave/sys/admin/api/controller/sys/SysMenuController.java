@@ -24,7 +24,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.alibaba.excel.EasyExcel;
-import com.cowave.sys.admin.api.entity.RoleAuthed;
+import com.cowave.sys.admin.core.entity.RoleAuthed;
 import com.cowave.sys.model.admin.SysMenu;
 import com.cowave.sys.model.admin.SysRole;
 import com.cowave.commons.framework.support.excel.CellWidthHandler;

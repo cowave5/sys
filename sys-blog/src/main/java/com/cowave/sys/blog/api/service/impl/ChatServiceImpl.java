@@ -10,7 +10,7 @@
 package com.cowave.sys.blog.api.service.impl;
 
 import com.cowave.commons.framework.access.Access;
-import com.cowave.commons.framework.support.redis.RedisHelper;
+import com.cowave.commons.framework.helper.redis.RedisHelper;
 import com.cowave.commons.tools.Asserts;
 import com.cowave.sys.blog.api.entity.VerifyCode;
 import com.cowave.sys.blog.api.service.ChatService;

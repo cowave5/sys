@@ -9,7 +9,7 @@
  */
 package com.cowave.sys.admin.api.controller;
 
-import com.cowave.sys.admin.api.entity.flow.Meeting;
+import com.cowave.sys.admin.core.entity.flow.Meeting;
 import com.cowave.sys.admin.api.service.FlowMeetingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.feign.codec.Response;

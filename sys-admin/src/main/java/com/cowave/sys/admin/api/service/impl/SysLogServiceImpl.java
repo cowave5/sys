@@ -14,13 +14,13 @@ import java.util.List;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cowave.commons.framework.access.Access;
-import com.cowave.sys.admin.api.entity.LogQuery;
+import com.cowave.sys.admin.core.entity.LogQuery;
 import com.cowave.sys.admin.api.service.SysLogService;
 import com.cowave.sys.model.admin.SysLog;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
-import com.cowave.sys.admin.api.mapper.SysLogMapper;
+import com.cowave.sys.admin.core.mapper.SysLogMapper;
 
 import lombok.RequiredArgsConstructor;
 

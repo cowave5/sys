@@ -9,7 +9,7 @@
  */
 package com.cowave.sys.admin.api.controller;
 
-import com.cowave.sys.admin.api.entity.UserProfile;
+import com.cowave.sys.admin.core.entity.UserProfile;
 import com.cowave.sys.admin.api.service.ProfileService;
 import com.cowave.sys.admin.api.service.SysAttachService;
 import com.cowave.sys.model.admin.SysAttach;

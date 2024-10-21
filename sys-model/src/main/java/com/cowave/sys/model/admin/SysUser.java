@@ -9,12 +9,6 @@
  */
 package com.cowave.sys.model.admin;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
@@ -24,14 +18,18 @@ import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import com.alibaba.excel.enums.poi.HorizontalAlignmentEnum;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.cowave.commons.framework.access.AccessUser;
-import com.cowave.commons.framework.filter.security.AccessToken;
+import com.cowave.commons.framework.access.security.AccessToken;
 import com.cowave.commons.framework.support.excel.SexConverter;
 import com.cowave.commons.framework.support.excel.StatusConverter;
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.collections4.CollectionUtils;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 用户
@@ -328,7 +326,6 @@ public class SysUser extends AccessUser {
 		accessToken.setUsername(sysUser.getUserAccount());
 		accessToken.setUserNick(sysUser.getUserName());
 		accessToken.setUserPasswd(sysUser.getUserPasswd());
-
 		accessToken.setDeptId(sysUser.getDeptId());
 		accessToken.setDeptCode(sysUser.getDeptCode());
 		accessToken.setDeptName(sysUser.getDeptName());

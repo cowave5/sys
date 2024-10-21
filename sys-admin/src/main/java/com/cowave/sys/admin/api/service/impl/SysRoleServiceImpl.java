@@ -18,8 +18,8 @@ import com.cowave.sys.admin.api.service.SysRoleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cowave.sys.admin.api.entity.UserAuthed;
-import com.cowave.sys.admin.api.mapper.SysRoleMapper;
+import com.cowave.sys.admin.core.entity.UserAuthed;
+import com.cowave.sys.admin.core.mapper.SysRoleMapper;
 import com.cowave.sys.model.admin.SysRole;
 import com.cowave.sys.model.admin.SysUser;
 

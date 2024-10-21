@@ -9,8 +9,8 @@
  */
 package com.cowave.sys.admin.api.service.delegate;
 
-import com.cowave.sys.admin.api.entity.flow.Meeting;
-import com.cowave.sys.admin.api.mapper.FlowMeetingMapper;
+import com.cowave.sys.admin.core.entity.flow.Meeting;
+import com.cowave.sys.admin.core.mapper.FlowMeetingMapper;
 import lombok.RequiredArgsConstructor;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.delegate.TaskListener;

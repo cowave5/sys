@@ -10,9 +10,7 @@
 package com.cowave.sys.admin.api.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cowave.sys.admin.api.entity.flow.Meeting;
-
-import java.util.List;
+import com.cowave.sys.admin.core.entity.flow.Meeting;
 
 /**
  *

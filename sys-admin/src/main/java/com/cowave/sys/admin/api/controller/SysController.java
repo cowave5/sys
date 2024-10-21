@@ -9,7 +9,7 @@
  */
 package com.cowave.sys.admin.api.controller;
 
-import com.cowave.sys.admin.api.entity.CacheInfo;
+import com.cowave.sys.admin.core.entity.CacheInfo;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;

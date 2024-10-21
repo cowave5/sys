@@ -9,8 +9,8 @@
  */
 package com.cowave.sys.admin.api.controller;
 
-import com.cowave.sys.admin.api.entity.ldap.LdapConfig;
-import com.cowave.sys.admin.api.entity.ldap.LdapUser;
+import com.cowave.sys.admin.core.entity.ldap.LdapConfig;
+import com.cowave.sys.admin.core.entity.ldap.LdapUser;
 import com.cowave.sys.admin.api.service.LdapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.feign.codec.Response;

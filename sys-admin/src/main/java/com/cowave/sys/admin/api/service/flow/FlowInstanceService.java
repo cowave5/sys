@@ -10,11 +10,13 @@
 package com.cowave.sys.admin.api.service.flow;
 
 import com.cowave.commons.framework.access.Access;
-import com.cowave.sys.admin.api.entity.flow.*;
-import com.cowave.sys.admin.api.mapper.FlowExecutionMapper;
-import com.cowave.sys.admin.api.mapper.SysUserMapper;
+import com.cowave.sys.admin.core.entity.flow.FlowExecution;
+import com.cowave.sys.admin.core.entity.flow.FlowInstance;
+import com.cowave.sys.admin.core.entity.flow.FlowTask;
+import com.cowave.sys.admin.core.entity.flow.FlowVariable;
+import com.cowave.sys.admin.core.mapper.FlowExecutionMapper;
+import com.cowave.sys.admin.core.mapper.SysUserMapper;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.flowable.bpmn.model.*;
 import org.flowable.engine.*;

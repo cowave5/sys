@@ -13,7 +13,7 @@ import com.cowave.sys.admin.api.service.FlowPurchaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.feign.codec.Response;
 import org.springframework.web.bind.annotation.*;
-import com.cowave.sys.admin.api.entity.flow.Purchase;
+import com.cowave.sys.admin.core.entity.flow.Purchase;
 
 /**
  * 采购申请

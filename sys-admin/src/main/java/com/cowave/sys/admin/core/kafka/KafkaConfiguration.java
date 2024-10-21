@@ -10,7 +10,6 @@
 package com.cowave.sys.admin.core.kafka;
 
 import org.apache.kafka.clients.admin.NewTopic;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -21,12 +20,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class KafkaConfiguration {
 
-    @Bean
+//    @Bean
     public NewTopic oplogTopic() {
         return new NewTopic("sys-oplog",1, (short) 1);
     }
 
-    @Bean
+//    @Bean
     public NewTopic alarmTopic() {
         return new NewTopic("sys-alarm",1, (short) 1);
     }

@@ -10,12 +10,14 @@
 package com.cowave.sys.admin;
 
 import com.cowave.commons.framework.access.AccessAdvice;
-import com.cowave.commons.framework.filter.access.AccessIdGenerator;
-import com.cowave.commons.framework.filter.access.TransactionIdSetter;
-import com.cowave.commons.framework.filter.security.AccessToken;
-import com.cowave.commons.framework.filter.security.Permission;
-import com.cowave.commons.framework.filter.security.TokenService;
-import com.cowave.commons.framework.support.redis.RedisHelper;
+import com.cowave.commons.framework.access.AccessConfiguration;
+import com.cowave.commons.framework.access.filter.AccessIdGenerator;
+import com.cowave.commons.framework.access.filter.TransactionIdSetter;
+import com.cowave.commons.framework.access.security.AccessToken;
+import com.cowave.commons.framework.access.security.Permission;
+import com.cowave.commons.framework.access.security.TokenService;
+import com.cowave.commons.framework.configuration.ApplicationProperties;
+import com.cowave.commons.framework.helper.redis.RedisHelper;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -96,6 +98,12 @@ public class SpringTest {
     @Autowired
     protected AccessIdGenerator accessIdGenerator;
 
+    @Autowired
+    protected AccessConfiguration accessConfiguration;
+
+    @Autowired
+    protected ApplicationProperties applicationProperties;
+
     @PostConstruct
     public void init() {
         AccessToken loginToken = AccessToken.newToken();
@@ -105,7 +113,7 @@ public class SpringTest {
         loginToken.setUsername("guanyu");
         loginToken.setUserNick("关羽");
         loginToken.setRoles(List.of(Permission.ROLE_ADMIN));
-        redisHelper.putValue(AccessToken.KEY + "user:" + loginToken.getUsername(), loginToken);
+        redisHelper.putValue(applicationProperties.getTokenNamespace() + "user:" + loginToken.getUsername(), loginToken);
 
         tokenService.assignToken(loginToken);
         this.accessToken = loginToken.getAccessToken();
@@ -118,7 +126,7 @@ public class SpringTest {
         logoutToken.setUsername("zhangfei");
         logoutToken.setUserNick("张飞");
         logoutToken.setRoles(List.of(Permission.ROLE_ADMIN));
-        redisHelper.putValue(AccessToken.KEY + "user:" + logoutToken.getUsername(), logoutToken);
+        redisHelper.putValue(applicationProperties.getTokenNamespace() + "user:" + logoutToken.getUsername(), logoutToken);
     }
 
     protected String requestId(){

@@ -6,6 +6,7 @@ server:
 spring:
   application:
     name: sys-admin
+    namespace: sys
   access:
     always-success: true
     token:
@@ -36,7 +37,7 @@ spring:
     host: 127.0.0.1
     port: 6379
   minio:
-    endpoint: http://10.64.4.74:39000
+    endpoint: http://192.168.141.74:39000
     accessKey: admin
     secretKey: admin123
   socket-io:
@@ -48,7 +49,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 10.64.4.74:8848
+        server-addr: 192.168.141.74:8848
 
 flowable:
   database-schema-update: true

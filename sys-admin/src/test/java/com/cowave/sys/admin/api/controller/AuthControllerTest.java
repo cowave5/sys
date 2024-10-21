@@ -9,8 +9,8 @@
  */
 package com.cowave.sys.admin.api.controller;
 
-import com.cowave.commons.framework.filter.access.AccessFilter;
-import com.cowave.commons.framework.filter.security.TokenAuthenticationFilter;
+import com.cowave.commons.framework.access.filter.AccessFilter;
+import com.cowave.commons.framework.access.security.TokenAuthenticationFilter;
 import com.cowave.sys.admin.SpringTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ public class AuthControllerTest extends SpringTest {
     @BeforeEach
     public void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(authController)
-                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, true))
+                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, accessConfiguration))
                 .addFilter(new TokenAuthenticationFilter(tokenService))
                 .setControllerAdvice(accessAdvice).build();
     }
@@ -56,7 +56,7 @@ public class AuthControllerTest extends SpringTest {
      */
     @Test
     public void register() throws Exception {
-        redisHelper.putValue("captcha:register", "test@Cowave.com");
+        redisHelper.putValue("sys:captcha:register", "test@Cowave.com");
         mockPost("/api/v1/auth/register", "{\"userEmail\":\"test@Cowave.com\",\"captcha\":\"register\"," +
                         "\"userName\":\"注册测试\",\"userAccount\":\"testRegister\"}");
     }
@@ -66,7 +66,7 @@ public class AuthControllerTest extends SpringTest {
      */
     @Test
     public void login() throws Exception {
-        redisHelper.putValue("captcha:login", "21");
+        redisHelper.putValue("sys:captcha:login", "21");
         mockPost("/api/v1/auth/login", "{\"userAccount\":\"liubei\",\"passWord\":\"12345678\",\"captchaId\":\"login\",\"captcha\":\"21\"}");
     }
 

@@ -23,7 +23,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cowave.sys.admin.api.mapper.SysDeptMapper;
+import com.cowave.sys.admin.core.mapper.SysDeptMapper;
 import com.cowave.sys.model.admin.SysDept;
 
 import lombok.RequiredArgsConstructor;

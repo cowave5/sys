@@ -11,7 +11,7 @@ package com.cowave.sys.admin.api.controller.sys;
 
 import com.alibaba.excel.EasyExcel;
 import com.cowave.commons.framework.support.excel.CellWidthHandler;
-import com.cowave.sys.admin.api.caches.SysConfigCaches;
+import com.cowave.sys.admin.core.caches.SysConfigCaches;
 import com.cowave.sys.admin.api.service.SysConfigService;
 import com.cowave.sys.model.admin.SysConfig;
 import lombok.RequiredArgsConstructor;

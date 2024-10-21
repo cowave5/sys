@@ -11,7 +11,7 @@ package com.cowave.sys.admin.api.controller.flow;
 
 import com.cowave.sys.admin.api.service.flow.FlowModelService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.cowave.sys.admin.api.entity.flow.FlowModel;
+import com.cowave.sys.admin.core.entity.flow.FlowModel;
 import lombok.RequiredArgsConstructor;
 import org.flowable.engine.repository.Model;
 import org.springframework.feign.codec.Response;

@@ -9,11 +9,10 @@
  */
 package com.cowave.sys.admin.core.security;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.cowave.commons.framework.configuration.AccessConfiguration;
-import com.cowave.commons.framework.filter.security.TokenService;
+import com.cowave.commons.framework.access.AccessConfiguration;
+import com.cowave.commons.framework.access.security.TokenAuthenticationFilter;
+import com.cowave.commons.framework.access.security.TokenService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -27,9 +26,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 
-import com.cowave.commons.framework.filter.security.TokenAuthenticationFilter;
-
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *

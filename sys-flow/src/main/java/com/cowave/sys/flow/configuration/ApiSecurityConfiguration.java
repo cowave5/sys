@@ -9,12 +9,11 @@
  */
 package com.cowave.sys.flow.configuration;
 
-import com.cowave.commons.framework.filter.security.TokenService;
+import com.cowave.commons.framework.access.security.TokenService;
 import org.flowable.engine.IdentityService;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
