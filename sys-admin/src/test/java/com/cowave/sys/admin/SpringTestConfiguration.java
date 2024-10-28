@@ -9,8 +9,8 @@
  */
 package com.cowave.sys.admin;
 
-import com.cowave.commons.framework.support.datasource.DynamicDataSource;
-import com.cowave.commons.framework.support.redis.connection.LettuceRedisConnectionConfiguration;
+import com.cowave.commons.framework.helper.datasource.DynamicDataSource;
+import com.cowave.commons.framework.helper.redis.connection.LettuceRedisConnectionConfiguration;
 import io.lettuce.core.resource.DefaultClientResources;
 import io.minio.MinioClient;
 import org.springframework.beans.factory.ObjectProvider;
