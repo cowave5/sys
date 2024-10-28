@@ -9,22 +9,15 @@
  */
 package com.cowave.sys.flow.configuration;
 
-import com.alibaba.fastjson.JSON;
 import com.cowave.commons.framework.access.security.AccessToken;
 import com.cowave.commons.framework.access.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.flowable.engine.IdentityService;
-import org.springframework.feign.codec.HttpCode;
-import org.springframework.feign.codec.Response;
-import org.springframework.feign.codec.ResponseCode;
-import org.springframework.http.MediaType;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
-import static org.springframework.feign.codec.ResponseCode.SUCCESS;
 
 /**
  * Api接口权限过滤器
@@ -41,25 +34,9 @@ public class ApiSecurityFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        AccessToken accessToken = tokenService.parseToken(httpRequest);
-
-        ResponseCode validCode = accessToken.getValidCode();
-        if(validCode != null) {
-            HttpServletResponse httpResponse = (HttpServletResponse)response;
-            httpResponse.setCharacterEncoding("UTF-8");
-            httpResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            httpResponse.setStatus(SUCCESS.getStatus());
-            httpResponse.getWriter().write(JSON.toJSONString(Response.code(new HttpCode() {
-                @Override
-                public String getCode() {
-                    return validCode.getCode();
-                }
-
-                @Override
-                public String getMsg() {
-                    return accessToken.getValidDesc();
-                }
-            })));
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        AccessToken accessToken = tokenService.parseToken(httpRequest, httpResponse);
+        if(accessToken == null){
             return;
         }
         identityService.setAuthenticatedUserId(accessToken.getUsername());

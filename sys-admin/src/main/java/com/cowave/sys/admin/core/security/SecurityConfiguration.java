@@ -18,16 +18,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -43,21 +39,6 @@ public class SecurityConfiguration {
 	private final TokenService tokenService;
 
 	private final AccessProperties accessProperties;
-
-	private static final List<String> PERMIT_ALL = new ArrayList<>();
-
-	static {
-		PERMIT_ALL.add("/actuator/**");
-		PERMIT_ALL.add("/druid/**");
-		PERMIT_ALL.add("/doc/**");
-		PERMIT_ALL.add("/fom/**");
-	}
-
-	private String[] permitAll(){
-		List<String> list = new ArrayList<>(PERMIT_ALL);
-		list.addAll(accessProperties.tokenIgnoreUrls());
-		return list.toArray(new String[0]);
-	}
 
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder(){
@@ -77,15 +58,10 @@ public class SecurityConfiguration {
 		httpSecurity.csrf().disable();
 		httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		httpSecurity.headers().addHeaderWriter(new XXssProtectionHeaderWriter()).frameOptions().disable();
-		httpSecurity.authorizeRequests().antMatchers(permitAll()).permitAll().anyRequest().authenticated();
+		httpSecurity.authorizeRequests().antMatchers(accessProperties.tokenIgnoreUrls()).permitAll().anyRequest().authenticated();
 
-		TokenAuthenticationFilter tokenAuthenticationFilter = new TokenAuthenticationFilter(tokenService);
+		TokenAuthenticationFilter tokenAuthenticationFilter = new TokenAuthenticationFilter(tokenService, accessProperties.tokenIgnoreUrls());
 		httpSecurity.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		return httpSecurity.build();
-	}
-
-	@Bean
-	public WebSecurityCustomizer webSecurityCustomizer(){
-		return web -> web.ignoring().antMatchers(permitAll());
 	}
 }

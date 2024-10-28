@@ -16,13 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -37,34 +33,15 @@ public class SecurityConfiguration {
 
 	private final AccessProperties accessProperties;
 
-	private static final List<String> PERMIT_ALL = new ArrayList<>();
-
-	static {
-		PERMIT_ALL.add("/actuator/**");
-		PERMIT_ALL.add("/druid/**");
-		PERMIT_ALL.add("/doc/**");
-		PERMIT_ALL.add("/fom/**");
-	}
-
-	private String[] permitAll(){
-		PERMIT_ALL.addAll(accessProperties.tokenIgnoreUrls());
-		return PERMIT_ALL.toArray(new String[0]);
-	}
-
 	@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf().disable();
 		httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		httpSecurity.headers().frameOptions().disable();
-		httpSecurity.authorizeRequests().antMatchers(permitAll()).permitAll().anyRequest().authenticated();
+		httpSecurity.authorizeRequests().antMatchers(accessProperties.tokenIgnoreUrls()).permitAll().anyRequest().authenticated();
 
-		TokenAuthenticationFilter tokenAuthenticationFilter = new TokenAuthenticationFilter(tokenService);
+		TokenAuthenticationFilter tokenAuthenticationFilter = new TokenAuthenticationFilter(tokenService, accessProperties.tokenIgnoreUrls());
 		httpSecurity.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		return httpSecurity.build();
-	}
-
-	@Bean
-	public WebSecurityCustomizer webSecurityCustomizer(){
-		return (web) -> web.ignoring().antMatchers(permitAll());
 	}
 }
