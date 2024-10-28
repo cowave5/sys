@@ -32,7 +32,7 @@ public class LdapControllerTest extends SpringTest {
     @BeforeEach
     public void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(ldapController)
-                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, accessConfiguration))
+                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, accessProperties))
                 .addFilter(new TokenAuthenticationFilter(tokenService))
                 .setControllerAdvice(accessAdvice).build();
     }

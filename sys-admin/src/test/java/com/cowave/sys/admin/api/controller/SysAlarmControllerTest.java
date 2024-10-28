@@ -33,7 +33,7 @@ public class SysAlarmControllerTest extends SpringTest {
     @BeforeEach
     public void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(sysAlarmController)
-                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, accessConfiguration))
+                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, accessProperties))
                 .addFilter(new TokenAuthenticationFilter(tokenService))
                 .setControllerAdvice(accessAdvice).build();
     }

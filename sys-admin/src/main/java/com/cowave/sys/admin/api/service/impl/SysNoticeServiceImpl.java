@@ -9,28 +9,26 @@
  */
 package com.cowave.sys.admin.api.service.impl;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cowave.commons.framework.helper.socketio.SocketServer;
+import com.cowave.commons.framework.access.Access;
+import com.cowave.commons.framework.helper.socketio.SocketIoHelper;
 import com.cowave.commons.tools.Asserts;
-import com.cowave.sys.admin.core.mapper.SysNoticeMapper;
-import com.cowave.sys.admin.core.mapper.SysUserMapper;
 import com.cowave.sys.admin.api.service.SysAttachService;
 import com.cowave.sys.admin.api.service.SysNoticeService;
+import com.cowave.sys.admin.core.mapper.SysNoticeMapper;
+import com.cowave.sys.admin.core.mapper.SysUserMapper;
 import com.cowave.sys.model.admin.SysAttach;
+import com.cowave.sys.model.admin.SysNotice;
+import com.cowave.sys.model.admin.SysNoticeRead;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.cowave.commons.framework.access.Access;
-import com.cowave.sys.model.admin.SysNotice;
-import com.cowave.sys.model.admin.SysNoticeRead;
-
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -45,9 +43,9 @@ public class SysNoticeServiceImpl implements SysNoticeService {
 
     private final SysNoticeMapper sysNoticeMapper;
 
-    private final SocketServer socketServer;
-
     private final SysUserMapper sysUserMapper;
+
+    private final SocketIoHelper socketIoHelper;
 
     @Override
     public Page<SysNotice> list(SysNotice sysNotice) {
@@ -170,7 +168,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         sysNoticeMapper.updatePublishTotal(noticeId, SysNotice.STATUS_PUBLISH, new Date());
         // 推送
         List<Long> userIds = sysNoticeMapper.publishUserIds(noticeId);
-        socketServer.sendGroup("notice_new", notice.getNoticeTitle(), userIds);
+        socketIoHelper.sendGroup("notice_new", notice.getNoticeTitle(), userIds);
     }
 
     @Override
@@ -214,7 +212,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         notice.setContent("<p>催办提醒: </p><p>" + startUserName + "的" + processName + "[" + taskName + "]</p>");
         sysNoticeMapper.createNotice(notice);
         sysNoticeMapper.insertReadOfUser(notice.getNoticeId(), List.of(assigneeUser));
-        socketServer.sendSingle("notice_todo", "催办提醒: " + startUserName + "的" + processName + "[" + taskName + "]", assigneeUser);
+        socketIoHelper.sendSingle("notice_todo", "催办提醒: " + startUserName + "的" + processName + "[" + taskName + "]", assigneeUser);
     }
 
     private SysNotice defaultNotice(){

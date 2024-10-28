@@ -10,7 +10,7 @@
 package com.cowave.sys.admin.core.socket;
 
 import com.cowave.commons.framework.helper.socketio.ConnectedHandler;
-import com.cowave.commons.framework.helper.socketio.SocketServer;
+import com.cowave.commons.framework.helper.socketio.SocketIoHelper;
 import com.cowave.sys.admin.core.mapper.SysNoticeMapper;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +28,8 @@ public class SocketConnectedHandler implements ConnectedHandler {
     private final SysNoticeMapper sysNoticeMapper;
 
     @Override
-    public void onConnected(Long userId, SocketServer socketServer) {
+    public void onConnected(Long userId, SocketIoHelper socketIoHelper) {
         int unread = sysNoticeMapper.countUserUnRead(userId);
-        socketServer.sendSingle("notice_unread", unread, userId);
+        socketIoHelper.sendSingle("notice_unread", unread, userId);
     }
 }

@@ -33,7 +33,7 @@ public class SysDictControllerTest extends SpringTest {
     @BeforeEach
     public void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(sysDictController)
-                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, accessConfiguration))
+                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, accessProperties))
                 .addFilter(new TokenAuthenticationFilter(tokenService))
                 .setControllerAdvice(accessAdvice).build();
     }

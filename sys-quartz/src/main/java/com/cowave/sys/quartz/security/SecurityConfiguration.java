@@ -9,7 +9,7 @@
  */
 package com.cowave.sys.quartz.security;
 
-import com.cowave.commons.framework.access.AccessConfiguration;
+import com.cowave.commons.framework.access.AccessProperties;
 import com.cowave.commons.framework.access.security.TokenAuthenticationFilter;
 import com.cowave.commons.framework.access.security.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +33,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-	private final AccessConfiguration accessConfiguration;
-
 	private final TokenService tokenService;
+
+	private final AccessProperties accessProperties;
 
 	private static final List<String> PERMIT_ALL = new ArrayList<>();
 
@@ -47,7 +47,7 @@ public class SecurityConfiguration {
 	}
 
 	private String[] permitAll(){
-		PERMIT_ALL.addAll(accessConfiguration.tokenIgnoreUrls());
+		PERMIT_ALL.addAll(accessProperties.tokenIgnoreUrls());
 		return PERMIT_ALL.toArray(new String[0]);
 	}
 

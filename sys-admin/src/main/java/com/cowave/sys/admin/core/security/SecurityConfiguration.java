@@ -9,7 +9,7 @@
  */
 package com.cowave.sys.admin.core.security;
 
-import com.cowave.commons.framework.access.AccessConfiguration;
+import com.cowave.commons.framework.access.AccessProperties;
 import com.cowave.commons.framework.access.security.TokenAuthenticationFilter;
 import com.cowave.commons.framework.access.security.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -40,9 +40,9 @@ public class SecurityConfiguration {
 
 	private final UserDetailsService userDetailsService;
 
-	private final AccessConfiguration accessConfiguration;
-
 	private final TokenService tokenService;
+
+	private final AccessProperties accessProperties;
 
 	private static final List<String> PERMIT_ALL = new ArrayList<>();
 
@@ -55,7 +55,7 @@ public class SecurityConfiguration {
 
 	private String[] permitAll(){
 		List<String> list = new ArrayList<>(PERMIT_ALL);
-		list.addAll(accessConfiguration.tokenIgnoreUrls());
+		list.addAll(accessProperties.tokenIgnoreUrls());
 		return list.toArray(new String[0]);
 	}
 

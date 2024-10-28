@@ -10,7 +10,7 @@
 package com.cowave.sys.admin;
 
 import com.cowave.commons.framework.access.AccessAdvice;
-import com.cowave.commons.framework.access.AccessConfiguration;
+import com.cowave.commons.framework.access.AccessProperties;
 import com.cowave.commons.framework.access.filter.AccessIdGenerator;
 import com.cowave.commons.framework.access.filter.TransactionIdSetter;
 import com.cowave.commons.framework.access.security.AccessToken;
@@ -99,7 +99,7 @@ public class SpringTest {
     protected AccessIdGenerator accessIdGenerator;
 
     @Autowired
-    protected AccessConfiguration accessConfiguration;
+    protected AccessProperties accessProperties;
 
     @Autowired
     protected ApplicationProperties applicationProperties;
