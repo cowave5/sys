@@ -54,10 +54,10 @@
 			<artifactId>liquibase-core</artifactId>
 		</dependency>
 		<!-- nacos -->
-<!--		<dependency>-->
-<!--			<groupId>com.alibaba.cloud</groupId>-->
-<!--			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+		</dependency>
 		<!-- prometheus -->
 		<dependency>
 			<groupId>io.micrometer</groupId>
