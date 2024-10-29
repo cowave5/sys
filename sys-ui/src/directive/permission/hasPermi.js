@@ -14,7 +14,7 @@ export default {
       const permissionFlag = value
 
       const hasPermissions = permissions.some(permission => {
-        return "*:*:*" === permission || permissionFlag.includes(permission)
+        return permissionFlag.some(flag => matchPermit(permission, flag));
       })
 
       if (!hasPermissions) {
@@ -22,4 +22,21 @@ export default {
       }
     }
   }
+}
+
+function matchPermit(srcPermit, destPermit) {
+  const src = srcPermit.split(":");
+  const dest = destPermit.split(":");
+  for (let i = 0; i < src.length; i++) {
+    if (src[i] === "*") {
+      return true;
+    }
+    if (i >= dest.length) {
+      return false;
+    }
+    if (src[i] !== dest[i]) {
+      return false;
+    }
+  }
+  return true;
 }
