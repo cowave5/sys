@@ -45,7 +45,7 @@ public class ChatServiceImpl implements ChatService {
         mailMessage.setSubject("聊天室验证码");
         mailMessage.setText("验证码:" + code + "，有效期为3分钟");
         mailSender.send(mailMessage);
-        redisHelper.putExpireValue(CAPTCHA_KEY + uuid, code, 3, TimeUnit.MINUTES);
+        redisHelper.putValue(CAPTCHA_KEY + uuid, code, 3, TimeUnit.MINUTES);
     }
 
     @Override

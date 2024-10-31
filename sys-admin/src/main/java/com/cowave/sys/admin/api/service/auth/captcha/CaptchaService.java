@@ -107,7 +107,7 @@ public class CaptchaService {
             capStr = code = captchaProducer.createText();
             image = captchaProducer.createImage(capStr);
         }
-        redisHelper.putExpireValue(CAPTCHA_KEY + uuid, code, CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
+        redisHelper.putValue(CAPTCHA_KEY + uuid, code, CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
         FastByteArrayOutputStream os = new FastByteArrayOutputStream();
         assert image != null;
         ImageIO.write(image, "jpg", os);
@@ -122,7 +122,7 @@ public class CaptchaService {
         mailMessage.setSubject(Messages.msg("captcha.title"));
         mailMessage.setText(Messages.msg("captcha.msg", String.valueOf(code), CAPTCHA_EXPIRATION));
         mail.send(mailMessage);
-        redisHelper.putExpireValue(CAPTCHA_KEY + code, email, CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
+        redisHelper.putValue(CAPTCHA_KEY + code, email, CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
     }
 
     public void valid(Login login){
