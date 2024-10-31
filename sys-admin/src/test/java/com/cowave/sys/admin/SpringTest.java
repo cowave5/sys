@@ -18,6 +18,7 @@ import com.cowave.commons.framework.access.security.Permission;
 import com.cowave.commons.framework.access.security.TokenService;
 import com.cowave.commons.framework.configuration.ApplicationProperties;
 import com.cowave.commons.framework.helper.redis.RedisHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -90,16 +91,19 @@ public class SpringTest {
     protected TransactionIdSetter transactionIdSetter;
 
     @Autowired
-    protected AccessAdvice accessAdvice;
+    protected ObjectMapper objectMapper;
 
     @Autowired
     protected RedisHelper redisHelper;
 
     @Autowired
-    protected AccessIdGenerator accessIdGenerator;
+    protected AccessAdvice accessAdvice;
 
     @Autowired
     protected AccessProperties accessProperties;
+
+    @Autowired
+    protected AccessIdGenerator accessIdGenerator;
 
     @Autowired
     protected ApplicationProperties applicationProperties;

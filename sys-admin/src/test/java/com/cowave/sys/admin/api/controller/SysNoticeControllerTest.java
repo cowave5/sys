@@ -35,7 +35,7 @@ public class SysNoticeControllerTest extends SpringTest {
     @BeforeEach
     public void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(sysNoticeController)
-                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, accessProperties))
+                .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, accessProperties, objectMapper))
                 .addFilter(new TokenAuthenticationFilter(tokenService))
                 .setControllerAdvice(accessAdvice).build();
     }
