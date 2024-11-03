@@ -20,7 +20,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-                   :disabled="!checkPermit(['sys:dept:new'])">{{$t('route.system.dept.new')}}</el-button>
+                   :disabled="!checkPermit(['sys:dept:create'])">{{$t('route.system.dept.new')}}</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
@@ -60,7 +60,7 @@
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">{{$t('route.system.dept.edit')}}</el-button>
           <el-button size="mini" type="text" icon="el-icon-plus" @click="handleAdd(scope.row)"
-                     :disabled="!checkPermit(['sys:dept:new'])">{{$t('route.system.dept.new')}}</el-button>
+                     :disabled="!checkPermit(['sys:dept:create'])">{{$t('route.system.dept.new')}}</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
                      :disabled="scope.row.readOnly === 1 || !checkPermit(['sys:dept:delete'])">{{$t('route.system.dept.delete')}}</el-button>
           <el-button size="mini" type="text" @click="choosePosts(scope.row)"><svg-icon icon-class="tree"/>{{$t('route.system.dept.positions')}}</el-button>

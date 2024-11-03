@@ -18,9 +18,7 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
 /**
- *
  * @author shanhuiming
- *
  */
 @RequiredArgsConstructor
 public class LdapUserNameMapper implements AttributesMapper<String> {

@@ -12,9 +12,7 @@ package com.cowave.sys.blog.api.service;
 import com.cowave.sys.blog.api.entity.VerifyCode;
 
 /**
- *
  * @author shanhuiming
- *
  */
 public interface ChatService {
 

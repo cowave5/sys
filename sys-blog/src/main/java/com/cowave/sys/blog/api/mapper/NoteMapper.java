@@ -14,9 +14,7 @@ import com.cowave.sys.blog.api.entity.NoteInfo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- *
  * @author shanhuiming
- *
  */
 @Mapper
 public interface NoteMapper extends BaseMapper<NoteInfo> {

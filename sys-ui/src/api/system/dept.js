@@ -1,5 +1,15 @@
 import request from '@/utils/request'
 
+/**
+ * 部门成员
+ */
+export function listMembers(deptId, page, pageSize) {
+  return request({
+    url: '/admin/api/v1/dept/members/' + deptId + "?page=" + page + "&pageSize=" + pageSize,
+    method: 'get'
+  })
+}
+
 // 查询部门列表
 export function listDept(query) {
   return request({

@@ -9,10 +9,10 @@
  */
 package com.cowave.sys.blog.api.controller;
 
+import com.cowave.commons.response.Response;
 import com.cowave.sys.blog.api.entity.CategoryInfo;
 import com.cowave.sys.blog.api.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.feign.codec.Response;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

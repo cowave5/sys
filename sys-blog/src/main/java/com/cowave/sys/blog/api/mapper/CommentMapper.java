@@ -16,9 +16,7 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 /**
- *
  * @author shanhuiming
- *
  */
 @Mapper
 public interface CommentMapper extends BaseMapper<PostComment> {

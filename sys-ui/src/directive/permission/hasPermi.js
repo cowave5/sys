@@ -14,6 +14,9 @@ export default {
       const permissionFlag = value
 
       const hasPermissions = permissions.some(permission => {
+        if (!permission) {
+         return false;
+        }
         return permissionFlag.some(flag => matchPermit(permission, flag));
       })
 

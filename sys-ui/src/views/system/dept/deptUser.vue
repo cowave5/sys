@@ -18,7 +18,7 @@
 
     <h4 class="form-header h4">{{$t('dept.label.member')}}</h4>
     <el-table v-loading="loading" :row-key="getRowKey" ref="table" @select="selectSingle" :data="list">
-      <el-table-column type="selection" :reserve-selection="true" width="50"></el-table-column>
+      <el-table-column type="selection" :reserve-selection="true" width="50" />
       <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
         <template slot-scope="scope">
           <span>{{(queryParams.page - 1) * queryParams.pageSize + scope.$index + 1}}</span>
@@ -64,8 +64,7 @@
 </template>
 
 <script>
-import {listUser} from "@/api/system/user";
-import {getDept, getDeptPosts, getDeptUsersById, setDeptUsers} from "@/api/system/dept";
+import { getDept, getDeptPosts, getDeptUsersById, listMembers, setDeptUsers } from '@/api/system/dept'
 import {checkPermit} from "@/utils/permission";
 
 export default {
@@ -93,7 +92,7 @@ export default {
       // 岗位选项
       postOptions: [],
       // 默认岗位
-      defaultPostId: undefined
+      defaultPostId: null
     };
   },
   created() {
@@ -122,30 +121,27 @@ export default {
     checkPermit,
     selectRow() {
       if (this.infoId) {
-        this.$nextTick(()=>{
+        this.$nextTick(() => {
           this.list.forEach((row) => {
-            const index = this.chooseRows.findIndex(v=>v.userId === row.userId);
-            if(index !== -1){
-              this.$refs.table.toggleRowSelection(row, true);
-              row.isLeader = this.chooseRows[index].isLeader;
-              row.isDefault = this.chooseRows[index].isDefault;
+            if (row.deptId !== null) {
+              this.$refs.table.toggleRowSelection(row, true)
             }
-          });
+          })
         })
       }
     },
     /** 列表数据 */
     getList() {
-      listUser(this.queryParams).then((resp) => {
+      listMembers(this.infoId, this.queryParams.page, this.queryParams.pageSize).then((resp) => {
         this.list = resp.data.list
-        this.total = resp.data.total;
-        if(this.defaultPostId !== undefined){
-          this.list.forEach((row) => {
-            row.postId = this.defaultPostId;
-          });
-        }
-        this.selectRow()
-      });
+        this.total = resp.data.total
+        this.list.forEach((v) => {
+          if (v.deptId === null) {
+            v.postId = this.defaultPostId;
+          }
+        })
+        this.selectRow();
+      })
     },
     /** 选中岗位变化 */
     selectSingle(selection,row) {

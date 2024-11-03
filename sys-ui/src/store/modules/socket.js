@@ -15,7 +15,13 @@ const sockets = {
   },
 
   actions: {
-    OpenSocket({ commit }, xx) {
+    OpenSocket({ state, commit }, xx) {
+      if(!cache.local.getUserId() || !cache.local.getAccessToken()){
+        return;
+      }
+      if (state.socket) {
+        return;
+      }
       let socket;
       if (process.env.NODE_ENV === 'production') {
         console.log('socket connect: ws://' + location.host);
@@ -36,30 +42,7 @@ const sockets = {
           },
         });
       }
-
       commit('SET_SOCKET', socket);
-
-      let timeNow = new Date();
-      let hours = timeNow.getHours();
-      let text = '';
-      if (hours >= 0 && hours <= 10) {
-        text = '早上好[';
-      } else if (hours > 10 && hours <= 14) {
-        text = '中午好[';
-      } else if (hours > 14 && hours <= 18) {
-        text = '下午好[';
-      } else if (hours > 18 && hours <= 24) {
-        text = '晚上好[';
-      }
-      text = text + cache.local.getUserName() + "]";
-      // 登录消息
-      socket.on('notice_unread', (data) => {
-        if(data > 0){
-          text = text + ',  您有' + data + '条未读消息!!'
-        }
-        Notification.warning(text)
-      });
-
       // 待办消息
       socket.on('notice_todo', (data) => {
         Notification.warning(data)
@@ -93,7 +76,6 @@ const sockets = {
       if (state.socket) {
         state.socket.close();
       }
-
       let socket;
       if (process.env.NODE_ENV === 'production') {
         console.log('socket connect: ws://' + location.host);
@@ -114,7 +96,6 @@ const sockets = {
           },
         });
       }
-
       commit('SET_SOCKET', socket);
       // 待办消息
       socket.on('notice_todo', (data) => {

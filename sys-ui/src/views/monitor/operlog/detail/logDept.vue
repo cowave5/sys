@@ -39,7 +39,7 @@
             <span v-if="log.logContent.req.readOnly === 0">取消部门[{{ log.logContent.req.deptName }}]为只读</span>
           </el-form-item>
 
-          <el-form-item v-if="log.actionCode === 'add'" label="部门信息：">
+          <el-form-item v-if="log.actionCode === 'create'" label="部门信息：">
             <el-form ref="form-add" :model="log.logContent.req" label-width="100px" style="background-color: #e5f3f3">
               <el-row>
                 <el-col :span="10">
@@ -154,7 +154,7 @@ export default {
     getDetail(id) {
       info(id).then(res => {
         this.log = res.data;
-        if(this.log.actionCode === 'add'){
+        if(this.log.actionCode === 'create'){
           deptQuery(this.log.logContent.req).then(response => {
             this.req = response.data;
           });

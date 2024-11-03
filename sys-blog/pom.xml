@@ -16,7 +16,6 @@
 
 	<properties>
 		<markdown.version>0.17.0</markdown.version>
-		<skip.changelog>true</skip.changelog>
 	</properties>
 
 	<build>

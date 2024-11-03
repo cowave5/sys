@@ -11,8 +11,8 @@ package com.cowave.sys.admin.kafka;
 
 import com.alibaba.fastjson.JSON;
 import com.cowave.sys.admin.SpringTest;
-import com.cowave.sys.model.admin.SysAlarm;
-import com.cowave.sys.model.admin.SysLog;
+import com.cowave.sys.admin.core.entity.dto.SysAlarmDto;
+import com.cowave.sys.admin.core.entity.dto.SysLogDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -20,9 +20,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import java.util.HashMap;
 
 /**
- *
  * @author shanhuiming
- *
  */
 public class KafkaConsumerTest extends SpringTest {
 
@@ -31,13 +29,13 @@ public class KafkaConsumerTest extends SpringTest {
 
     @Test
     public void send() {
-        SysAlarm sysAlarm = new SysAlarm();
+        SysAlarmDto sysAlarm = new SysAlarmDto();
         sysAlarm.setAlarmCode("xxxxx");
         sysAlarm.setSourceName("sys-admin");
         sysAlarm.setAlarmContent(new HashMap<>());
         kafkaTemplate.send("access-alarm", JSON.toJSONString(sysAlarm));
 
-        SysLog sysLog = new SysLog();
+        SysLogDto sysLog = new SysLogDto();
         sysLog.setTypeCode("sys-user");
         sysLog.setLogContent(new HashMap<>());
         kafkaTemplate.send("access-oplog", JSON.toJSONString(sysLog));

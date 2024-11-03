@@ -15,9 +15,7 @@ import com.cowave.sys.blog.api.entity.ChannelInfo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- *
  * @author shanhuiming
- *
  */
 @Mapper
 public interface ChannelMapper extends BaseMapper<ChannelInfo> {

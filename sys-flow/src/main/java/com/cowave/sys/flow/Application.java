@@ -14,9 +14,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- *
  * @author shanhuiming
- *
  */
 @SpringBootApplication(exclude = {FlowableUiSecurityAutoConfiguration.class})
 public class Application{

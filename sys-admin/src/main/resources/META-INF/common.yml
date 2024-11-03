@@ -1,4 +1,6 @@
 spring:
+  messages:
+    basename: META-INF/i18n/messages
   cloud:
     discovery:
       client:

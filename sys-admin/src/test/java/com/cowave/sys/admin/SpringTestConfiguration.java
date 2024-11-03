@@ -34,9 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author shanhuiming
- *
  */
 @TestConfiguration
 public class SpringTestConfiguration {

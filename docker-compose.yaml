@@ -2,20 +2,20 @@ version: '3'
 
 services:
   sys-blog:
-    image: cowave/sys-blog:1.0.3
+    image: sys-blog:1.0.3
     container_name: sys-blog
     ports:
       - 80:80
     environment:
       TZ: Asia/Shanghai
       jvm_option: -Xms256m -Xmx256m -XX:MetaspaceSize=128m -XX:+HeapDumpOnOutOfMemoryError
-      server_port: 80
-      redis_host: redis
+      app_port: 80
+      redis_host: sys-redis
       redis_port: 6379
       nacos_server: sys-nacos:8848
       datasource_username: postgres
       datasource_password: postgres
-      datasource_url: jdbc:postgresql://postgres:5432/sys-blog
+      datasource_url: jdbc:postgresql://sys-postgres:5432/sys-blog
     volumes:
       - ./sys-blog/log:/opt/cowave/sys-blog/log
       - ./sys-blog/public:/opt/cowave/sys-blog/public
@@ -27,14 +27,14 @@ services:
     depends_on:
       sys-nacos:
         condition: service_healthy
-      postgres:
+      sys-postgres:
         condition: service_healthy
     networks:
       default:
-        ipv4_address: 48.248.64.10
+        ipv4_address: 192.168.32.10
 
   sys-ui:
-    image: cowave/sys-ui:1.0.3
+    image: sys-ui:1.0.3
     container_name: sys-ui
     ports:
       - 81:81
@@ -52,10 +52,10 @@ services:
         condition: service_healthy
     networks:
       default:
-        ipv4_address: 48.248.64.11
+        ipv4_address: 192.168.32.11
 
   sys-nacos:
-    image: cowave/sys-nacos:2.3.0
+    image: sys-nacos:2.3.0
     container_name: sys-nacos
     environment:
       - MODE=standalone
@@ -71,17 +71,17 @@ services:
       retries: 20
     networks:
       default:
-        ipv4_address: 48.248.64.12
+        ipv4_address: 192.168.32.12
 
   sys-gateway:
-    image: cowave/sys-gateway:1.0.3
+    image: sys-gateway:1.0.3
     container_name: sys-gateway
     ports:
       - 19000:19000
     environment:
       TZ: Asia/Shanghai
       jvm_option: -Xms256m -Xmx256m -XX:MetaspaceSize=128m -XX:+HeapDumpOnOutOfMemoryError
-      server_port: 19000
+      app_port: 19000
       nacos_server: sys-nacos:8848
     volumes:
       - ./sys-gateway:/opt/cowave/sys-gateway/log
@@ -95,10 +95,10 @@ services:
         condition: service_healthy
     networks:
       default:
-        ipv4_address: 48.248.64.13
-        
+        ipv4_address: 192.168.32.13
+
   sys-admin:
-    image: cowave/sys-admin:1.0.3
+    image: sys-admin:1.0.3
     container_name: sys-admin
     ports:
       - 19010:19010
@@ -107,16 +107,16 @@ services:
     environment:
       TZ: Asia/Shanghai
       jvm_option: -Xms256m -Xmx256m -XX:MetaspaceSize=128m -XX:+HeapDumpOnOutOfMemoryError -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:19012
-      server_port: 19010
+      app_port: 19010
       socket_port: 19011
-      redis_host: redis
+      redis_host: sys-redis
       redis_port: 6379
       nacos_server: sys-nacos:8848
-      kafka_servers: kafka1:9092,kafka2:9093,kafka3:9094
+      kafka_servers: sys-kafka1:9092,sys-kafka2:9093,sys-kafka3:9094
       datasource_username: postgres
       datasource_password: postgres
-      datasource_url: jdbc:postgresql://postgres:5432/sys-admin
-      minio_endpoint: http://192.168.141.74:39000
+      datasource_url: jdbc:postgresql://sys-postgres:5432/sys-admin
+      minio_endpoint: http://10.64.4.74:39000
       minio_accessKey: admin
       minio_secretKey: admin123
     volumes:
@@ -127,18 +127,18 @@ services:
       timeout: 3s
       retries: 10
     depends_on:
-      postgres:
+      sys-postgres:
         condition: service_healthy
-      redis:
+      sys-redis:
         condition: service_healthy
       sys-nacos:
         condition: service_healthy
     networks:
       default:
-        ipv4_address: 48.248.64.14
+        ipv4_address: 192.168.32.14
 
   sys-flow:
-    image: cowave/sys-flow:1.0.3
+    image: sys-flow:1.0.3
     container_name: sys-flow
     ports:
       - 19020:19020
@@ -146,11 +146,11 @@ services:
     environment:
       TZ: Asia/Shanghai
       jvm_option: -Xms256m -Xmx256m -XX:MetaspaceSize=128m -XX:+HeapDumpOnOutOfMemoryError -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:19021
-      server_port: 19020
+      app_port: 19020
       nacos_server: sys-nacos:8848
       datasource_username: postgres
       datasource_password: postgres
-      datasource_url: jdbc:postgresql://postgres:5432/sys-admin
+      datasource_url: jdbc:postgresql://sys-postgres:5432/sys-admin
     volumes:
       - ./sys-flow:/opt/cowave/sys-flow/log
     healthcheck:
@@ -159,16 +159,18 @@ services:
       timeout: 3s
       retries: 10
     depends_on:
-      postgres:
+      sys-postgres:
         condition: service_healthy
       sys-nacos:
         condition: service_healthy
+      sys-admin:
+        condition: service_healthy
     networks:
       default:
-        ipv4_address: 48.248.64.15
+        ipv4_address: 192.168.32.15
 
   sys-code:
-    image: cowave/sys-code:1.0.3
+    image: sys-code:1.0.3
     container_name: sys-code
     ports:
       - 19030:19030
@@ -176,11 +178,11 @@ services:
     environment:
       TZ: Asia/Shanghai
       jvm_option: -Xms256m -Xmx256m -XX:MetaspaceSize=128m -XX:+HeapDumpOnOutOfMemoryError -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:19031
-      server_port: 19030
+      app_port: 19030
       nacos_server: sys-nacos:8848
       datasource_username: postgres
       datasource_password: postgres
-      datasource_url: jdbc:postgresql://postgres:5432/sys-code
+      datasource_url: jdbc:postgresql://sys-postgres:5432/sys-code
     volumes:
       - ./sys-code:/opt/cowave/sys-code/log
     healthcheck:
@@ -189,16 +191,16 @@ services:
       timeout: 3s
       retries: 10
     depends_on:
-      postgres:
+      sys-postgres:
         condition: service_healthy
       sys-nacos:
         condition: service_healthy
     networks:
       default:
-        ipv4_address: 48.248.64.16
+        ipv4_address: 192.168.32.16
 
   sys-quartz:
-    image: cowave/sys-quartz:1.0.3
+    image: sys-quartz:1.0.3
     container_name: sys-quartz
     ports:
       - 19040:19040
@@ -206,11 +208,11 @@ services:
     environment:
       TZ: Asia/Shanghai
       jvm_option: -Xms256m -Xmx256m -XX:MetaspaceSize=128m -XX:+HeapDumpOnOutOfMemoryError -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:19041
-      server_port: 19040
+      app_port: 19040
       nacos_server: sys-nacos:8848
       datasource_username: postgres
       datasource_password: postgres
-      datasource_url: jdbc:postgresql://postgres:5432/sys-quartz
+      datasource_url: jdbc:postgresql://sys-postgres:5432/sys-quartz
     volumes:
       - ./sys-quartz:/opt/cowave/sys-quartz/log
     healthcheck:
@@ -219,19 +221,19 @@ services:
       timeout: 3s
       retries: 10
     depends_on:
-      postgres:
+      sys-postgres:
         condition: service_healthy
       sys-nacos:
         condition: service_healthy
     networks:
       default:
-        ipv4_address: 48.248.64.17
+        ipv4_address: 192.168.32.17
 
-  postgres:
+  sys-postgres:
     image: postgres:13.1
-    container_name: postgres
+    container_name: sys-postgres
     ports:
-      - 5432:5432
+      - 5433:5432
     environment:
       POSTGRES_PASSWORD: postgres
     volumes:
@@ -244,14 +246,14 @@ services:
       retries: 5
     networks:
       default:
-        ipv4_address: 48.248.64.21
+        ipv4_address: 192.168.32.21
 
-  mysql:
+  sys-mysql:
     image: mysql:8.0.36
-    container_name: mysql
+    container_name: sys-mysql
     privileged: true
     ports:
-      - 3306:3306
+      - 3307:3306
     environment:
       MYSQL_ROOT_PASSWORD: root
     volumes:
@@ -266,11 +268,11 @@ services:
       retries: 10
     networks:
       default:
-        ipv4_address: 48.248.64.22
+        ipv4_address: 192.168.32.22
 
-  redis:
+  sys-redis:
     image: redis:7.0
-    container_name: redis
+    container_name: sys-redis
     privileged: true
     ports:
       - 6379:6379
@@ -286,11 +288,11 @@ services:
       retries: 3
     networks:
       default:
-        ipv4_address: 48.248.64.23
+        ipv4_address: 192.168.32.23
 
-  minio:
+  sys-minio:
     image: minio/minio
-    container_name: minio
+    container_name: sys-minio
     privileged: true
     ports:
       - 39000:9000
@@ -310,20 +312,20 @@ services:
       retries: 10
     networks:
       default:
-        ipv4_address: 48.248.64.24
-        
-  kafka1:
+        ipv4_address: 192.168.32.24
+
+  sys-kafka1:
     image: wurstmeister/kafka:2.13-2.8.1
-    container_name: kafka1
+    container_name: sys-kafka1
     ports:
       - "9092:9092"
       - "9097:9097"
       - "7072:7072"
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.141.74:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://10.64.4.74:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: sys-zookeeper:2181
       KAFKA_MIN_INSYNC_REPLICAS: 1
       KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: true
       KAFKA_LOG_RETENTION_HOURS: 48
@@ -339,23 +341,23 @@ services:
       timeout: 3s
       retries: 10
     depends_on:
-      - zookeeper
+      - sys-zookeeper
     networks:
       default:
-        ipv4_address: 48.248.64.25
+        ipv4_address: 192.168.32.25
 
-  kafka2:
+  sys-kafka2:
     image: wurstmeister/kafka:2.13-2.8.1
-    container_name: kafka2
+    container_name: sys-kafka2
     ports:
       - "9093:9093"
       - "9098:9098"
       - "7073:7073"
     environment:
       KAFKA_BROKER_ID: 2
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.141.74:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://10.64.4.74:9093
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9093
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: sys-zookeeper:2181
       KAFKA_MIN_INSYNC_REPLICAS: 1
       KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: true
       KAFKA_LOG_RETENTION_HOURS: 48
@@ -371,23 +373,23 @@ services:
       timeout: 3s
       retries: 10
     depends_on:
-      - zookeeper
+      - sys-zookeeper
     networks:
       default:
-        ipv4_address: 48.248.64.26
+        ipv4_address: 192.168.32.26
 
-  kafka3:
+  sys-kafka3:
     image: wurstmeister/kafka:2.13-2.8.1
-    container_name: kafka3
+    container_name: sys-kafka3
     ports:
       - "9094:9094"
       - "9099:9099"
       - "7074:7074"
     environment:
       KAFKA_BROKER_ID: 3
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.141.74:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://10.64.4.74:9094
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9094
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: sys-zookeeper:2181
       KAFKA_MIN_INSYNC_REPLICAS: 1
       KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: true
       KAFKA_LOG_RETENTION_HOURS: 48
@@ -403,14 +405,14 @@ services:
       timeout: 3s
       retries: 10
     depends_on:
-      - zookeeper
+      - sys-zookeeper
     networks:
       default:
-        ipv4_address: 48.248.64.27
+        ipv4_address: 192.168.32.27
 
-  zookeeper:
+  sys-zookeeper:
     image: wurstmeister/zookeeper:3.4.6
-    container_name: zookeeper
+    container_name: sys-zookeeper
     ports:
       - "2181:2181"
     environment:
@@ -425,12 +427,12 @@ services:
       retries: 10
     networks:
       default:
-        ipv4_address: 48.248.64.28
-        
+        ipv4_address: 192.168.32.28
+
 networks:
   default:
     driver: bridge
     ipam:
       config:
-        - subnet: 48.248.64.0/24
-          gateway: 48.248.64.1
+        - subnet: 192.168.32.0/24
+          gateway: 192.168.32.1

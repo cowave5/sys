@@ -1,6 +1,6 @@
 #set($dollarSign = '$')
 server:
-  port: ${dollarSign}{server_port:19030}
+  port: ${dollarSign}{app_port:19030}
   servlet:
     context-path:${httpContext}
 
