@@ -10,6 +10,7 @@
 package com.cowave.sys.blog.api.service.impl;
 
 import com.cowave.commons.framework.access.Access;
+import com.cowave.commons.response.Response;
 import com.cowave.sys.blog.api.cache.BlogCache;
 import com.cowave.sys.blog.api.entity.PostInfo;
 import com.cowave.sys.blog.api.mapper.PostMapper;
@@ -17,7 +18,6 @@ import com.cowave.sys.blog.api.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.feign.codec.Response;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;

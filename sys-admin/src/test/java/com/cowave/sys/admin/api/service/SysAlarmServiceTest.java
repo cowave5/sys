@@ -10,6 +10,7 @@
 package com.cowave.sys.admin.api.service;
 
 import com.cowave.sys.admin.SpringTest;
+import com.cowave.sys.admin.service.sys.SysAlarmService;
 import com.cowave.sys.model.admin.SysAlarm;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

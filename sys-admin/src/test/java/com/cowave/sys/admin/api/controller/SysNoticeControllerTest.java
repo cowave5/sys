@@ -10,9 +10,9 @@
 package com.cowave.sys.admin.api.controller;
 
 import com.cowave.commons.framework.access.filter.AccessFilter;
-import com.cowave.commons.framework.access.security.TokenAuthenticationFilter;
+import com.cowave.commons.framework.access.security.BearerTokenFilter;
 import com.cowave.sys.admin.SpringTest;
-import com.cowave.sys.admin.api.controller.sys.SysNoticeController;
+import com.cowave.sys.admin.api.sys.SysNoticeController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class SysNoticeControllerTest extends SpringTest {
     public void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(sysNoticeController)
                 .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, accessProperties, objectMapper))
-                .addFilter(new TokenAuthenticationFilter(tokenService))
+                .addFilter(new BearerTokenFilter(true, bearerTokenService, null, null))
                 .setControllerAdvice(accessAdvice).build();
     }
 

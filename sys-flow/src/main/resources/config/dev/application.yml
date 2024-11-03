@@ -8,6 +8,10 @@ spring:
     name: sys-flow
   access:
     always-success: true
+    auth:
+      mode: refreshToken
+      tokenAuthUrls:
+        - /api/v1/*
   main:
     allow-bean-definition-overriding: true
   datasource:

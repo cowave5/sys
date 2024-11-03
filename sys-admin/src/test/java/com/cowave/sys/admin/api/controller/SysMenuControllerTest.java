@@ -10,9 +10,9 @@
 package com.cowave.sys.admin.api.controller;
 
 import com.cowave.commons.framework.access.filter.AccessFilter;
-import com.cowave.commons.framework.access.security.TokenAuthenticationFilter;
+import com.cowave.commons.framework.access.security.BearerTokenFilter;
 import com.cowave.sys.admin.SpringTest;
-import com.cowave.sys.admin.api.controller.sys.SysMenuController;
+import com.cowave.sys.admin.api.sys.SysMenuController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class SysMenuControllerTest extends SpringTest {
     public void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(sysMenuController)
                 .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, accessProperties, objectMapper))
-                .addFilter(new TokenAuthenticationFilter(tokenService))
+                .addFilter(new BearerTokenFilter(true, bearerTokenService, null, null))
                 .setControllerAdvice(accessAdvice).build();
     }
 

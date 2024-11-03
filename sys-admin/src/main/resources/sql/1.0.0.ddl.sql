@@ -530,7 +530,7 @@ drop table if exists sys_alarm;
 create table sys_alarm(
     id            bigserial primary key,
     alarm_code    character varying(128) not null,
-    alarm_type    int8,
+    alarm_type    character varying(64),
     alarm_level   int2 default 1,
     source_id     int8,
     source_name   character varying(64),

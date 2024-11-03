@@ -22,7 +22,7 @@ import com.cowave.commons.framework.helper.redis.dict.DictValueParser;
 import com.cowave.commons.framework.support.excel.StatusConverter;
 import com.cowave.commons.framework.support.excel.StringConverter;
 import com.cowave.commons.framework.support.excel.YesNoConverter;
-import com.cowave.commons.tools.AssertsException;
+import com.cowave.commons.response.exception.AssertsException;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

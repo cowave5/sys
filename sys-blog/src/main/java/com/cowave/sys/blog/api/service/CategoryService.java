@@ -9,8 +9,8 @@
  */
 package com.cowave.sys.blog.api.service;
 
+import com.cowave.commons.response.Response;
 import com.cowave.sys.blog.api.entity.CategoryInfo;
-import org.springframework.feign.codec.Response;
 
 /**
  *

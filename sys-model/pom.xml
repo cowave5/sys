@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>com.cowave.commons</groupId>
-		<artifactId>commons-dependencies</artifactId>
-		<version>2.7.4</version>
-		<relativePath/>
-	</parent>
 
 	<groupId>com.cowave.sys</groupId>
 	<artifactId>sys-model</artifactId>
@@ -17,19 +11,16 @@
 	<url>https://www.cowave.com/</url>
 	<description>模型管理</description>
 
-	<properties>
-		<skip.changelog>true</skip.changelog>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.cowave.commons</groupId>
 			<artifactId>commons-framework</artifactId>
-			<version>2.7.4</version>
+			<version>2.7.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>easyexcel</artifactId>
+			<version>3.1.1</version>
 		</dependency>
 	</dependencies>
 </project>

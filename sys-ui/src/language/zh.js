@@ -354,11 +354,11 @@ export default {
     label: {
       css: "字典样式",
       default: "是否默认",
-      name: "字典名称",
+      name: "字典",
       english: "英文名称",
       code: "字典编码",
       value: "字典值",
-      order: "字典排序",
+      order: "排序",
       group: "字典分组",
       type: "字典类型",
       groupname: "分组名称",

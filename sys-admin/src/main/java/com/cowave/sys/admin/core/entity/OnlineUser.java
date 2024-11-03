@@ -10,8 +10,10 @@
 package com.cowave.sys.admin.core.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.cowave.commons.framework.access.security.AccessToken;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -20,6 +22,7 @@ import java.util.Date;
  * @author shanhuiming
  *
  */
+@NoArgsConstructor
 @Data
 public class OnlineUser {
 
@@ -78,4 +81,15 @@ public class OnlineUser {
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
+
+    public OnlineUser(AccessToken accessToken){
+        this.tokenId = accessToken.getId();
+        this.tokenType = accessToken.getType();
+        this.accessIp = accessToken.getAccessIp();
+        this.accessTime = accessToken.getAccessTime();
+        this.userAccount = accessToken.getUsername();
+        this.userName = accessToken.getUserNick();
+        this.loginTime = accessToken.getLoginTime();
+        this.accessCluster = accessToken.getClusterName();
+    }
 }

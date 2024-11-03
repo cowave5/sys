@@ -10,7 +10,7 @@
 package com.cowave.sys.admin.core.mapper;
 
 import com.cowave.sys.admin.core.entity.UserProfile;
-import com.cowave.sys.admin.core.entity.UserRegister;
+import com.cowave.sys.model.admin.auth.RegisterUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -25,7 +25,7 @@ public interface ProfileMapper {
     /**
      * 注册
      */
-    void register(UserRegister userRegister);
+    void register(RegisterUser registerUser);
 
     /**
      * 初始角色

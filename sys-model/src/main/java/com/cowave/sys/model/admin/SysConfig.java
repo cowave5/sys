@@ -19,7 +19,7 @@ import com.alibaba.excel.enums.poi.HorizontalAlignmentEnum;
 import com.cowave.commons.framework.access.AccessUser;
 import com.cowave.commons.framework.helper.redis.dict.DictValueParser;
 import com.cowave.commons.framework.support.excel.YesNoConverter;
-import com.cowave.commons.tools.AssertsException;
+import com.cowave.commons.response.exception.AssertsException;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -135,10 +135,10 @@ public class SysConfig extends AccessUser {
         try{
             Class<?> parserClass = Class.forName(valueParser);
             if(!DictValueParser.class.isAssignableFrom(parserClass)){
-                throw new AssertsException("config.invalid.parser");
+                throw new AssertsException("{config.invalid.parser}");
             }
         }catch (ClassNotFoundException e){
-            throw new AssertsException("config.notexist.parser");
+            throw new AssertsException("{config.notexist.parser}");
         }
     }
 }

@@ -9,15 +9,14 @@
  */
 package com.cowave.sys.admin.core.mapper;
 
-import java.util.Date;
-import java.util.List;
-
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cowave.sys.model.admin.SysNotice;
+import com.cowave.sys.model.admin.SysNoticeRead;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.cowave.sys.model.admin.SysNotice;
-import com.cowave.sys.model.admin.SysNoticeRead;
+import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -135,7 +134,7 @@ public interface SysNoticeMapper {
     void msgDelete(@Param("userId") Long userId, @Param("noticeId") Long noticeId);
 
     /**
-     * 未读消息
+     * 未读统计
      */
     int countUserUnRead(Long userId);
 

@@ -180,16 +180,26 @@ public class SysLog {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
 
-    public SysLog(OperationInfo opInfo){
+    public SysLog(OperationInfo opInfo) {
         this.logTime = opInfo.getAccessTime();
         this.logStatus = opInfo.isSuccess() ? 1 : 0;
         this.ip = opInfo.getAccessIp();
         this.url = opInfo.getAccessUrl();
-        this.userId = opInfo.getUserId();
-        this.deptId = opInfo.getDeptId();
+        this.userId = opInfo.getUserId(v -> {
+            if (v == null) {
+                return null;
+            }
+            return ((Number) v).longValue();
+        });
+        this.deptId = opInfo.getDeptId(v -> {
+            if (v == null) {
+                return null;
+            }
+            return ((Number) v).longValue();
+        });
         this.typeCode = opInfo.getOpType();
         this.actionCode = opInfo.getOpAction();
-        this.logDesc = opInfo.getSummary();
+        this.logDesc = opInfo.getDesc();
     }
 
     public void putContent(String key, Object obj) {
@@ -205,13 +215,18 @@ public class SysLog {
         this.logDesc = desc;
     }
 
-    public void initialize(){
+    public void initialize() {
         this.logTime = new Date();
         this.logStatus = 1;
         this.ip = Access.accessIp();
         this.url = Access.accessUrl();
-        this.userId = Access.userId();
-        this.deptId = Access.deptId();
+        this.userId = Access.userId(v -> ((Number) v).longValue());
+        this.deptId = Access.deptId(v -> {
+            if (v == null) {
+                return null;
+            }
+            return ((Number) v).longValue();
+        });
     }
 
     public String getViewKey(){

@@ -71,13 +71,13 @@ public class UserProfile {
     /**
      * 用户电话
      */
-    @Pattern(regexp = "^[1][3,4,5,7,8][0-9]{9}$", message = "user.invalid.phone")
+    @Pattern(regexp = "^[1][3,4,5,7,8][0-9]{9}$", message = "{user.invalid.phone}")
     private String userPhone;
 
     /**
      * 用户邮箱
      */
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "user.invalid.email")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "{user.invalid.email}")
     private String userEmail;
 
     /**

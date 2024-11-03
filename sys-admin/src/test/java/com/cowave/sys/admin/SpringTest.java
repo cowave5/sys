@@ -15,7 +15,7 @@ import com.cowave.commons.framework.access.filter.AccessIdGenerator;
 import com.cowave.commons.framework.access.filter.TransactionIdSetter;
 import com.cowave.commons.framework.access.security.AccessToken;
 import com.cowave.commons.framework.access.security.Permission;
-import com.cowave.commons.framework.access.security.TokenService;
+import com.cowave.commons.framework.access.security.BearerTokenService;
 import com.cowave.commons.framework.configuration.ApplicationProperties;
 import com.cowave.commons.framework.helper.redis.RedisHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -85,7 +85,7 @@ public class SpringTest {
     protected String refreshToken;
 
     @Autowired
-    protected TokenService tokenService;
+    protected BearerTokenService bearerTokenService;
 
     @Autowired(required = false)
     protected TransactionIdSetter transactionIdSetter;
@@ -119,7 +119,7 @@ public class SpringTest {
         loginToken.setRoles(List.of(Permission.ROLE_ADMIN));
         redisHelper.putValue(applicationProperties.getTokenNamespace() + "user:" + loginToken.getUsername(), loginToken);
 
-        tokenService.assignToken(loginToken);
+        bearerTokenService.dualAssignToken(loginToken);
         this.accessToken = loginToken.getAccessToken();
         this.refreshToken = loginToken.getRefreshToken();
 
