@@ -42,7 +42,7 @@
             <span v-if="log.logContent.req.userStatus === 1">启用用户[{{ log.logContent.req.userName }}]</span>
             <span v-if="log.logContent.req.userStatus === 0">停用用户[{{ log.logContent.req.userName }}]</span>
           </el-form-item>
-          <el-form-item v-if="log.actionCode === 'add'" label="用户信息：">
+          <el-form-item v-if="log.actionCode === 'create'" label="用户信息：">
             <el-form ref="form-add" :model="log.logContent.req" label-width="100px" style="background-color: #e5f3f3">
               <el-row>
                 <el-col :span="10">
@@ -275,7 +275,7 @@ export default {
     getDetail(id) {
       info(id).then(res => {
         this.log = res.data;
-        if(this.log.actionCode === 'add'){
+        if(this.log.actionCode === 'create'){
           userQuery(this.log.logContent.req).then(response => {
             this.req = response.data;
           });

@@ -68,9 +68,9 @@ public class ${className}Controller {
      */
     #if($logModel == 1)
     #if($logField != $null)
-    @Operation(type = "${logType}", action = "add", desc = "新增${modelName}：#{${instanceName}.${logField}}", content = Content.REQ)
+    @Operation(type = "${logType}", action = "create", desc = "新增${modelName}：#{${instanceName}.${logField}}", content = Content.REQ)
     #else
-    @Operation(type = "${logType}", action = "add", desc = "新增${modelName}", content = Content.REQ)
+    @Operation(type = "${logType}", action = "create", desc = "新增${modelName}", content = Content.REQ)
     #end
     #end
     #if($authPrefix != $null)

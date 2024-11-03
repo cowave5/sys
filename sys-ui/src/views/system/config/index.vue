@@ -18,7 +18,7 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-                   :disabled="!checkPermit(['sys:config:new'])">{{$t('route.system.config.new')}}</el-button>
+                   :disabled="!checkPermit(['sys:config:create'])">{{$t('route.system.config.new')}}</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="success" plain icon="el-icon-edit" size="mini" @click="handleUpdate"

@@ -1,8 +1,10 @@
 <template>
   <el-dropdown trigger="click" @command="handleLanguage">
-    <div>
-      <svg-icon icon-class="language"  />
-    </div>
+    <el-tooltip content="国际化" placement="top">
+      <div>
+        <svg-icon icon-class="language"  />
+      </div>
+    </el-tooltip>
     <el-dropdown-menu slot="dropdown">
       <el-dropdown-item v-for="item of sizeOptions" :key="item.value" :disabled="language===item.value" :command="item.value">
         {{ item.label }}

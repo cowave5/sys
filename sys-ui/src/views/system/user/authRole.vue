@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import {getRoles, getUser, updateAuthRole} from "@/api/system/user";
+import {getRoles, userInfo, updateAuthRole} from "@/api/system/user";
 
 export default {
   name: "AuthRole",
@@ -72,7 +72,7 @@ export default {
       getRoles().then((response) => {
         this.roles = response.data.list
         this.total = response.data.total;
-        getUser(userId).then((resp) => {
+        userInfo(userId).then((resp) => {
           this.form.userAccount = resp.data.userAccount;
           this.form.userName = resp.data.userName;
           this.form.userId = resp.data.userId;

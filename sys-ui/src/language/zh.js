@@ -54,7 +54,7 @@ export default {
         export: "导出",
         menus: "菜单权限",
         dataScope: "数据权限",
-        grant: "分配用户"
+        grant: "角色成员"
       },
       menu: {
         title: "菜单管理",
@@ -354,11 +354,11 @@ export default {
     label: {
       css: "字典样式",
       default: "是否默认",
-      name: "字典名称",
+      name: "字典",
       english: "英文名称",
       code: "字典编码",
       value: "字典值",
-      order: "字典排序",
+      order: "排序",
       group: "字典分组",
       type: "字典类型",
       groupname: "分组名称",
@@ -468,8 +468,8 @@ export default {
       name: "人员名称",
       rank: "人员职级",
       position: "岗位设置",
-      default: "设为用户默认岗位",
-      leader: "设为部门负责人"
+      default: "用户默认岗位",
+      leader: "部门负责人"
     }
   },
   role: {

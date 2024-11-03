@@ -1,23 +1,61 @@
 import request from '@/utils/request'
+import { appendUrl } from '@/utils/ruoyi'
 
-// 查询部门列表
-export function listDept(query) {
+/**
+ * 部门列表
+ */
+export function listDept(params) {
   return request({
-    url: '/admin/api/v1/dept/list',
-    method: 'post',
-    data: query
-  })
-}
-
-// 查询部门详细
-export function getDept(deptId) {
-  return request({
-    url: '/admin/api/v1/dept/info/' + deptId,
+    url: appendUrl('/admin/api/v1/dept', params),
     method: 'get'
   })
 }
 
-// 部门只读修改
+/**
+ * 部门详情
+ */
+export function getDept(deptId) {
+  return request({
+    url: '/admin/api/v1/dept/' + deptId,
+    method: 'get'
+  })
+}
+
+/**
+ * 新增部门
+ */
+export function addDept(data) {
+  return request({
+    url: '/admin/api/v1/dept',
+    method: 'post',
+    data: data
+  })
+}
+
+/**
+ * 修改部门
+ */
+export function updateDept(data) {
+  return request({
+    url: '/admin/api/v1/dept',
+    method: 'patch',
+    data: data
+  })
+}
+
+/**
+ * 删除部门
+ */
+export function delDept(deptIds) {
+  return request({
+    url: '/admin/api/v1/dept/' + deptIds,
+    method: 'delete'
+  })
+}
+
+/**
+ * 只读修改
+ */
 export function changeReadonly(deptId, readOnly, deptName) {
   const data = {
     deptId,
@@ -25,9 +63,19 @@ export function changeReadonly(deptId, readOnly, deptName) {
     deptName
   }
   return request({
-    url: '/admin/api/v1/dept/change/readonly',
-    method: 'post',
+    url: '/admin/api/v1/dept/readonly',
+    method: 'patch',
     data: data
+  })
+}
+
+/**
+ * 部门成员
+ */
+export function listMembers(deptId, page, pageSize) {
+  return request({
+    url: '/admin/api/v1/dept/members/' + deptId + "?page=" + page + "&pageSize=" + pageSize,
+    method: 'get'
   })
 }
 
@@ -55,32 +103,6 @@ export function getUserTree() {
   })
 }
 
-// 新增部门
-export function addDept(data) {
-  return request({
-    url: '/admin/api/v1/dept/add',
-    method: 'post',
-    data: data
-  })
-}
-
-// 修改部门
-export function updateDept(data) {
-  return request({
-    url: '/admin/api/v1/dept/edit',
-    method: 'post',
-    data: data
-  })
-}
-
-// 删除部门
-export function delDept(deptId) {
-  return request({
-    url: '/admin/api/v1/dept/delete?deptId=' + deptId,
-    method: 'get'
-  })
-}
-
 // 刷新缓存
 export function refreshCache() {
   return request({
@@ -92,7 +114,7 @@ export function refreshCache() {
 // 获取部门岗位
 export function getDeptPosts(deptId) {
   return request({
-    url: '/admin/api/v1/dept/posts/id/' + deptId,
+    url: '/admin/api/v1/dept/posts/' + deptId,
     method: 'get'
   })
 }

@@ -1,5 +1,15 @@
 import request from '@/utils/request'
 
+/**
+ * Ldap用户详细
+ */
+export function ldapInfo(userId) {
+  return request({
+    url: '/admin/api/v1/ldap/user/' + userId,
+    method: 'get'
+  })
+}
+
 // 列表
 export function listLdap(data) {
   return request({
@@ -57,13 +67,5 @@ export function validLdap(data) {
     url: '/admin/api/v1/ldap/valid',
     method: 'post',
     data: data
-  })
-}
-
-// 详情
-export function infoUser(userId) {
-  return request({
-    url: '/admin/api/v1/ldap/user/' + userId,
-    method: 'get'
   })
 }

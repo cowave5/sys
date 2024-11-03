@@ -9,13 +9,13 @@
  */
 package com.cowave.sys.blog.api.service.impl;
 
+import com.cowave.commons.client.http.response.Response;
 import com.cowave.commons.framework.access.Access;
 import com.cowave.sys.blog.api.entity.PostComment;
 import com.cowave.sys.blog.api.mapper.CommentMapper;
 import com.cowave.sys.blog.api.service.CommentService;
 import com.cowave.sys.blog.utils.IpAddress;
 import lombok.RequiredArgsConstructor;
-import org.springframework.feign.codec.Response;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -23,9 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- *
  * @author shanhuiming
- *
  */
 @RequiredArgsConstructor
 @Service

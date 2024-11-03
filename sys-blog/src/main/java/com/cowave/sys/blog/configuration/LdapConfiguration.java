@@ -16,9 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Map;
 
 /**
- *
  * @author shanhuiming
- *
  */
 @ConfigurationProperties(prefix = "ldap")
 @Configuration

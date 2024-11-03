@@ -25,9 +25,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- *
  * @author shanhuiming
- *
  */
 @Slf4j
 @Component

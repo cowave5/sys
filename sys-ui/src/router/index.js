@@ -183,16 +183,11 @@ export const constantRoutes = [
         meta: { title: '模型字段', activeMenu: '/tool/code/model' }
       }
     ]
-  }
-]
-
-// 动态路由，基于用户权限动态去加载
-export const dynamicRoutes = [
+  },
   {
     path: '/system/user-auth',
     component: Layout,
     hidden: true,
-    permissions: ['sys:user:edit'],
     children: [
       {
         path: 'role/:userId(\\d+)',
@@ -202,6 +197,11 @@ export const dynamicRoutes = [
       }
     ]
   }
+]
+
+// 权限路由
+export const dynamicRoutes = [
+
 ]
 
 // 防止连续点击多次路由报错

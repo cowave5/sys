@@ -14,16 +14,16 @@
 	<url>https://www.cowave.com/</url>
 	<description>代码生成</description>
 
-	<properties>
-		<skip.changelog>true</skip.changelog>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.cowave.sys</groupId>
 			<artifactId>sys-model</artifactId>
 			<version>1.0.3</version>
 		</dependency>
+		<dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+        </dependency>
 		<!--velocity -->
 		<dependency>
 			<groupId>org.apache.velocity</groupId>

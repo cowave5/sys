@@ -9,13 +9,13 @@
  */
 package com.cowave.sys.blog.api.controller;
 
+import com.cowave.commons.client.http.response.Response;
 import com.cowave.commons.framework.helper.FileHelper;
 import com.cowave.sys.blog.api.entity.PostInfo;
 import com.cowave.sys.blog.api.service.PostService;
 import com.cowave.sys.blog.configuration.BlogConfiguration;
 import com.cowave.sys.blog.configuration.ViewConfiguration;
 import lombok.RequiredArgsConstructor;
-import org.springframework.feign.codec.Response;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
