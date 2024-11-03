@@ -19,7 +19,7 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-                   :disabled="!checkPermit(['sys:dict:new'])">{{$t('route.system.dict.new')}}</el-button>
+                   :disabled="!checkPermit(['sys:dict:create'])">{{$t('route.system.dict.new')}}</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="success" plain icon="el-icon-edit" size="mini" @click="handleUpdate"
@@ -40,7 +40,7 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange" :header-cell-style="{'text-align':'center'}">
       <el-table-column :selectable='selectable' type="selection" width="55" align="center" />
       <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
         <template slot-scope="scope">
@@ -51,27 +51,19 @@
         <template slot-scope="scope">
           <span v-if="$i18n.locale==='zh'">{{scope.row.groupName}}</span>
           <span v-if="$i18n.locale==='en'">{{scope.row.groupEn}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t(`dict.label.groupcode`)" align="center" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          <span v-if="scope.row.groupCode === 'dict_root' || scope.row.groupCode === 'Root'" style="font-weight: bold">{{scope.row.groupCode}}</span>
-          <span v-else-if="scope.row.groupCode === 'dict_group'" style="color: #cc7e15">{{scope.row.groupCode}}</span>
-          <span v-else style="color: #b91111">{{scope.row.groupCode}}</span>
+          <span v-if="scope.row.groupCode === 'dict_root' || scope.row.groupCode === 'Root'" style="font-weight: bold"> <{{scope.row.groupCode}}></span>
+          <span v-else-if="scope.row.groupCode === 'dict_group'" style="color: #cc7e15"> <{{scope.row.groupCode}}></span>
+          <span v-else style="color: #b91111"> <{{scope.row.groupCode}}></span>
         </template>
       </el-table-column>
       <el-table-column :label="$t(`dict.label.type`)" align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span v-if="$i18n.locale==='zh'">{{scope.row.typeName}}</span>
           <span v-if="$i18n.locale==='en'">{{scope.row.typeEn}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t(`dict.label.typecode`)" align="center" prop="typeCode" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          <span v-if="scope.row.typeCode === 'dict_root'" style="font-weight: bold">{{scope.row.typeCode}}</span>
-          <span v-else-if="scope.row.groupCode === 'dict_root'" style="color: #cc7e15">{{scope.row.typeCode}}</span>
-          <span v-else-if="scope.row.groupCode === 'dict_group'" style="color: #b91111">{{scope.row.typeCode}}</span>
-          <span v-else style="color: #4b18a6">{{scope.row.typeCode}}</span>
+          <span v-if="scope.row.typeCode === 'dict_root'" style="font-weight: bold"> <{{scope.row.typeCode}}></span>
+          <span v-else-if="scope.row.groupCode === 'dict_root'" style="color: #cc7e15"> <{{scope.row.typeCode}}></span>
+          <span v-else-if="scope.row.groupCode === 'dict_group'" style="color: #b91111"> <{{scope.row.typeCode}}></span>
+          <span v-else style="color: #4b18a6"> <{{scope.row.typeCode}}></span>
         </template>
       </el-table-column>
       <el-table-column :label="$t(`dict.label.name`)" align="center">
@@ -80,30 +72,26 @@
           <el-tag v-if="$i18n.locale==='zh' && scope.row.css !== null" :type="scope.row.css">{{scope.row.dictLabel}}</el-tag>
           <span v-if="$i18n.locale==='en' && scope.row.css === null" >{{scope.row.dictEn}}</span>
           <el-tag v-if="$i18n.locale==='en' && scope.row.css !== null" :type="scope.row.css">{{scope.row.dictEn}}</el-tag>
+          <span v-if="scope.row.dictCode === 'dict_group'" style="color: #cc7e15"> <{{scope.row.dictCode}}></span>
+          <span v-else-if="scope.row.groupCode === 'dict_root'" style="color: #b91111"> <{{scope.row.dictCode}}></span>
+          <span v-else-if="scope.row.groupCode === 'dict_group'" style="color: #4b18a6"> <{{scope.row.dictCode}}></span>
+          <span v-else> <{{scope.row.dictCode}}></span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t(`dict.label.code`)" align="center" prop="dictCode" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          <span v-if="scope.row.dictCode === 'dict_group'" style="color: #cc7e15">{{scope.row.dictCode}}</span>
-          <span v-else-if="scope.row.groupCode === 'dict_root'" style="color: #b91111">{{scope.row.dictCode}}</span>
-          <span v-else-if="scope.row.groupCode === 'dict_group'" style="color: #4b18a6">{{scope.row.dictCode}}</span>
-          <span v-else>{{scope.row.dictCode}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t(`dict.label.value`)" align="center" prop="dictValue" :show-overflow-tooltip="true"/>
-      <el-table-column :label="$t(`dict.label.order`)" align="center" prop="dictOrder" />
-      <el-table-column :label="$t(`label.status`)" align="center" prop="status">
+      <el-table-column :label="$t(`dict.label.value`)" align="center" prop="dictValue" width="140" :show-overflow-tooltip="true"/>
+      <el-table-column :label="$t(`dict.label.order`)" prop="dictOrder" align="center" width="100" />
+      <el-table-column :label="$t(`label.status`)" prop="status" align="center" width="100" >
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_is_enable" :value="scope.row.status"/>
         </template>
       </el-table-column>
-      <el-table-column :label="$t(`label.readonly`)" align="center" prop="readOnly">
+      <el-table-column :label="$t(`label.readonly`)" prop="readOnly" align="center" width="100" >
         <template slot-scope="scope">
           <el-switch v-model="scope.row.readOnly" :active-value=1 :inactive-value=0 @change="handleReadOnly(scope.row)"
                      :disabled="scope.row.dictCode === 'dict_group' || !checkPermit(['route.common.readonly'])"/>
         </template>
       </el-table-column>
-      <el-table-column :label="$t(`label.option`)" align="center" class-name="small-padding fixed-width">
+      <el-table-column :label="$t(`label.option`)" align="center" width="120" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">{{$t('route.system.dict.edit')}}</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"

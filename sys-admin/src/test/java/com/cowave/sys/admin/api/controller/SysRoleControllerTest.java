@@ -10,9 +10,9 @@
 package com.cowave.sys.admin.api.controller;
 
 import com.cowave.commons.framework.access.filter.AccessFilter;
-import com.cowave.commons.framework.access.security.TokenAuthenticationFilter;
+import com.cowave.commons.framework.access.security.BearerTokenFilter;
 import com.cowave.sys.admin.SpringTest;
-import com.cowave.sys.admin.api.controller.sys.SysRoleController;
+import com.cowave.sys.admin.rabc.api.SysRoleController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author shanhuiming
- *
  */
 public class SysRoleControllerTest extends SpringTest {
 
@@ -34,7 +32,7 @@ public class SysRoleControllerTest extends SpringTest {
     public void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(sysRoleController)
                 .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, accessProperties, objectMapper))
-                .addFilter(new TokenAuthenticationFilter(tokenService))
+                .addFilter(new BearerTokenFilter(true, bearerTokenService, null, null))
                 .setControllerAdvice(accessAdvice).build();
     }
 
@@ -117,7 +115,7 @@ public class SysRoleControllerTest extends SpringTest {
      */
     @Test
     public void userAuthed() throws Exception {
-        mockPost("/api/v1/role/user/authed", "{\"roleId\":3,\"userName\":\"刘\"}");
+        mockPost("/api/v1/role/users/authed", "{\"roleId\":3,\"userName\":\"刘\"}");
     }
 
     /**

@@ -10,9 +10,9 @@
 package com.cowave.sys.admin.api.controller;
 
 import com.cowave.commons.framework.access.filter.AccessFilter;
-import com.cowave.commons.framework.access.security.TokenAuthenticationFilter;
+import com.cowave.commons.framework.access.security.BearerTokenFilter;
 import com.cowave.sys.admin.SpringTest;
-import com.cowave.sys.admin.api.controller.sys.SysUserController;
+import com.cowave.sys.admin.rabc.api.SysUserController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author shanhuiming
- *
  */
 public class SysUserControllerTest extends SpringTest {
 
@@ -34,32 +32,8 @@ public class SysUserControllerTest extends SpringTest {
     public void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(sysUserController)
                 .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, accessProperties, objectMapper))
-                .addFilter(new TokenAuthenticationFilter(tokenService))
+                .addFilter(new BearerTokenFilter(true, bearerTokenService, null, null))
                 .setControllerAdvice(accessAdvice).build();
-    }
-
-    /**
-     * 刷新缓存
-     */
-    @Test
-    public void refresh() throws Exception {
-        mockGet("/api/v1/user/refresh");
-    }
-
-    /**
-     * 人员关系
-     */
-    @Test
-    public void tree() throws Exception {
-        mockGet("/api/v1/user/tree");
-    }
-
-    /**
-     * 部门用户树
-     */
-    @Test
-    public void deptUserTree() throws Exception {
-        mockGet("/api/v1/user/tree/dept");
     }
 
     /**
@@ -67,15 +41,7 @@ public class SysUserControllerTest extends SpringTest {
      */
     @Test
     public void list() throws Exception {
-        mockPost("/api/v1/user/list", "{\"page\":1,\"pageSize\":1}");
-    }
-
-    /**
-     * 列表
-     */
-    @Test
-    public void listWithDept() throws Exception {
-        mockPost("/api/v1/user/list", "{\"page\":1,\"pageSize\":1,\"deptId\":1}");
+        mockGet("/api/v1/user?page=1&pageSize=2");
     }
 
     /**
@@ -83,7 +49,7 @@ public class SysUserControllerTest extends SpringTest {
      */
     @Test
     public void info() throws Exception {
-        mockGet("/api/v1/user/info/2");
+        mockGet("/api/v1/user/2");
     }
 
     /**
@@ -92,18 +58,35 @@ public class SysUserControllerTest extends SpringTest {
     @Test
     @Rollback()
     @Transactional
-    public void add() throws Exception {
-        mockPost("/api/v1/user/add", "{\"userAccount\":\"test\",\"userName\":\"测试人员\",\"userPasswd\":\"123456\"}");
+    public void create() throws Exception {
+        mockPost("/api/v1/user",
+                """
+                        {
+                            "userAccount": "test",
+                            "userName": "测试人员",
+                            "userPasswd": "123456"
+                        }
+                        """
+        );
     }
 
     /**
-     * 编辑
+     * 修改
      */
     @Test
     @Rollback()
     @Transactional
     public void edit() throws Exception {
-        mockPost("/api/v1/user/edit", "{\"userId\":5,\"userAccount\":\"test\",\"userName\":\"测试人员\",\"userPasswd\":\"123456\"}");
+        mockPatch("/api/v1/user",
+                """ 
+                        {
+                            "userId":5,
+                            "userAccount":"test",
+                            "userName":"测试人员",
+                            "userPasswd":"123456"
+                        }
+                        """
+        );
     }
 
     /**
@@ -113,7 +96,7 @@ public class SysUserControllerTest extends SpringTest {
     @Rollback()
     @Transactional
     public void delete() throws Exception {
-        mockGet("/api/v1/user/delete?userId=3,4");
+        mockDelete("/api/v1/user/3,4");
     }
 
     /**
@@ -123,7 +106,15 @@ public class SysUserControllerTest extends SpringTest {
     @Rollback()
     @Transactional
     public void changeStatus() throws Exception {
-        mockPost("/api/v1/user/change/status", "{\"userId\":5,\"userStatus\":0}");
+        mockPatch("/api/v1/user/status",
+                """
+                        {
+                            "userId":5,
+                            "userName":"test",
+                            "userStatus":0
+                        }
+                        """
+        );
     }
 
     /**
@@ -133,7 +124,15 @@ public class SysUserControllerTest extends SpringTest {
     @Rollback()
     @Transactional
     public void changePasswd() throws Exception {
-        mockPost("/api/v1/user/change/passwd", "{\"userId\":5,\"userPasswd\":\"123123\"}");
+        mockPatch("/api/v1/user/passwd",
+                """
+                        {
+                            "userId":5,
+                            "userName":"test",
+                            "userPasswd":"123123"
+                        }
+                        """
+        );
     }
 
     /**
@@ -143,7 +142,15 @@ public class SysUserControllerTest extends SpringTest {
     @Rollback()
     @Transactional
     public void changeRoles() throws Exception {
-        mockPost("/api/v1/user/change/roles", "{\"userId\":5,\"roleIds\": [1,2]}");
+        mockPatch("/api/v1/user/roles",
+                """
+                        {
+                            "userId":5,
+                            "userName":"test",
+                            "roleIds": [1,2]
+                        }
+                        """
+        );
     }
 
     /**
@@ -153,11 +160,19 @@ public class SysUserControllerTest extends SpringTest {
     @Rollback()
     @Transactional
     public void changeReadonly() throws Exception {
-        mockPost("/api/v1/user/change/readonly", "{\"userId\":5,\"readOnly\":1}");
+        mockPatch("/api/v1/user/readonly",
+                """
+                        {
+                            "userId":5,
+                            "userName":"test",
+                            "readOnly":1
+                        }
+                        """
+        );
     }
 
     /**
-     * 导出
+     * 导出用户
      */
     @Test
     public void export() throws Exception {
@@ -180,5 +195,29 @@ public class SysUserControllerTest extends SpringTest {
     @Transactional
     public void importUser() throws Exception {
         mockImport("/api/v1/user/import", null, "source/user-import.xlsx");
+    }
+
+    /**
+     * 刷新缓存
+     */
+    @Test
+    public void refresh() throws Exception {
+        mockGet("/api/v1/user/refresh");
+    }
+
+    /**
+     * 用户树
+     */
+    @Test
+    public void tree() throws Exception {
+        mockGet("/api/v1/user/tree");
+    }
+
+    /**
+     * 部门用户树
+     */
+    @Test
+    public void deptUserTree() throws Exception {
+        mockGet("/api/v1/user/tree/dept");
     }
 }

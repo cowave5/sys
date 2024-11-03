@@ -9,17 +9,15 @@
  */
 package com.cowave.sys.blog.api.service;
 
+import com.cowave.commons.client.http.response.Response;
 import com.cowave.sys.blog.api.entity.PostInfo;
-import org.springframework.feign.codec.Response;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- *
  * @author shanhuiming
- *
  */
 public interface PostService {
 

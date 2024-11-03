@@ -13,11 +13,11 @@ create table oauth_config
     grant_type    character varying(64),
     response_type character varying(64),
     auth_scope    character varying(128),
-    create_user   int8,
-    create_dept   int8,
+    create_user   int4,
+    create_dept   int4,
     create_time   timestamp,
-    update_user   int8,
-    update_dept   int8,
+    update_user   int4,
+    update_dept   int4,
     update_time   timestamp
 );
 create unique index oauth_config_unique on oauth_config(app_type);

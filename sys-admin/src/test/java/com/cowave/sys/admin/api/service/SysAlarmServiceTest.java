@@ -10,14 +10,13 @@
 package com.cowave.sys.admin.api.service;
 
 import com.cowave.sys.admin.SpringTest;
-import com.cowave.sys.model.admin.SysAlarm;
+import com.cowave.sys.admin.base.service.SysAlarmService;
+import com.cowave.sys.admin.base.domain.dto.SysAlarmDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- *
  * @author shanhuiming
- *
  */
 public class SysAlarmServiceTest extends SpringTest {
 
@@ -26,7 +25,7 @@ public class SysAlarmServiceTest extends SpringTest {
 
     @Test
     public void accept() {
-        SysAlarm sysAlarm = new SysAlarm();
+        SysAlarmDto sysAlarm = new SysAlarmDto();
         sysAlarm.setAlarmCode("xxx");
         sysAlarmService.add(sysAlarm);
     }

@@ -10,9 +10,9 @@
 package com.cowave.sys.admin.api.controller;
 
 import com.cowave.commons.framework.access.filter.AccessFilter;
-import com.cowave.commons.framework.access.security.TokenAuthenticationFilter;
+import com.cowave.commons.framework.access.security.BearerTokenFilter;
 import com.cowave.sys.admin.SpringTest;
-import com.cowave.sys.admin.api.controller.sys.SysAttachController;
+import com.cowave.sys.admin.base.api.SysAttachController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +25,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 /**
- *
  * @author shanhuiming
- *
  */
 public class SysAttachControllerTest extends SpringTest {
 
@@ -38,7 +36,7 @@ public class SysAttachControllerTest extends SpringTest {
     public void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(sysAttachController)
                 .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, accessProperties, objectMapper))
-                .addFilter(new TokenAuthenticationFilter(tokenService))
+                .addFilter(new BearerTokenFilter(true, bearerTokenService, null, null))
                 .setControllerAdvice(accessAdvice).build();
     }
 
@@ -65,7 +63,7 @@ public class SysAttachControllerTest extends SpringTest {
         params.set("attachType", "avatar");
         mockImport("/api/v1/attach/upload", params, "source/cw.jpg");
         this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/attach/download?attachId=1")
-                        .header("requestId", requestId())
+                        .header("X-Request-ID", requestId())
                         .header("Authorization", accessToken)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())

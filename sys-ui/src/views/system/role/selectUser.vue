@@ -17,7 +17,7 @@
       <el-table @row-click="clickRow" ref="table" :data="userList" @selection-change="handleSelectionChange" height="480px">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column :label="$t(`role.user.label.name`)" prop="userName" :show-overflow-tooltip="true" />
-        <el-table-column :label="$t(`role.user.label.phone`)" :show-overflow-tooltip="true" />
+        <el-table-column :label="$t(`role.user.label.phone`)" prop="userPhone" :show-overflow-tooltip="true" />
         <el-table-column :label="$t(`role.user.label.rank`)" prop="rank" :show-overflow-tooltip="true" >
           <template slot-scope="{row: {rank}}">
             <template v-for="item in dict.type.post_level">

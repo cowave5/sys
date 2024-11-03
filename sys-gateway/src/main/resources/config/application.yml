@@ -38,7 +38,7 @@ spring:
             - Path=/code/**
 
 server:
-  port: ${server_port:19000}
+  port: ${app_port:19000}
   servlet:
     context-path: /
 

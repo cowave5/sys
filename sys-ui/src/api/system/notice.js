@@ -85,10 +85,19 @@ export function publishNotice(noticeId) {
   })
 }
 
+// 上传附件
 export function uploadAttach(data, attachUrl) {
   return request({
     url: attachUrl,
     method: 'post',
     data: data
+  })
+}
+
+// 未读统计
+export function countUnRead() {
+  return request({
+    url: '/admin/api/v1/notice/count/unread',
+    method: 'get'
   })
 }

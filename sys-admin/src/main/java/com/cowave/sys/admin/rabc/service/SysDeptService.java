@@ -1,0 +1,101 @@
+/*
+ * Copyright (c) 2017～2024 Cowave All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+package com.cowave.sys.admin.rabc.service;
+
+import cn.hutool.core.lang.tree.Tree;
+import com.cowave.commons.client.http.response.Response;
+import com.cowave.sys.admin.rabc.domain.SysDept;
+import com.cowave.sys.admin.rabc.domain.request.DeptCreate;
+import com.cowave.sys.admin.rabc.domain.request.DeptQuery;
+import com.cowave.sys.admin.rabc.domain.request.DeptReadUpdate;
+import com.cowave.sys.admin.rabc.domain.dto.*;
+
+import java.util.List;
+
+/**
+ * @author shanhuiming
+ */
+public interface SysDeptService{
+
+	/**
+	 * 列表
+	 */
+	List<SysDeptListDto> list(DeptQuery deptQuery);
+
+	/**
+	 * 导出列表
+	 */
+	List<SysDept> listForExport();
+
+	/**
+	 * 详情
+	 */
+	SysDeptInfoDto info(Integer deptId);
+
+	/**
+	 * 新增
+	 */
+	void create(DeptCreate dept);
+
+	/**
+	 * 修改
+	 */
+	void edit(DeptCreate dept);
+
+	/**
+	 * 删除
+	 */
+	void delete(List<Integer> deptIds);
+
+	/**
+	 * 部门成员
+	 */
+	Response.Page<SysDeptUserDto> members(Integer deptId);
+
+	/**
+	 * 修改只读
+	 */
+	void changeReadonly(DeptReadUpdate readUpdate);
+
+	/**
+	 * 获取部门岗位
+	 */
+	List<SysDeptPostDto> getPostsById(Integer deptId);
+
+	/**
+	 * 设置部门岗位
+	 */
+	void setPosts(List<SysDeptPostDto> list);
+
+	/**
+	 * 部门人员，id获取
+	 */
+	List<SysUserDeptDto> getUsersById(Integer deptId);
+
+	/**
+	 * 设置部门人员
+	 */
+	void setUsers(List<SysUserDeptDto> list);
+
+	/**
+	 * 部门人员，code获取
+	 */
+	List<SysUserDto> getUsersByCode(String deptCode);
+
+	/**
+     * 刷新缓存
+     */
+    void refreshDeptTree();
+
+	/**
+	 * 部门树
+	 */
+	List<Tree<String>> getDeptTree(String deptId);
+}

@@ -1,0 +1,25 @@
+package com.cowave.sys.admin.rabc.domain.dto;
+
+import com.cowave.sys.admin.rabc.domain.SysDept;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.util.List;
+
+/**
+ * @author shanhuiming
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class SysDeptInfoDto extends SysDept {
+
+    /**
+	 * 上级部门Id列表
+	 */
+	private List<Long> parentIds;
+
+	/**
+	 * 部门负责人Id列表
+	 */
+	private List<Long> leaderIds;
+}

@@ -17,9 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 /**
- *
  * @author shanhuiming
- *
  */
 @SpringBootApplication
 public class Application {

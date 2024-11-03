@@ -1,5 +1,16 @@
 import request from '@/utils/request'
 
+/**
+ * 已授权用户列表
+ */
+export function allocatedUserList(data) {
+  return request({
+    url: '/admin/api/v1/role/users/authed',
+    method: 'post',
+    data: data
+  })
+}
+
 // 查询角色列表
 export function listRole(data) {
   return request({
@@ -61,15 +72,6 @@ export function changeReadonly(roleId, readOnly, roleName) {
   }
   return request({
     url: '/admin/api/v1/role/change/readonly',
-    method: 'post',
-    data: data
-  })
-}
-
-// 已授权用户列表
-export function allocatedUserList(data) {
-  return request({
-    url: '/admin/api/v1/role/user/authed',
     method: 'post',
     data: data
   })

@@ -9,13 +9,11 @@
  */
 package com.cowave.sys.blog.api.service;
 
+import com.cowave.commons.client.http.response.Response;
 import com.cowave.sys.blog.api.entity.PostComment;
-import org.springframework.feign.codec.Response;
 
 /**
- *
  * @author shanhuiming
- *
  */
 public interface CommentService {
 

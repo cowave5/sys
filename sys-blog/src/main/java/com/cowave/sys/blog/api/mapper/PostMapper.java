@@ -18,9 +18,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- *
  * @author shanhuiming
- *
  */
 @Mapper
 public interface PostMapper extends BaseMapper<PostInfo> {

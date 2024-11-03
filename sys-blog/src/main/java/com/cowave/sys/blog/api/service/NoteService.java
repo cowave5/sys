@@ -9,14 +9,12 @@
  */
 package com.cowave.sys.blog.api.service;
 
+import com.cowave.commons.client.http.response.Response;
 import com.cowave.sys.blog.api.entity.NoteInfo;
-import org.springframework.feign.codec.Response;
 import org.springframework.ui.ModelMap;
 
 /**
- *
  * @author shanhuiming
- *
  */
 public interface NoteService {
 

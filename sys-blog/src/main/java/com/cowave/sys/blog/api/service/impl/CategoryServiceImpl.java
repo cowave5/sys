@@ -11,19 +11,17 @@ package com.cowave.sys.blog.api.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cowave.commons.client.http.response.Response;
 import com.cowave.commons.framework.access.Access;
 import com.cowave.sys.blog.api.entity.CategoryInfo;
 import com.cowave.sys.blog.api.mapper.CategoryMapper;
 import com.cowave.sys.blog.api.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.feign.codec.Response;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author shanhuiming
- *
  */
 @RequiredArgsConstructor
 @Service

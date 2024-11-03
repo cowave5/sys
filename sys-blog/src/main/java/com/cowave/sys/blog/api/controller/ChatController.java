@@ -9,12 +9,15 @@
  */
 package com.cowave.sys.blog.api.controller;
 
+import com.cowave.commons.client.http.response.Response;
 import com.cowave.sys.blog.api.entity.VerifyCode;
 import com.cowave.sys.blog.api.service.ChatService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.feign.codec.Response;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 聊天室

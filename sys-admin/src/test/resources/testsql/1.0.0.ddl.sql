@@ -9,11 +9,11 @@ create table sys_dept(
     dept_phone    character varying(64),
     remark        character varying(200),
     read_only     int2 default 0,
-    create_user   int8,
-    create_dept   int8,
+    create_user   int4,
+    create_dept   int4,
     create_time   timestamp,
-    update_user   int8,
-    update_dept   int8,
+    update_user   int4,
+    update_dept   int4,
     update_time   timestamp
 );
 comment on table sys_dept is '部门信息';
@@ -56,11 +56,11 @@ create table sys_post (
     post_status int2      default 1,
     remark      character varying(200),
     read_only   int2      default 0,
-    create_user  int8,
-    create_dept  int8,
+    create_user  int4,
+    create_dept  int4,
     create_time  timestamp,
-    update_user  int8,
-    update_dept  int8,
+    update_user  int4,
+    update_dept  int4,
     update_time  timestamp
 );
 comment on table sys_post is '岗位信息';
@@ -108,7 +108,7 @@ comment on column sys_dept_post.is_default is '是否部门默认岗位';
 -- 6.用户信息
 drop table if exists sys_user;
 create table sys_user(
-    user_id      bigserial primary key,
+    user_id      serial primary key,
     user_type    int2      default 0,
     user_code    character varying(64),
     user_name    character varying(64) not null,
@@ -121,11 +121,11 @@ create table sys_user(
     rank         character varying(64),
     remark       character varying(200),
     read_only    int2      default 0,
-    create_user  int8,
-    create_dept  int8,
+    create_user  int4,
+    create_dept  int4,
     create_time  timestamp,
-    update_user  int8,
-    update_dept  int8,
+    update_user  int4,
+    update_dept  int4,
     update_time  timestamp
 );
 create unique index sys_user_user_account on sys_user(user_account);
@@ -191,11 +191,11 @@ create table sys_role(
     role_type   character varying(64),
     remark      character varying(200),
     read_only   int2      default 0,
-    create_user  int8,
-    create_dept  int8,
+    create_user  int4,
+    create_dept  int4,
     create_time  timestamp,
-    update_user  int8,
-    update_dept  int8,
+    update_user  int4,
+    update_dept  int4,
     update_time  timestamp
 );
 create unique index sys_role_role_code on sys_role(role_code);
@@ -244,11 +244,11 @@ create table sys_menu(
     is_protected  int2 DEFAULT 1,
     remark        character varying(200),
     read_only     int2 default 0,
-    create_user   int8,
-    create_dept   int8,
+    create_user   int4,
+    create_dept   int4,
     create_time   timestamp,
-    update_user   int8,
-    update_dept   int8,
+    update_user   int4,
+    update_dept   int4,
     update_time   timestamp
 );
 comment on table sys_menu is '菜单信息';
@@ -304,11 +304,11 @@ create table sys_dict(
     status int2 default 1,
     remark      character varying(200),
     read_only int2 default 0,
-    create_user  int8,
-    create_dept  int8,
+    create_user  int4,
+    create_dept  int4,
     create_time  timestamp,
-    update_user  int8,
-    update_dept  int8,
+    update_user  int4,
+    update_dept  int4,
     update_time  timestamp
 );
 create unique index sys_dict_uk on sys_dict(dict_code);
@@ -382,11 +382,11 @@ create table sys_notice(
     goals_role     int8 ARRAY,
     goals_user     int8 ARRAY,
     publish_time   timestamp,
-    create_user  int8,
-    create_dept  int8,
+    create_user  int4,
+    create_dept  int4,
     create_time  timestamp,
-    update_user  int8,
-    update_dept  int8,
+    update_user  int4,
+    update_dept  int4,
     update_time  timestamp
 );
 comment on table sys_notice is '系统公告';
@@ -465,11 +465,11 @@ CREATE TABLE sys_config(
     value_param  varchar(100),
     is_default   int2         DEFAULT 0,
     remark       varchar(500) DEFAULT NULL,
-    create_user  int8,
-    create_dept  int8,
+    create_user  int4,
+    create_dept  int4,
     create_time  timestamp,
-    update_user  int8,
-    update_dept  int8,
+    update_user  int4,
+    update_dept  int4,
     update_time  timestamp
 );
 create unique index sys_config_config_key on sys_config(config_key);
