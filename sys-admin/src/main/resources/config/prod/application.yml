@@ -1,5 +1,5 @@
 server:
-  port: ${server_port:19010}
+  port: ${app_port:19010}
   servlet:
     context-path: /admin
 
@@ -9,13 +9,14 @@ spring:
     namespace: sys
   access:
     always-success: true
-    token:
-      header: Authorization
-      salt: admin@cowave.com
-      conflict: false
-      accessExpire: ${token_access_seconds:86400}
-      refreshExpire: ${token_refresh_seconds:604800}
-      ignoreUrls:
+    urlPatterns:
+      - /api/v1/*
+    auth:
+      mode: refreshToken
+      tokenIgnoreUrls:
+        - /favicon.ico
+        - /actuator/**
+        - /doc/**
         - /api/v1/auth/login
         - /api/v1/auth/logon
         - /api/v1/auth/refresh
@@ -25,7 +26,6 @@ spring:
         - /api/v1/oauth/callback/**
         - /api/v1/flow/designer/**
         - /designer/**
-        - /actuator/**
   datasource:
     driverClassName: org.postgresql.Driver
     url: ${datasource_url:jdbc:postgresql://127.0.0.1:5432/sys-admin}

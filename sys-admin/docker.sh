@@ -26,14 +26,14 @@ FROM ubuntu:20.04
 
 ENV LANG C.UTF-8
 
-WORKDIR /opt/cowave/${app_name}
+WORKDIR ${app_home}
 
 RUN mkdir -p /usr/share/fonts/simsun
 
 ADD simsun.ttf /usr/share/fonts/simsun
-ADD bin /opt/cowave/${app_name}/bin/
-ADD classes/config /opt/cowave/${app_name}/config/
-ADD "$app_name"-"$app_version".jar /opt/cowave/${app_name}/lib/
+ADD bin ${app_home}/bin/
+ADD classes/config ${app_home}/config/
+ADD "$app_name"-"$app_version".jar ${app_home}/lib/
 
 RUN ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo 'Asia/Shanghai' > /etc/timezone && \
@@ -50,6 +50,6 @@ RUN ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
 ENTRYPOINT ["bin/run.sh", "up"]
 EOF
 
-docker build -t cowave/$app_name:$app_version .
+docker build -t $app_name:$app_version .
 }
 

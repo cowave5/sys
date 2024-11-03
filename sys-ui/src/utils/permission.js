@@ -10,6 +10,9 @@ export function checkPermit(value) {
     const permissions = store.getters && store.getters.permissions
     const permissionDatas = value
     return permissions.some(permission => {
+      if (!permission) {
+        return false;
+      }
       return permissionDatas.some(flag => matchPermit(permission, flag));
     });
   } else {

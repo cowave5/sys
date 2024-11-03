@@ -34,7 +34,7 @@
             <span v-if="log.logContent.req.readOnly === 0">取消角色[{{ log.logContent.req.roleName }}]为只读</span>
           </el-form-item>
 
-          <el-form-item v-if="log.actionCode === 'add'" label="角色信息：">
+          <el-form-item v-if="log.actionCode === 'create'" label="角色信息：">
             <el-form ref="form-add" :model="log.logContent.req" label-width="100px" style="background-color: #e5f3f3">
               <el-row>
                 <el-col :span="10">

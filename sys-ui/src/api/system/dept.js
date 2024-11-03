@@ -1,19 +1,44 @@
 import request from '@/utils/request'
+import { appendUrl } from '@/utils/ruoyi'
 
-// 查询部门列表
-export function listDept(query) {
+/**
+ * 部门成员
+ */
+export function listMembers(deptId, page, pageSize) {
   return request({
-    url: '/admin/api/v1/dept/list',
-    method: 'post',
-    data: query
+    url: '/admin/api/v1/dept/members/' + deptId + "?page=" + page + "&pageSize=" + pageSize,
+    method: 'get'
   })
 }
 
-// 查询部门详细
+/**
+ * 部门列表
+ */
+export function listDept(params) {
+  return request({
+    url: appendUrl('/admin/api/v1/dept', params),
+    method: 'get'
+  })
+}
+
+/**
+ * 部门详情
+ */
 export function getDept(deptId) {
   return request({
-    url: '/admin/api/v1/dept/info/' + deptId,
+    url: '/admin/api/v1/dept/' + deptId,
     method: 'get'
+  })
+}
+
+/**
+ * 新增部门
+ */
+export function addDept(data) {
+  return request({
+    url: '/admin/api/v1/dept',
+    method: 'post',
+    data: data
   })
 }
 
@@ -52,15 +77,6 @@ export function getUserTree() {
   return request({
     url: '/admin/api/v1/user/tree',
     method: 'get'
-  })
-}
-
-// 新增部门
-export function addDept(data) {
-  return request({
-    url: '/admin/api/v1/dept/add',
-    method: 'post',
-    data: data
   })
 }
 

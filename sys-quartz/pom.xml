@@ -14,10 +14,6 @@
 	<url>https://www.cowave.com/</url>
 	<description>定时任务</description>
 
-	<properties>
-		<skip.changelog>true</skip.changelog>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.cowave.sys</groupId>

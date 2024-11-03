@@ -10,9 +10,9 @@
 package com.cowave.sys.admin.api.controller;
 
 import com.cowave.commons.framework.access.filter.AccessFilter;
-import com.cowave.commons.framework.access.security.TokenAuthenticationFilter;
+import com.cowave.commons.framework.access.security.BearerTokenFilter;
 import com.cowave.sys.admin.SpringTest;
-import com.cowave.sys.admin.api.controller.sys.SysDeptController;
+import com.cowave.sys.admin.core.controller.SysDeptController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author shanhuiming
- *
  */
 public class SysDeptControllerTest extends SpringTest {
 
@@ -34,8 +32,44 @@ public class SysDeptControllerTest extends SpringTest {
     public void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(sysDeptController)
                 .addFilter(new AccessFilter(transactionIdSetter, accessIdGenerator, accessProperties, objectMapper))
-                .addFilter(new TokenAuthenticationFilter(tokenService))
+                .addFilter(new BearerTokenFilter(true, bearerTokenService, null, null))
                 .setControllerAdvice(accessAdvice).build();
+    }
+
+    /**
+     * 列表
+     */
+    @Test
+    public void list() throws Exception {
+        mockGet("/api/v1/dept?page=1&pageSize=2");
+    }
+
+    /**
+     * 详情
+     */
+    @Test
+    public void info() throws Exception {
+        mockGet("/api/v1/dept/2");
+    }
+
+    /**
+     * 新增
+     */
+    @Test
+    @Rollback()
+    @Transactional
+    public void create() throws Exception {
+        mockPost("/api/v1/dept", "{\"deptName\":\"测试部门\",\"parentIds\":[4]}");
+    }
+
+    /**
+     * 修改
+     */
+    @Test
+    @Rollback()
+    @Transactional
+    public void edit() throws Exception {
+        mockPost("/api/v1/dept/edit", "{\"deptId\":8,\"deptName\":\"测试部门\",\"parentIds\":[4]}");
     }
 
     /**
@@ -55,39 +89,11 @@ public class SysDeptControllerTest extends SpringTest {
     }
 
     /**
-     * 列表
+     * 成员
      */
     @Test
-    public void list() throws Exception {
-        mockPost("/api/v1/dept/list", "{\"page\":1,\"pageSize\":1}");
-    }
-
-    /**
-     * 详情
-     */
-    @Test
-    public void info() throws Exception {
-        mockGet("/api/v1/dept/info/2");
-    }
-
-    /**
-     * 新增
-     */
-    @Test
-    @Rollback()
-    @Transactional
-    public void add() throws Exception {
-        mockPost("/api/v1/dept/add", "{\"deptName\":\"测试部门\",\"parentIds\":[4]}");
-    }
-
-    /**
-     * 修改
-     */
-    @Test
-    @Rollback()
-    @Transactional
-    public void edit() throws Exception {
-        mockPost("/api/v1/dept/edit", "{\"deptId\":8,\"deptName\":\"测试部门\",\"parentIds\":[4]}");
+    public void listWithDept() throws Exception {
+        mockGet("/api/v1/dept/members/1?page=1&pageSize=2");
     }
 
     /**

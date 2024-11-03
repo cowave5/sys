@@ -17,11 +17,11 @@ import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import com.alibaba.excel.enums.poi.HorizontalAlignmentEnum;
 import com.alibaba.fastjson.annotation.JSONField;
-import com.cowave.commons.framework.access.AccessUser;
+import com.cowave.commons.framework.access.security.AccessInfo;
 import com.cowave.commons.framework.support.excel.DateConverter;
 import com.cowave.commons.framework.support.excel.StatusConverter;
 import com.cowave.commons.framework.support.excel.YesNoConverter;
-import com.cowave.commons.tools.Asserts;
+import com.cowave.commons.response.exception.Asserts;
 import com.cowave.commons.tools.DateUtils;
 import com.cowave.sys.quartz.api.task.job.ParallelJob;
 import com.cowave.sys.quartz.api.task.job.SerialJob;
@@ -48,7 +48,7 @@ import java.util.Date;
 @ContentStyle(horizontalAlignment = HorizontalAlignmentEnum.LEFT)
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class QuartzTask extends AccessUser implements Serializable {
+public class QuartzTask extends AccessInfo implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 5823564567511005149L;
@@ -137,12 +137,12 @@ public class QuartzTask extends AccessUser implements Serializable {
     /**
      * 创建人
      */
-    private Long createUser;
+    private Integer createUser;
 
     /**
      * 创建部门
      */
-    private Long createDept;
+    private Integer createDept;
 
     /**
      * 创建时间
@@ -153,12 +153,12 @@ public class QuartzTask extends AccessUser implements Serializable {
     /**
      * 更新人
      */
-    private Long updateUser;
+    private Integer updateUser;
 
     /**
      * 更新部门
      */
-    private Long updateDept;
+    private Integer updateDept;
 
     /**
      * 更新时间

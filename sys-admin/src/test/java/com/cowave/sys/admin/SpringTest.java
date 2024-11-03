@@ -13,9 +13,9 @@ import com.cowave.commons.framework.access.AccessAdvice;
 import com.cowave.commons.framework.access.AccessProperties;
 import com.cowave.commons.framework.access.filter.AccessIdGenerator;
 import com.cowave.commons.framework.access.filter.TransactionIdSetter;
-import com.cowave.commons.framework.access.security.AccessToken;
+import com.cowave.commons.framework.access.security.AccessUserDetails;
 import com.cowave.commons.framework.access.security.Permission;
-import com.cowave.commons.framework.access.security.TokenService;
+import com.cowave.commons.framework.access.security.BearerTokenService;
 import com.cowave.commons.framework.configuration.ApplicationProperties;
 import com.cowave.commons.framework.helper.redis.RedisHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,9 +50,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *
  * @author shanhuiming
- *
  */
 @ContextConfiguration(classes = SpringTestConfiguration.class)
 @ExtendWith(SpringExtension.class)
@@ -64,16 +62,23 @@ public class SpringTest {
             .withCommand("postgres", "-c", "max_connections=1000")
             .withEnv("POSTGRES_MAX_CONNECTIONS", "1000");
 
-    public static final GenericContainer<?> REDIS = new GenericContainer<>("redis:7.0").withExposedPorts(6379);
+    public static final GenericContainer<?> REDIS =
+            new GenericContainer<>("redis:7.0").withExposedPorts(6379);
 
-    public static final KafkaContainer KAFKA = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1"));
+    public static final GenericContainer<?> ZK =
+            new GenericContainer<>("zookeeper:3.8.1").withExposedPorts(2181);
 
-    public static final MinIOContainer MINIO = new MinIOContainer("minio/minio:RELEASE.2023-09-04T19-57-37Z")
-            .withUserName("admin").withPassword("admin123").withExposedPorts(9000);
+    public static final KafkaContainer KAFKA =
+            new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1")).dependsOn(ZK);
+
+    public static final MinIOContainer MINIO =
+            new MinIOContainer("minio/minio:RELEASE.2023-09-04T19-57-37Z")
+                    .withUserName("admin").withPassword("admin123").withExposedPorts(9000);
 
     static {
         PG.start();
         REDIS.start();
+        ZK.start();
         KAFKA.start();
         MINIO.start();
     }
@@ -85,7 +90,7 @@ public class SpringTest {
     protected String refreshToken;
 
     @Autowired
-    protected TokenService tokenService;
+    protected BearerTokenService bearerTokenService;
 
     @Autowired(required = false)
     protected TransactionIdSetter transactionIdSetter;
@@ -110,36 +115,46 @@ public class SpringTest {
 
     @PostConstruct
     public void init() {
-        AccessToken loginToken = AccessToken.newToken();
-        loginToken.setType(AccessToken.TYPE_USER);
-        loginToken.setUserId(6L);
-        loginToken.setDeptId(1L);
-        loginToken.setUsername("guanyu");
-        loginToken.setUserNick("关羽");
-        loginToken.setRoles(List.of(Permission.ROLE_ADMIN));
-        redisHelper.putValue(applicationProperties.getTokenNamespace() + "user:" + loginToken.getUsername(), loginToken);
+        AccessUserDetails userDetails = AccessUserDetails.newUserDetails();
+        userDetails.setType(AccessUserDetails.TYPE_USER);
+        userDetails.setUserId(6L);
+        userDetails.setDeptId(1L);
+        userDetails.setUsername("guanyu");
+        userDetails.setUserNick("关羽");
+        userDetails.setRoles(List.of(Permission.ROLE_ADMIN));
+        redisHelper.putValue(applicationProperties.getTokenNamespace() + "user:" + userDetails.getUsername(), userDetails);
 
-        tokenService.assignToken(loginToken);
-        this.accessToken = loginToken.getAccessToken();
-        this.refreshToken = loginToken.getRefreshToken();
+        bearerTokenService.dualAssignToken(userDetails);
+        this.accessToken = userDetails.getAccessToken();
+        this.refreshToken = userDetails.getRefreshToken();
 
-        AccessToken logoutToken = AccessToken.newToken();
-        logoutToken.setType(AccessToken.TYPE_USER);
-        logoutToken.setUserId(7L);
-        logoutToken.setDeptId(2L);
-        logoutToken.setUsername("zhangfei");
-        logoutToken.setUserNick("张飞");
-        logoutToken.setRoles(List.of(Permission.ROLE_ADMIN));
-        redisHelper.putValue(applicationProperties.getTokenNamespace() + "user:" + logoutToken.getUsername(), logoutToken);
+        AccessUserDetails logoutUserDetails = AccessUserDetails.newUserDetails();
+        logoutUserDetails.setType(AccessUserDetails.TYPE_USER);
+        logoutUserDetails.setUserId(7L);
+        logoutUserDetails.setDeptId(2L);
+        logoutUserDetails.setUsername("zhangfei");
+        logoutUserDetails.setUserNick("张飞");
+        logoutUserDetails.setRoles(List.of(Permission.ROLE_ADMIN));
+        redisHelper.putValue(applicationProperties.getTokenNamespace() + "user:" + logoutUserDetails.getUsername(), logoutUserDetails);
     }
 
     protected String requestId(){
-        return "T-" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+        return "T" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
     }
 
     protected void mockGet(String url) throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get(url)
-                        .header("requestId", requestId())
+                        .header("X-Request-ID", requestId())
+                        .header("Authorization", accessToken)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(200));
+    }
+
+    protected void mockDelete(String url) throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(url)
+                        .header("X-Request-ID", requestId())
                         .header("Authorization", accessToken)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
@@ -151,7 +166,19 @@ public class SpringTest {
         this.mockMvc.perform(MockMvcRequestBuilders.post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
-                        .header("requestId", requestId())
+                        .header("X-Request-ID", requestId())
+                        .header("Authorization", accessToken)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(200));
+    }
+
+    protected void mockPatch(String url, String content) throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.patch(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .header("X-Request-ID", requestId())
                         .header("Authorization", accessToken)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
@@ -162,7 +189,7 @@ public class SpringTest {
     protected void mockExport(String url, String content, String filePath) throws Exception {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(url)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .header("requestId", requestId())
+                .header("X-Request-ID", requestId())
                 .header("Authorization", accessToken);
         if(content != null){
             requestBuilder.content(content);
@@ -186,7 +213,7 @@ public class SpringTest {
                     MediaType.MULTIPART_FORM_DATA_VALUE, outputStream.toByteArray());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.multipart(url)
                     .file(file)
-                    .header("requestId", requestId())
+                    .header("X-Request-ID", requestId())
                     .header("Authorization", accessToken);
             if(params != null){
                 requestBuilder.params(params);

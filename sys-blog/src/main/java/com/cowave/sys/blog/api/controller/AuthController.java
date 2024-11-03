@@ -10,17 +10,19 @@
 package com.cowave.sys.blog.api.controller;
 
 import com.cowave.commons.framework.access.Access;
-import com.cowave.commons.tools.Asserts;
-import com.cowave.commons.tools.AssertsException;
+import com.cowave.commons.framework.access.security.AccessUserDetails;
+import com.cowave.commons.framework.access.security.BearerTokenService;
+import com.cowave.commons.response.Response;
+import com.cowave.commons.response.exception.Asserts;
+import com.cowave.commons.response.exception.AssertsException;
+import com.cowave.sys.blog.api.entity.LoginUser;
 import com.cowave.sys.blog.configuration.LdapConfiguration;
 import com.cowave.sys.blog.utils.LdapUserNameMapper;
-import com.cowave.sys.model.admin.Login;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.context.properties.PropertyMapper;
-import org.springframework.feign.codec.Response;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.DirContextAuthenticationStrategy;
 import org.springframework.ldap.core.support.LdapContextSource;
@@ -52,6 +54,8 @@ public class AuthController {
 
     private final Random rand = new Random();
 
+    private final BearerTokenService bearerTokenService;
+
     private final LdapConfiguration ldapConfiguration;
 
     private final ObjectProvider<DirContextAuthenticationStrategy> dirContextAuthenticationStrategy;
@@ -60,17 +64,22 @@ public class AuthController {
      * 登录
      */
     @RequestMapping("/login")
-    public Response<Void> login(@Validated Login login) throws IOException {
+    public Response<Void> login(@Validated LoginUser loginUser) throws IOException {
         LdapTemplate ldapTemplate = getLdapTemplate();
-        String filter = "(&(objectClass=person)(sAMAccountName=" + login.getUserAccount() + "))";
-        boolean isAuthenticated = ldapTemplate.authenticate("", filter, login.getPassWord());
+        String filter = "(&(objectClass=person)(sAMAccountName=" + loginUser.getUserAccount() + "))";
+        boolean isAuthenticated = ldapTemplate.authenticate("", filter, loginUser.getPassWord());
         Asserts.isTrue(isAuthenticated, "用户名或密码错误");
-        Access.setCookie("blog-userName", login.getUserAccount());
+
+        AccessUserDetails userDetails = AccessUserDetails.newUserDetails();
+        userDetails.setUsername(loginUser.getUserAccount());
+        bearerTokenService.simpleAssignToken(userDetails);
+        // 界面约定
+        Access.setCookie("blog-userName", loginUser.getUserAccount());
 
         List<String> list = ldapTemplate.search(
                 ldapConfiguration.getUserDn(), filter, SearchControls.SUBTREE_SCOPE, new LdapUserNameMapper());
         if(CollectionUtils.isNotEmpty(list)){
-            avatarGenerate(list.get(0), login.getUserAccount());
+            avatarGenerate(list.get(0), loginUser.getUserAccount());
         }
         return Response.success();
     }
@@ -89,7 +98,7 @@ public class AuthController {
                     baseEnvironment -> source.setBaseEnvironmentProperties(Collections.unmodifiableMap(baseEnvironment)));
             source.afterPropertiesSet();
         }catch(Exception e){
-            throw new AssertsException("ldap.invalid", e);
+            throw new AssertsException(e, "ldap.invalid");
         }
         return new LdapTemplate(source);
     }

@@ -13,22 +13,22 @@ VALUES ((select menu_id from sys_menu where menu_type = 'M' and menu_name = '流
 INSERT INTO "sys_menu" ("parent_id", "menu_name", "menu_order", "menu_permit", "menu_path", "menu_param", "menu_type", "menu_icon", "component", "menu_status", "is_frame", "is_cache", "is_visible", "is_protected", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
 VALUES ((select menu_id from sys_menu where menu_type = 'M' and menu_name = '流程管理'), '流程部署', 2, 'sys:flow:deploy', 'deploy', NULL, 'C', 'deploy', 'system/flow/deploy', 1, 1, 1, 1, 1, NULL, 0, 1, NULL, '2024-03-02 23:10:39.323', 1, NULL, '2024-03-03 07:20:04.089');
 
-delete from sys_menu where menu_type = 'M' and menu_name = '工作台';
+delete from sys_menu where menu_type = 'M' and menu_name = '流程审批';
 delete from sys_menu where menu_type = 'C' and component = 'workbench/leave';
 delete from sys_menu where menu_type = 'C' and component = 'workbench/meeting';
 delete from sys_menu where menu_type = 'C' and component = 'workbench/purchase';
 delete from sys_menu where menu_type = 'C' and component = 'workbench/task';
 
 INSERT INTO "sys_menu" ("parent_id", "menu_name", "menu_order", "menu_permit", "menu_path", "menu_param", "menu_type", "menu_icon", "component", "menu_status", "is_frame", "is_cache", "is_visible", "is_protected", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
-VALUES (0, '工作台', 1, NULL, 'workbench', NULL, 'M', 'cascader', NULL, 1, 1, 1, 1, 0, NULL, 0, 1, NULL, '2023-08-10 06:43:00.55', 1, NULL, '2023-08-10 07:32:09.243');
+VALUES (0, '流程审批', 1, NULL, 'workbench', NULL, 'M', 'cascader', NULL, 1, 1, 1, 1, 0, NULL, 0, 1, NULL, '2023-08-10 06:43:00.55', 1, NULL, '2023-08-10 07:32:09.243');
 INSERT INTO "sys_menu" ("parent_id", "menu_name", "menu_order", "menu_permit", "menu_path", "menu_param", "menu_type", "menu_icon", "component", "menu_status", "is_frame", "is_cache", "is_visible", "is_protected", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
-VALUES ((select menu_id from sys_menu where menu_type = 'M' and menu_name = '工作台'), '任务办理', 1, 'flow:task', 'task', NULL, 'C', 'task', 'workbench/task', 1, 1, 1, 1, 0, NULL, 0, 1, NULL, '2024-03-02 23:10:39.323', 1, NULL, '2024-03-03 07:20:04.089');
+VALUES ((select menu_id from sys_menu where menu_type = 'M' and menu_name = '流程审批'), '任务办理', 1, 'flow:task', 'task', NULL, 'C', 'task', 'workbench/task', 1, 1, 1, 1, 0, NULL, 0, 1, NULL, '2024-03-02 23:10:39.323', 1, NULL, '2024-03-03 07:20:04.089');
 INSERT INTO "sys_menu" ("parent_id", "menu_name", "menu_order", "menu_permit", "menu_path", "menu_param", "menu_type", "menu_icon", "component", "menu_status", "is_frame", "is_cache", "is_visible", "is_protected", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
-VALUES ((select menu_id from sys_menu where menu_type = 'M' and menu_name = '工作台'), '请假申请', 2, 'flow:leave', 'leave', NULL, 'C', 'leave', 'workbench/leave', 1, 1, 1, 1, 0, NULL, 0, 1, NULL, '2024-03-02 23:10:39.323', 1, NULL, '2024-03-03 07:20:04.089');
+VALUES ((select menu_id from sys_menu where menu_type = 'M' and menu_name = '流程审批'), '请假申请', 2, 'flow:leave', 'leave', NULL, 'C', 'leave', 'workbench/leave', 1, 1, 1, 1, 0, NULL, 0, 1, NULL, '2024-03-02 23:10:39.323', 1, NULL, '2024-03-03 07:20:04.089');
 INSERT INTO "sys_menu" ("parent_id", "menu_name", "menu_order", "menu_permit", "menu_path", "menu_param", "menu_type", "menu_icon", "component", "menu_status", "is_frame", "is_cache", "is_visible", "is_protected", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
-VALUES ((select menu_id from sys_menu where menu_type = 'M' and menu_name = '工作台'), '会议预约', 3, 'flow:meeting', 'meeting', NULL, 'C', 'meeting', 'workbench/meeting', 1, 1, 1, 1, 0, NULL, 0, 1, NULL, '2024-03-02 23:10:39.323', 1, NULL, '2024-03-03 07:20:04.089');
+VALUES ((select menu_id from sys_menu where menu_type = 'M' and menu_name = '流程审批'), '会议预约', 3, 'flow:meeting', 'meeting', NULL, 'C', 'meeting', 'workbench/meeting', 1, 1, 1, 1, 0, NULL, 0, 1, NULL, '2024-03-02 23:10:39.323', 1, NULL, '2024-03-03 07:20:04.089');
 INSERT INTO "sys_menu" ("parent_id", "menu_name", "menu_order", "menu_permit", "menu_path", "menu_param", "menu_type", "menu_icon", "component", "menu_status", "is_frame", "is_cache", "is_visible", "is_protected", "remark", "read_only", "create_user", "create_dept", "create_time", "update_user", "update_dept", "update_time")
-VALUES ((select menu_id from sys_menu where menu_type = 'M' and menu_name = '工作台'), '采购申请', 4, 'flow:purchase', 'purchase', NULL, 'C', 'purchase', 'workbench/purchase', 1, 1, 1, 1, 0, NULL, 0, 1, NULL, '2024-03-02 23:10:39.323', 1, NULL, '2024-03-03 07:20:04.089');
+VALUES ((select menu_id from sys_menu where menu_type = 'M' and menu_name = '流程审批'), '采购申请', 4, 'flow:purchase', 'purchase', NULL, 'C', 'purchase', 'workbench/purchase', 1, 1, 1, 1, 0, NULL, 0, 1, NULL, '2024-03-02 23:10:39.323', 1, NULL, '2024-03-03 07:20:04.089');
 
 -- 请假申请
 drop table if exists flow_leave;

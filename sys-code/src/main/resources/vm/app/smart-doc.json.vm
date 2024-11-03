@@ -44,7 +44,7 @@
   "errorCodeDictionaries": [
     {
       "title": "响应码",
-      "enumClassName": "org.springframework.feign.codec.ResponseCode",
+      "enumClassName": "com.cowave.commons.response.HttpResponseCode",
       "codeField": "code",
       "descField": "msg"
     }

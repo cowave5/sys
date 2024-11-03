@@ -21,13 +21,15 @@ spring:
     password: TQQWRIRSQLTEELPT
   access:
     always-success: true
-    token:
-      header: Authorization
-      salt: admin@cowave.com
+    urlPatterns:
+      - /api/v1/*
+    auth:
+      mode: refreshToken
       conflict: false
-      accessExpire: 3600
-      refreshExpire: 36000
-      ignoreUrls:
+      tokenIgnoreUrls:
+        - /favicon.ico
+        - /actuator/**
+        - /doc/**
         - /api/v1/auth/login
         - /api/v1/auth/logon
         - /api/v1/auth/refresh
@@ -37,3 +39,4 @@ spring:
         - /api/v1/oauth/callback/**
         - /api/v1/flow/designer/**
         - /designer/**
+

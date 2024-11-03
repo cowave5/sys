@@ -16,8 +16,9 @@ export default  {
       }
     }
   },
-
-
+  created() {
+    this.$store.dispatch('OpenSocket');
+  },
   beforeDestroy() {
     this.$store.dispatch('CloseSocket');
   },

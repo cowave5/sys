@@ -9,13 +9,15 @@ spring:
     namespace: sys
   access:
     always-success: true
-    token:
-      header: Authorization
-      salt: admin@cowave.com
-      conflict: false
-      accessExpire: 3600
-      refreshExpire: 36000
-      ignoreUrls:
+    urlPatterns:
+      - /api/v1/*
+    auth:
+      mode: refreshToken
+      accessExpire: 60
+      tokenIgnoreUrls:
+        - /actuator/**
+        - /doc/**
+        - /favicon.ico
         - /api/v1/auth/login
         - /api/v1/auth/logon
         - /api/v1/auth/refresh
@@ -25,7 +27,6 @@ spring:
         - /api/v1/oauth/callback/**
         - /api/v1/flow/designer/**
         - /designer/**
-        - /actuator/**
   datasource:
     driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://127.0.0.1:5432/sys-admin
@@ -38,7 +39,7 @@ spring:
     host: 127.0.0.1
     port: 6379
   minio:
-    endpoint: http://192.168.141.74:39000
+    endpoint: http://10.64.4.74:39000
     accessKey: admin
     secretKey: admin123
   socket-io:
@@ -50,7 +51,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 192.168.141.74:8848
+        server-addr: 10.64.4.74:8848
 
 flowable:
   database-schema-update: true

@@ -165,4 +165,15 @@ public class PostInfo {
      */
     @TableField(exist = false)
     private String editor = "markdown";
+
+    private Integer pageSize;
+
+    private Integer pageNum;
+
+    public int getPageOffset(){
+        if(pageSize != null && pageNum != null){
+            return (pageNum - 1) * pageSize;
+        }
+        return 0;
+    }
 }

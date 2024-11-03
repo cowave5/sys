@@ -37,7 +37,7 @@
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
             <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-                       :disabled="!checkPermit(['sys:user:new'])">{{$t('route.system.user.new')}}</el-button>
+                       :disabled="!checkPermit(['sys:user:create'])">{{$t('route.system.user.new')}}</el-button>
           </el-col>
           <el-col :span="1.5">
             <el-button type="success" plain icon="el-icon-edit" size="mini" @click="handleUpdate"
@@ -67,7 +67,7 @@
         </el-row>
 
         <!-- Table页 -->
-        <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange" :header-cell-style="{'text-align':'center'}">
+        <el-table v-loading="loading" :data="list" @selection-change="handleSelectionChange" :header-cell-style="{'text-align':'center'}">
           <el-table-column type="selection" align="center" width="50"/>
           <el-table-column :label="$t(`label.index`)" type="index" align="center" width="55">
             <template slot-scope="scope">
@@ -87,10 +87,10 @@
           </el-table-column>
           <el-table-column :label="$t(`user.label.phone`)" align="left" key="userPhone" prop="userPhone" v-if="columns[4].visible" width="110" />
           <el-table-column :label="$t(`user.label.email`)" align="left" key="userEmail" prop="userEmail" v-if="columns[5].visible" :show-overflow-tooltip="true" width="150" />
-          <el-table-column :label="$t(`user.label.dept`)" align="left" v-if="columns[6].visible" :show-overflow-tooltip="true" width="160" >
+          <el-table-column :label="$t(`user.label.dept`)" align="left" v-if="columns[6].visible" :show-overflow-tooltip="true" width="200" >
             <template slot-scope="scope">
-              <template v-if="scope.row.deptList.length>0" >
-                <template v-for="item in scope.row.deptList">
+              <template v-if="scope.row.deptPosts.length>0" >
+                <template v-for="item in scope.row.deptPosts">
                   <template v-if="item.isDefault === 1">
                     <div style="color: #004d8c">{{ item.deptName + '/' + (item.postName == null ? '' : item.postName) }}</div>
                   </template>
@@ -99,8 +99,8 @@
                   </template>
                 </template>
               </template>
-              <template v-else-if="scope.row.isLdap === 1">
-                <div>{{ scope.row.userDept + '/' + scope.row.userPost }}</div>
+              <template v-else-if="scope.row.userType === 1">
+                <div>{{ scope.row.ldapDept + '/' + scope.row.ldapPost }}</div>
               </template>
             </template>
           </el-table-column>
@@ -355,10 +355,10 @@ import {
   delUser,
   getPosts,
   getRoles,
-  getUser,
+  userInfo,
   getUsers,
-  listUser,
-  resetUserPwd,
+  userList,
+  changePasswd,
   updateUser,
   getTree,
   refreshCache,
@@ -370,7 +370,7 @@ import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import OrganizationChart from 'vue-organization-chart'
 import 'vue-organization-chart/dist/orgchart.css'
 import {checkPermit} from "@/utils/permission";
-import {infoUser} from "@/api/system/ldap";
+import {ldapInfo} from "@/api/system/ldap";
 import cache from "@/plugins/cache";
 
 export default {
@@ -382,7 +382,7 @@ export default {
       activeTab: 'basic',
       // 遮罩层
       loading: true,
-      // 选中数组
+      // 选中列表
       ids: [],
       // 非单个禁用
       single: true,
@@ -392,8 +392,12 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 用户表格数据
-      userList: null,
+      // 列表数据
+      list: [],
+      // 显示弹出层
+      open: false,
+
+
       // 弹出层标题
       title: "",
       // 部门选项
@@ -404,8 +408,6 @@ export default {
       postOptions: [],
       // 用户选项
       userOptions: [],
-      // 是否显示弹出层
-      open: false,
       // 部门名称
       deptName: undefined,
       // 默认密码
@@ -554,8 +556,8 @@ export default {
     /** 列表 */
     getList() {
       this.loading = true;
-      listUser(this.params).then(resp => {
-          this.userList = resp.data.list;
+      userList(this.params).then(resp => {
+          this.list = resp.data.list;
           this.total = resp.data.total;
           this.loading = false;
         }
@@ -571,10 +573,10 @@ export default {
     handleUpdate(row) {
       this.reset();
       const userId = row.userId || this.ids;
-      getUser(userId).then(resp => {
+      userInfo(userId).then(resp => {
         this.form = resp.data;
         if(this.form.userType === 1){
-          infoUser(this.form.userId).then(response => {
+          ldapInfo(this.form.userId).then(response => {
             this.ldapForm = response.data;
           });
         }
@@ -666,7 +668,7 @@ export default {
         inputPattern: /^.{6,20}$/,
         inputErrorMessage: this.$t(`user.rules.pwd2`)
       }).then(({ value }) => {
-          resetUserPwd(row.userId, value, row.userName).then(response => {
+          changePasswd(row.userId, value, row.userName).then(response => {
             this.$modal.msgSuccess(this.$t(`msg.success_reset`));
           });
         }).catch(() => {});

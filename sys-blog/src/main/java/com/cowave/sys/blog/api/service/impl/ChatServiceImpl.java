@@ -11,7 +11,7 @@ package com.cowave.sys.blog.api.service.impl;
 
 import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.framework.helper.redis.RedisHelper;
-import com.cowave.commons.tools.Asserts;
+import com.cowave.commons.response.exception.Asserts;
 import com.cowave.sys.blog.api.entity.VerifyCode;
 import com.cowave.sys.blog.api.service.ChatService;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
  * @author shanhuiming
- *
  */
 @RequiredArgsConstructor
 @Service
@@ -45,7 +43,7 @@ public class ChatServiceImpl implements ChatService {
         mailMessage.setSubject("聊天室验证码");
         mailMessage.setText("验证码:" + code + "，有效期为3分钟");
         mailSender.send(mailMessage);
-        redisHelper.putValue(CAPTCHA_KEY + uuid, code, 3, TimeUnit.MINUTES);
+        redisHelper.putExpire(CAPTCHA_KEY + uuid, code, 3, TimeUnit.MINUTES);
     }
 
     @Override
