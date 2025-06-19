@@ -10,3 +10,6 @@ spring:
   liquibase:
     enabled: true
     change-log: sql/changelog.yml
+  job:
+    server:
+      address: localhost:19050
