@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
  * @author shanhuiming
  */
 @RequiredArgsConstructor
-public enum AccessType implements EnumVal<String> {
+public enum AuthType implements EnumVal<String> {
 
     /**
      * 用户令牌
@@ -27,11 +27,6 @@ public enum AccessType implements EnumVal<String> {
      * OAuth授权
      */
     OAUTH("oauth"),
-
-    /**
-     * 系统管理员
-     */
-    ADMIN("admin"),
 
     /**
      * 系统用户

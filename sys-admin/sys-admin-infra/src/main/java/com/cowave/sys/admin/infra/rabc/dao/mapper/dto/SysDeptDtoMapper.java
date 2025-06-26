@@ -11,7 +11,7 @@ package com.cowave.sys.admin.infra.rabc.dao.mapper.dto;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cowave.sys.admin.domain.base.vo.TreeChildren;
-import com.cowave.sys.admin.domain.base.vo.TreeNode;
+import com.cowave.sys.admin.domain.base.vo.DiagramNode;
 import com.cowave.sys.admin.domain.rabc.SysDept;
 import com.cowave.sys.admin.domain.rabc.SysDeptPost;
 import com.cowave.sys.admin.domain.rabc.SysUserDept;
@@ -31,9 +31,14 @@ import java.util.List;
 public interface SysDeptDtoMapper {
 
     /**
+     * 获取用户默认部门
+     */
+    SysDept getPrimaryDeptByUserId(Integer userId);
+
+    /**
      * 列表
      */
-    List<DeptListDto> list(DeptQuery query);
+    List<DeptListDto> list(@Param("tenantId") String tenantId, @Param("query") DeptQuery query);
 
     /**
      * 详情
@@ -68,7 +73,7 @@ public interface SysDeptDtoMapper {
     /**
      * 树
      */
-    List<TreeNode> getTreeNodes();
+    List<DiagramNode> listDiagramNodes(String tenantId);
 
     /**
      * 插入部门岗位
@@ -84,11 +89,6 @@ public interface SysDeptDtoMapper {
      * 存在多个默认岗位的部门
      */
     List<Integer> deptWithMultiDefaultPost();
-
-    /**
-     * 获取用户默认部门
-     */
-    SysDept getDefaultDeptOfUser(Integer userId);
 
     /**
      * 部门流程候选人

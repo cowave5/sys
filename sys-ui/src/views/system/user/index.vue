@@ -77,12 +77,6 @@
               <svg-icon icon-class="tree"/> {{$t('commons.button.diagram')}}
             </el-button>
           </el-col>
-          <el-col :span="1.5">
-            <el-button type="danger" plain size="mini" icon="el-icon-refresh" @click="handleRefreshCache"
-                       :disabled="!checkPermit(['sys:user:cache'])">
-              {{$t('commons.button.cache')}}
-            </el-button>
-          </el-col>
           <right-toolbar :showSearch.sync="showSearch" @queryTable="getList" :cols="cols"/>
         </el-row>
 
@@ -329,7 +323,6 @@ import {
   updateUserPasswd,
   updateUser,
   getUserDiagram,
-  refreshUserDiagram,
 } from "@/api/system/user";
 import { getDeptDiagram, getDeptPostDiagram, getDeptUserDiagram } from '@/api/system/dept'
 import Treeselect from "@riophae/vue-treeselect";
@@ -555,12 +548,6 @@ export default {
       getUserDiagram().then(response => {
         this.diagramData = response.data;
         this.diagramOpen = true;
-      });
-    },
-    /** 刷新缓存 */
-    handleRefreshCache(){
-      refreshUserDiagram().then(() => {
-        this.$modal.msgSuccess(this.$t('commons.msg.success.refresh'));
       });
     },
     /** 获取部门岗位树 */

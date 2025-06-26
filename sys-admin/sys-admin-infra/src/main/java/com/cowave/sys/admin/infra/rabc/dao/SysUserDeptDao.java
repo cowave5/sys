@@ -23,11 +23,32 @@ import java.util.List;
 public class SysUserDeptDao extends ServiceImpl<SysUserDeptMapper, SysUserDept> {
 
     /**
-     * 清除用户部门
+     * 删除用户部门（用户id）
      */
-    public void clearByUserId(Integer userId){
+    public void removeByUserId(Integer userId){
         lambdaUpdate().eq(SysUserDept::getUserId, userId).remove();
     }
+
+    /**
+     * 统计岗位用户数
+     */
+    public long countUserByPostIds(List<Integer> postIds){
+        return lambdaQuery().in(SysUserDept::getPostId, postIds).count();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * 清除部门用户
@@ -41,12 +62,5 @@ public class SysUserDeptDao extends ServiceImpl<SysUserDeptMapper, SysUserDept> 
      */
     public void removeUserOfDept(Integer deptId, List<Integer> userIds){
         lambdaUpdate().eq(SysUserDept::getDeptId, deptId).in(SysUserDept::getUserId, userIds).remove();
-    }
-
-    /**
-     * 统计岗位用户数
-     */
-    public long countUserByPostIds(List<Integer> postIds){
-        return lambdaQuery().in(SysUserDept::getPostId, postIds).count();
     }
 }

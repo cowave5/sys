@@ -10,13 +10,10 @@
 package com.cowave.sys.admin.infra.auth;
 
 import com.cowave.commons.client.http.asserts.HttpAsserts;
-import com.cowave.commons.client.http.asserts.I18Messages;
 import com.cowave.commons.framework.access.security.AccessUserDetails;
 import com.cowave.commons.framework.access.security.BearerTokenService;
-import com.cowave.commons.framework.access.security.Permission;
+import com.cowave.commons.framework.access.security.TenantUserDetailsService;
 import com.cowave.commons.framework.configuration.ApplicationProperties;
-import com.cowave.sys.admin.domain.rabc.SysUserAdmin;
-import com.cowave.sys.admin.infra.rabc.dao.SysUserAdminDao;
 import com.cowave.sys.admin.infra.rabc.dao.SysUserDao;
 import com.cowave.sys.admin.infra.rabc.dao.mapper.dto.SysDeptDtoMapper;
 import com.cowave.sys.admin.infra.rabc.dao.mapper.dto.SysMenuDtoMapper;
@@ -25,74 +22,60 @@ import com.cowave.sys.admin.domain.rabc.SysDept;
 import com.cowave.sys.admin.domain.rabc.SysUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static com.cowave.commons.client.http.constants.HttpCode.FORBIDDEN;
+import static com.cowave.commons.framework.access.security.Permission.*;
 
 /**
  * @author shanhuiming
  */
 @RequiredArgsConstructor
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl implements TenantUserDetailsService {
     private final ApplicationProperties applicationProperties;
 	private final BearerTokenService bearerTokenService;
     private final SysUserDao sysUserDao;
-    private final SysUserAdminDao sysUserAdminDao;
     private final SysDeptDtoMapper sysDeptDtoMapper;
     private final SysRoleDtoMapper sysRoleDtoMapper;
     private final SysMenuDtoMapper sysMenuDtoMapper;
 
     @Override
-	public UserDetails loadUserByUsername(String userAccount) throws UsernameNotFoundException {
-        AccessUserDetails userDetails = loadAdminUserDetails(userAccount);
-        if(userDetails == null){
-            userDetails = loadSysUserDetails(userAccount);
+	public UserDetails loadTenantUserByUsername(String tenantId, String userAccount) {
+        SysUser sysUser = sysUserDao.getByUserAccount(tenantId, userAccount);
+        if(sysUser == null){
+            return null;
         }
-        if(userDetails == null){
-            throw new UsernameNotFoundException(I18Messages.msg("admin.user.not.exist"));
-        }
+        HttpAsserts.equals(1, sysUser.getUserStatus(), FORBIDDEN, "{admin.user.account.disable}", userAccount);
 
+        AccessUserDetails userDetails;
+        // 系统用户
+        if (TENANT_SYSTEM.equals(sysUser.getTenantId())) {
+            userDetails = sysUser.newUserDetails(null);
+            userDetails.setRoles(List.of(ROLE_ADMIN));
+            userDetails.setPermissions(List.of(PERMIT_ADMIN));
+        } else {
+            // 租户
+            SysDept userDept = sysDeptDtoMapper.getPrimaryDeptByUserId(sysUser.getUserId());
+            userDetails = sysUser.newUserDetails(userDept);
+            // 角色信息
+            List<String> roleCodes = sysRoleDtoMapper.getRoleCodesByUserId(sysUser.getUserId());
+            // 权限信息
+            List<String> permitKeys;
+            if (roleCodes.contains(ROLE_ADMIN)) {
+                permitKeys = List.of(PERMIT_ADMIN);
+            } else {
+                permitKeys = sysMenuDtoMapper.getPermitKeysByUserId(sysUser.getUserId());
+            }
+            userDetails.setRoles(roleCodes);
+            userDetails.setPermissions(permitKeys);
+        }
         userDetails.setClusterId(applicationProperties.getClusterId());
         userDetails.setClusterLevel(applicationProperties.getClusterLevel());
         userDetails.setClusterName(applicationProperties.getClusterName());
         bearerTokenService.assignAccessRefreshToken(userDetails);
         return userDetails;
 	}
-
-    private AccessUserDetails loadAdminUserDetails(String userAccount) {
-        SysUserAdmin userAdmin = sysUserAdminDao.getByUserAccount(userAccount);
-        if(userAdmin == null){
-            return null;
-        }
-        return userAdmin.newUserDetails();
-    }
-
-    private AccessUserDetails loadSysUserDetails(String userAccount) {
-        SysUser sysUser = sysUserDao.getByUserAccount(userAccount);
-        if(sysUser == null){
-            return null;
-        }
-        HttpAsserts.equals(1, sysUser.getUserStatus(), FORBIDDEN, "{admin.user.account.disable}", userAccount);
-
-        // 部门信息
-        SysDept userDept = sysDeptDtoMapper.getDefaultDeptOfUser(sysUser.getUserId());
-        // 角色信息
-        List<String> roleCodes = sysRoleDtoMapper.getUserRoles(sysUser.getUserId());
-        // 权限信息
-        List<String> permitKeys;
-        if(roleCodes.contains(Permission.ROLE_ADMIN)){
-            permitKeys = List.of(Permission.PERMIT_ADMIN);
-        }else{
-            permitKeys = sysMenuDtoMapper.getPermitsByUserId(sysUser.getUserId());
-        }
-        AccessUserDetails userDetails = sysUser.newUserDetails(userDept);
-        userDetails.setRoles(roleCodes);
-        userDetails.setPermissions(permitKeys);
-        return userDetails;
-    }
 }

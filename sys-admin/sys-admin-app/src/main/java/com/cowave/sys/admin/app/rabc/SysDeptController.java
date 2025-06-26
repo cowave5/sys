@@ -12,6 +12,7 @@ package com.cowave.sys.admin.app.rabc;
 import cn.hutool.core.lang.tree.Tree;
 import com.alibaba.excel.EasyExcel;
 import com.cowave.commons.client.http.response.Response;
+import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.framework.access.operation.Operation;
 import com.cowave.commons.framework.support.excel.CellWidthHandler;
 import com.cowave.sys.admin.domain.rabc.SysDept;
@@ -53,7 +54,7 @@ public class SysDeptController {
     @PreAuthorize("@permit.hasPermit('sys:dept:query')")
     @GetMapping
     public Response<Response.Page<DeptListDto>> list(DeptQuery query) {
-        return Response.page(sysDeptService.list(query));
+        return Response.page(sysDeptService.list(Access.tenantId(), query));
     }
 
     /**
@@ -126,16 +127,7 @@ public class SysDeptController {
     @PreAuthorize("@permit.hasPermit('sys:dept:diagram')")
     @GetMapping("/diagram")
     public Response<List<Tree<String>>> getDiagram(String deptId) {
-        return Response.success(sysDeptService.getDiagram(deptId));
-    }
-
-    /**
-     * 刷新部门组织
-     */
-    @PreAuthorize("@permit.hasPermit('sys:dept:cache')")
-    @GetMapping("/diagram/refresh")
-    public Response<Void> refreshDiagram() throws Exception {
-        return Response.success(sysDeptService::refreshDiagram);
+        return Response.success(sysDeptService.getDiagram(Access.tenantId(), deptId));
     }
 
     /**
@@ -143,7 +135,7 @@ public class SysDeptController {
 	 */
 	@GetMapping("/diagram/post")
 	public Response<List<Tree<String>>> getPostDiagram() {
-		return Response.success(List.of(sysDeptService.getPostDiagram()));
+		return Response.success(List.of(sysDeptService.getPostDiagram(Access.tenantId())));
 	}
 
     /**
@@ -151,7 +143,7 @@ public class SysDeptController {
      */
     @GetMapping("/diagram/user")
     public Response<List<Tree<String>>> getUserDiagram() {
-        return Response.success(List.of(sysDeptService.getUserDiagram()));
+        return Response.success(List.of(sysDeptService.getUserDiagram(Access.tenantId())));
     }
 
     /**

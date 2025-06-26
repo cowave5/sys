@@ -1,10 +1,11 @@
-import { login, logout, getAuthInfo, ldapLogin, gitlabLogin, getOAuth2Token } from '@/api/auth'
+import {login, logout, getAuthInfo, ldapLogin, gitlabLogin, logon} from '@/api/auth'
 import cache from "@/plugins/cache";
 
 const user = {
   state: {
     accessToken: cache.local.getAccessToken(),
     refreshToken: cache.local.getRefreshToken(),
+    tenantId: null,
     userId: null,
     name: '',
     avatar: '',
@@ -15,6 +16,9 @@ const user = {
   mutations: {
     SET_TOKEN: (state, token) => {
       cache.local.setToken(token);
+    },
+    SET_TENANT: (state, tenantId) => {
+      state.tenantId = tenantId
     },
     SET_USERID: (state, userId) => {
       state.userId = userId
@@ -34,16 +38,29 @@ const user = {
   },
 
   actions: {
-    Login({ commit }, userInfo) {
-      const username = userInfo.username.trim()
-      const password = userInfo.password
-      const code = userInfo.code
-      const uuid = userInfo.uuid
+    Logon({ commit }, userInfo) {
+      const tenantId = userInfo.tenantId;
+      const username = userInfo.username.trim();
+      const password = userInfo.password;
       return new Promise((resolve, reject) => {
-        login(username, password, code, uuid).then(res => {
+        logon(tenantId, username, password).then(res => {
           commit('SET_TOKEN', res.data);
-          commit('SET_USERID', user.userId)
-          commit('SET_NAME', user.userName)
+          resolve();
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
+    Login({ commit }, userInfo) {
+      const tenantId = userInfo.tenantId;
+      const username = userInfo.username.trim();
+      const password = userInfo.password;
+      const code = userInfo.code;
+      const uuid = userInfo.uuid;
+      return new Promise((resolve, reject) => {
+        login(tenantId, username, password, code, uuid).then(res => {
+          commit('SET_TOKEN', res.data);
           resolve();
         }).catch(error => {
           reject(error)
@@ -57,8 +74,6 @@ const user = {
       return new Promise((resolve, reject) => {
         ldapLogin(username, password).then(res => {
           commit('SET_TOKEN', res.data);
-          commit('SET_USERID', user.userId)
-          commit('SET_NAME', user.userName)
           resolve();
         }).catch(error => {
           reject(error)
@@ -70,8 +85,6 @@ const user = {
       return new Promise((resolve, reject) => {
         gitlabLogin(code).then(res => {
           commit('SET_TOKEN', res.data);
-          commit('SET_USERID', user.userId)
-          commit('SET_NAME', user.userName)
           resolve();
         }).catch(error => {
           reject(error)
@@ -79,30 +92,9 @@ const user = {
       })
     },
 
-    GetInfo({ commit, state }) {
+    LogOut({ commit }) {
       return new Promise((resolve, reject) => {
-        getAuthInfo().then(res => {
-          const user = res.data
-          const avatar = (user.avatar === "" || user.avatar == null) ? require("@/assets/images/profile.jpg") : user.avatar;
-          if (user.roles && user.roles.length > 0) {
-            commit('SET_ROLES', user.roles)
-            commit('SET_PERMISSIONS', user.permissions)
-          } else {
-            commit('SET_ROLES', ['ROLE_DEFAULT'])
-          }
-          commit('SET_USERID', user.userId)
-          commit('SET_NAME', user.userName)
-          commit('SET_AVATAR', avatar)
-          resolve(res)
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
-
-    LogOut({ commit, state }) {
-      return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
+        logout().then(() => {
           cache.local.removeAccessToken();
           commit('SET_ROLES', [])
           commit('SET_PERMISSIONS', [])
@@ -110,6 +102,24 @@ const user = {
           commit('SET_NAME', '')
           commit('SET_AVATAR', '')
           resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
+    GetInfo({ commit }) {
+      return new Promise((resolve, reject) => {
+        getAuthInfo().then(res => {
+          const user = res.data
+          const avatar = (user.avatar === "" || user.avatar == null) ? require("@/assets/images/profile.jpg") : user.avatar;
+          commit('SET_TENANT', user.tenantId)
+          commit('SET_USERID', user.userId)
+          commit('SET_NAME', user.userName)
+          commit('SET_AVATAR', avatar)
+          commit('SET_ROLES', user.roles)
+          commit('SET_PERMISSIONS', user.permissions)
+          resolve(res)
         }).catch(error => {
           reject(error)
         })

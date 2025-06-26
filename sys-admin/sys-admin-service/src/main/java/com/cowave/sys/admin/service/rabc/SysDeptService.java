@@ -27,7 +27,7 @@ public interface SysDeptService{
 	/**
 	 * 列表
 	 */
-	List<DeptListDto> list(DeptQuery query);
+	List<DeptListDto> list(String tenantId, DeptQuery query);
 
 	/**
 	 * 详情
@@ -57,22 +57,17 @@ public interface SysDeptService{
 	/**
 	 * 部门组织架构
 	 */
-	List<Tree<String>> getDiagram(String deptId);
-
-	/**
-     * 刷新部门组织
-     */
-    void refreshDiagram();
+	List<Tree<String>> getDiagram(String tenantId, String deptId);
 
 	/**
 	 * 部门岗位树
 	 */
-	Tree<String> getPostDiagram();
+	Tree<String> getPostDiagram(String tenantId);
 
 	/**
 	 * 部门用户树
 	 */
-	Tree<String> getUserDiagram();
+	Tree<String> getUserDiagram(String tenantId);
 
 	/**
 	 * 添加部门岗位

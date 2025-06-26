@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.cowave.sys.admin.domain.auth.AccessType.*;
+import static com.cowave.sys.admin.domain.auth.AuthType.*;
 
 /**
  * 鉴权
@@ -84,7 +84,7 @@ public class AuthController {
      */
     @PostMapping("/public/logon")
     public Response<AccessUserDetails> logon(@Validated @RequestBody LoginRequest request) {
-        return Response.success(authService.login(request.getUserAccount(), request.getPassWord()));
+        return Response.success(authService.login(request.getTenantId(), request.getUserAccount(), request.getPassWord()));
     }
 
     /**
@@ -93,7 +93,7 @@ public class AuthController {
     @PostMapping("/public/login")
     public Response<AccessUserDetails> login(@Validated @RequestBody LoginRequest request) {
         captchaService.validCaptcha(request);
-        return Response.success(authService.login(request.getUserAccount(), request.getPassWord()));
+        return Response.success(authService.login(request.getTenantId(), request.getUserAccount(), request.getPassWord()));
     }
 
     /**
@@ -141,16 +141,11 @@ public class AuthController {
         authInfo.setUserName(userDetails.getUserNick());
         authInfo.setRoles(userDetails.getRoles());
         authInfo.setPermissions(userDetails.getPermissions());
-        if (GITLAB.equalsVal(userDetails.getType())) {
+        if (GITLAB.equalsVal(userDetails.getAuthType())) {
             OAuthUser oAuthUser = oauthService.infoUser(userId);
             authInfo.setUserEmail(oAuthUser.getUserEmail());
             authInfo.setAvatar(oAuthUser.getUserAvatar());
-        } else if (ADMIN.equalsVal(userDetails.getType())) {
-            SysAttach avatar = attachService.latestOfMaster(Long.valueOf(userId), "admin-user");
-            if (avatar != null) {
-                authInfo.setAvatar(avatar.getViewUrl());
-            }
-        } else if (SYS.equalsVal(userDetails.getType())) {
+        } else if (SYS.equalsVal(userDetails.getAuthType())) {
             SysAttach avatar = attachService.latestOfMaster(Long.valueOf(userId), "sys-user");
             if (avatar != null) {
                 authInfo.setAvatar(avatar.getViewUrl());

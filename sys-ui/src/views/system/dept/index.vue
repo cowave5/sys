@@ -43,12 +43,6 @@
           <svg-icon icon-class="tree"/> {{$t('commons.button.diagram')}}
         </el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button type="danger" plain size="mini" icon="el-icon-refresh" @click="handleRefreshCache"
-                   :disabled="!checkPermit(['sys:dept:cache'])">
-          {{$t('commons.button.cache')}}
-        </el-button>
-      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList" :cols="cols"/>
     </el-row>
 
@@ -160,7 +154,7 @@
   </div>
 </template>
 <script>
-import {getDeptList, getDeptInfo, delDept, addDept, updateDept, getDeptDiagramById, refreshDeptDiagram} from "@/api/system/dept";
+import {getDeptList, getDeptInfo, delDept, addDept, updateDept, getDeptDiagramById} from "@/api/system/dept";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import OrganizationChart from 'vue-organization-chart'
@@ -336,12 +330,6 @@ export default {
       getDeptDiagramById(1).then(response => {
         this.diagramData = response.data[0];
         this.diagramOpen = true;
-      });
-    },
-    /** 刷新缓存 */
-    handleRefreshCache(){
-      refreshDeptDiagram().then(() => {
-        this.$modal.msgSuccess(this.$t('commons.msg.success.refresh'));
       });
     },
     /** 岗位设置 */

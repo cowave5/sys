@@ -15,7 +15,7 @@ import lombok.Data;
  * @author shanhuiming
  */
 @Data
-public class TreeNode {
+public class DiagramNode {
 
     /**
      * id

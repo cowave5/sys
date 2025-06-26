@@ -86,7 +86,7 @@
         delete from sys_menu m using tree where m.menu_id = tree.menu_id
     </delete>
 
-	<select id="getPermitsByUserId" resultType="java.lang.String">
+	<select id="getPermitKeysByUserId" resultType="java.lang.String">
 		select distinct m.menu_permit
 		from sys_user_role u,
 			 sys_role r,

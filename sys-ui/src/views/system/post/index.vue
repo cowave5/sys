@@ -65,12 +65,6 @@
               <svg-icon icon-class="tree"/> {{$t('commons.button.diagram')}}
             </el-button>
           </el-col>
-          <el-col :span="1.5">
-            <el-button type="danger" plain icon="el-icon-refresh" size="mini" @click="handleRefreshCache"
-                       :disabled="!checkPermit(['sys:post:cache'])">
-              {{$t('commons.button.cache')}}
-            </el-button>
-          </el-col>
           <right-toolbar :showSearch.sync="showSearch" @queryTable="getList" :cols="cols"/>
         </el-row>
 
@@ -171,7 +165,7 @@
   </div>
 </template>
 <script>
-import {listPost, getPost, delPost, addPost, updatePost, getPostDiagram, refreshDiagram} from "@/api/system/post";
+import {listPost, getPost, delPost, addPost, updatePost, getPostDiagram} from "@/api/system/post";
 import {getDeptDiagram} from "@/api/system/dept";
 import OrganizationChart from 'vue-organization-chart'
 import 'vue-organization-chart/dist/orgchart.css'
@@ -356,12 +350,6 @@ export default {
       getPostDiagram().then(response => {
         this.diagramData = response.data;
         this.diagramOpen = true;
-      });
-    },
-    /** 刷新缓存 */
-    handleRefreshCache(){
-      refreshDiagram().then(() => {
-        this.$modal.msgSuccess(this.$t('commons.msg.success.refresh'));
       });
     },
     /** 取消 */

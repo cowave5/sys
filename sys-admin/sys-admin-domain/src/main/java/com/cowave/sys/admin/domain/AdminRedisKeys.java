@@ -43,25 +43,25 @@ public class AdminRedisKeys {
     /**
      * 用户树
      */
-    public static final String USER_TREE = "sys-admin:tree:user";
+    public static final String USER_DIAGRAM = "sys-admin:diagram:user";
 
     /**
      * 岗位树
      */
-    public static final String POST_TREE = "sys-admin:tree:post";
+    public static final String POST_DIAGRAM = "sys-admin:diagram:post";
 
     /**
      * 部门树
      */
-    public static final String DEPT_TREE = "sys-admin:tree:dept";
+    public static final String DEPT_DIAGRAM = "sys-admin:diagram:dept";
 
     /**
      * 部门用户树
      */
-    public static final String DEPT_USER_TREE = "sys-admin:tree:dept-user";
+    public static final String DEPT_USER_DIAGRAM = "sys-admin:diagram:dept-user";
 
     /**
      * 部门岗位树
      */
-    public static final String DEPT_POST_TREE = "sys-admin:tree:dept-post";
+    public static final String DEPT_POST_DIAGRAM = "sys-admin:diagram:dept-post";
 }

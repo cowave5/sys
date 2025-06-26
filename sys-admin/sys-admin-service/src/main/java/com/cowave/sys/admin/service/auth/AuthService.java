@@ -15,9 +15,14 @@ import com.cowave.commons.framework.access.operation.OperationInfo;
 import com.cowave.commons.framework.access.security.AccessTokenInfo;
 import com.cowave.commons.framework.access.security.AccessUserDetails;
 import com.cowave.commons.framework.access.security.BearerTokenService;
+import com.cowave.commons.framework.access.security.TenantUsernamePasswordAuthenticationToken;
 import com.cowave.commons.framework.helper.redis.RedisHelper;
+import com.cowave.sys.admin.domain.auth.OAuthUser;
 import com.cowave.sys.admin.domain.auth.request.RegisterRequest;
+import com.cowave.sys.admin.domain.auth.vo.AuthInfo;
+import com.cowave.sys.admin.domain.base.SysAttach;
 import com.cowave.sys.admin.domain.rabc.SysMenu;
+import com.cowave.sys.admin.domain.rabc.SysTenant;
 import com.cowave.sys.admin.domain.rabc.SysUser;
 import com.cowave.sys.admin.domain.rabc.SysUserRole;
 import com.cowave.sys.admin.domain.rabc.vo.Route;
@@ -26,14 +31,15 @@ import com.cowave.sys.admin.infra.base.SysOperationHandler;
 import com.cowave.sys.admin.infra.base.dao.mapper.dto.SysNoticeDtoMapper;
 import com.cowave.sys.admin.infra.base.redis.SysConfigRedis;
 import com.cowave.sys.admin.infra.rabc.dao.SysRoleDao;
+import com.cowave.sys.admin.infra.rabc.dao.SysTenantDao;
 import com.cowave.sys.admin.infra.rabc.dao.SysUserDao;
 import com.cowave.sys.admin.infra.rabc.dao.SysUserRoleDao;
+import com.cowave.sys.admin.service.base.SysAttachService;
 import com.cowave.sys.admin.service.rabc.SysMenuService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,7 +55,8 @@ import java.util.concurrent.TimeUnit;
 import static com.cowave.commons.client.http.constants.HttpCode.BAD_REQUEST;
 import static com.cowave.sys.admin.domain.AdminRedisKeys.LOGIN_FAILS;
 import static com.cowave.sys.admin.domain.AdminRedisKeys.LOGIN_LOCK;
-import static com.cowave.sys.admin.domain.auth.AccessType.SYS;
+import static com.cowave.sys.admin.domain.auth.AuthType.GITLAB;
+import static com.cowave.sys.admin.domain.auth.AuthType.SYS;
 
 /**
  * @author shanhuiming
@@ -62,8 +69,11 @@ public class AuthService {
     private final SysOperationHandler sysOperationHandler;
     private final PasswordEncoder passwordEncoder;
     private final BearerTokenService bearerTokenService;
+    private final OAuthService oauthService;
+    private final SysAttachService attachService;
     private final SysMenuService sysMenuService;
     private final SysConfigRedis sysConfigRedis;
+    private final SysTenantDao sysTenantDao;
     private final SysUserDao sysUserDao;
     private final SysRoleDao sysRoleDao;
     private final SysUserRoleDao sysUserRoleDao;
@@ -101,7 +111,7 @@ public class AuthService {
     /**
      * 登录
      */
-    public AccessUserDetails login(String userAccount, String passwd) {
+    public AccessUserDetails login(String tenantId, String userAccount, String passwd) {
         Long lockTime = redisHelper.getExpire(LOGIN_LOCK.formatted(userAccount));
         if (lockTime != null && lockTime > 0) {
             long minutes = (lockTime + 59) / 60;
@@ -109,8 +119,8 @@ public class AuthService {
         }
 
         try {
-            Authentication authentication =
-                    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userAccount, passwd));
+            Authentication authentication = authenticationManager.authenticate(
+                    new TenantUsernamePasswordAuthenticationToken(tenantId, userAccount, passwd));
             // 登录日志
             OperationInfo operationInfo = new OperationInfo();
             operationInfo.setSuccess(true);
@@ -164,6 +174,37 @@ public class AuthService {
      */
     public AccessUserDetails refresh(String refreshToken) throws Exception{
         return bearerTokenService.refreshAccessRefreshToken(refreshToken);
+    }
+
+    /**
+     * 授权信息
+     */
+    public AuthInfo info() throws Exception {
+        AccessUserDetails userDetails = Access.userDetails();
+        Integer userId = userDetails.getUserId();
+        String tenantId = userDetails.getTenantId();
+        // 构造授权信息
+        AuthInfo authInfo = new AuthInfo();
+        authInfo.setUserId(userId);
+        authInfo.setUserName(userDetails.getUserNick());
+        authInfo.setRoles(userDetails.getRoles());
+        authInfo.setPermissions(userDetails.getPermissions());
+        // 尝试一下补充头像信息
+        if (GITLAB.equalsName(userDetails.getAuthType())) {
+            OAuthUser oAuthUser = oauthService.infoUser(userId);
+            authInfo.setUserEmail(oAuthUser.getUserEmail());
+            authInfo.setAvatar(oAuthUser.getUserAvatar());
+        } else if (SYS.equalsName(userDetails.getAuthType())) {
+            SysAttach avatar = attachService.latestOfMaster(Long.valueOf(userId), "sys-user");
+            if (avatar != null) {
+                authInfo.setAvatar(avatar.getViewUrl());
+            }
+        }
+        // 填充租户信息
+        SysTenant sysTenant = sysTenantDao.getById(tenantId);
+        authInfo.setTenantId(tenantId);
+        authInfo.setTenantName(sysTenant.getTenantName());
+        return  authInfo;
     }
 
     /**

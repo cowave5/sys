@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cowave.commons.client.http.asserts.HttpAsserts;
 import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.framework.access.operation.OperationContext;
+import com.cowave.sys.admin.domain.base.vo.TreeChildren;
 import com.cowave.sys.admin.domain.rabc.SysDept;
 import com.cowave.sys.admin.domain.rabc.SysDeptPost;
 import com.cowave.sys.admin.domain.rabc.SysUserDept;
@@ -28,13 +29,14 @@ import com.cowave.sys.admin.infra.rabc.redis.SysDeptRedis;
 import com.cowave.sys.admin.service.rabc.SysDeptService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static com.cowave.commons.client.http.constants.HttpCode.*;
+import static com.cowave.sys.admin.domain.AdminRedisKeys.*;
 
 /**
  * @author shanhuiming
@@ -51,8 +53,8 @@ public class SysDeptServiceImpl implements SysDeptService {
     private final SysDeptDtoMapper sysDeptDtoMapper;
 
     @Override
-    public List<DeptListDto> list(DeptQuery query) {
-        return sysDeptDtoMapper.list(query);
+    public List<DeptListDto> list(String tenantId, DeptQuery query) {
+        return sysDeptDtoMapper.list(tenantId, query);
     }
 
     @Override
@@ -113,25 +115,94 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public List<Tree<String>> getDiagram(String deptId) {
-        return sysDeptRedis.getDiagram(deptId);
+    public List<Tree<String>> getDiagram(String tenantId, String deptId) {
+        Tree<String> tree = sysDeptRedis.getDeptDiagram(tenantId);
+        // 如果没有传deptId，或者传的根部门id，则返回整棵树
+        if (deptId == null || deptId.equals(tree.getId())) {
+            return List.of(tree);
+        }
+        // 空树
+        if (CollectionUtils.isEmpty(tree.getChildren())) {
+            return List.of(new Tree<>());
+        }
+        // 广度优先，如果节点id与deptId一样则返回
+        Deque<Tree<String>> queue = new LinkedList<>(tree.getChildren());
+        while (!queue.isEmpty()) {
+            tree = queue.pop();
+            if (Objects.equals(deptId, tree.getId())) {
+                return List.of(tree);
+            }
+            if (CollectionUtils.isNotEmpty(tree.getChildren())) {
+                queue.addAll(tree.getChildren());
+            }
+        }
+        return List.of(new Tree<>());
     }
 
+    @Cacheable(value = DEPT_POST_DIAGRAM, key = "#tenantId")
     @Override
-    public void refreshDiagram() {
-        sysDeptRedis.refreshDiagram();
-        sysDeptRedis.refreshUserDiagram();
-        sysDeptRedis.refreshPostDiagram();
+    public Tree<String> getPostDiagram(String tenantId) {
+        // 部门树
+        Tree<String> tree = sysDeptRedis.getDeptDiagram(tenantId);
+        // 部门岗位
+        List<TreeChildren> list = sysDeptDtoMapper.deptPostOptions(); // TODO
+        Map<String, List<Tree<String>>> map = new HashMap<>();
+        for (TreeChildren option : list) {
+            map.put(option.getPid(), option.getChildren());
+        }
+
+        // tree.id = deptId, label = deptName
+        Tree<String> root = tree;
+        Deque<Tree<String>> queue = new LinkedList<>(List.of(root));
+        while (!queue.isEmpty()) {
+            root = queue.pop();
+            List<Tree<String>> children = root.getChildren();
+            if (children != null) {
+                queue.addAll(root.getChildren());
+                children.addAll(map.get(root.getId()));
+            } else {
+                List<Tree<String>> childs = map.get(root.getId());
+                if (CollectionUtils.isEmpty(childs)) {
+                    root.setChildren(null);
+                } else {
+                    root.setChildren(map.get(root.getId()));
+                }
+            }
+        }
+        return tree;
     }
 
+    @Cacheable(value = DEPT_USER_DIAGRAM, key = "#tenantId")
     @Override
-    public Tree<String> getPostDiagram() {
-        return sysDeptRedis.getPostDiagram();
-    }
+    public Tree<String> getUserDiagram(String tenantId) {
+        // 部门树
+        Tree<String> tree = sysDeptRedis.getDeptDiagram(tenantId);
+        // 部门用户
+        List<TreeChildren> deptUserList = sysDeptDtoMapper.deptUserOptions(); // TODO
+        // Map<deptId, List<userId>>
+        Map<String, List<Tree<String>>> deptUserMap = new HashMap<>();
+        for (TreeChildren deptUser : deptUserList) {
+            deptUserMap.put(deptUser.getPid(), deptUser.getChildren());
+        }
 
-    @Override
-    public Tree<String> getUserDiagram() {
-        return sysDeptRedis.getUserDiagram();
+        Tree<String> root = tree;
+        Deque<Tree<String>> queue = new LinkedList<>(List.of(root));
+        while (!queue.isEmpty()) {
+            root = queue.pop();
+            List<Tree<String>> children = root.getChildren();
+            List<Tree<String>> users = deptUserMap.get(root.getId());
+            if (children != null) {
+                queue.addAll(root.getChildren());
+                if (users != null) {
+                    children.addAll(users);
+                }
+            } else {
+                root.setChildren(users);
+            }
+            root.put("isDept", true);
+            root.setId(root.getId() + "d"); // 避免dept与user的id相同导致选择问题
+        }
+        return tree;
     }
 
     @Override

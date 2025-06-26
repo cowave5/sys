@@ -57,12 +57,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join sys_dept_tree t on d.dept_id = t.dept_id
         left join sys_user_dept ud on d.dept_id = ud.dept_id and ud.is_leader = 1
         left join sys_user u on u.user_id = ud.user_id
-        where 1 = 1
-        <if test="deptName != null and deptName != ''">
-            and dept_name like concat('%', #{deptName}, '%')
+        where d.tenant_id = #{tenantId}
+        <if test="query.deptName != null and query.deptName != ''">
+            and dept_name like concat('%', #{query.deptName}, '%')
         </if>
-        <if test="deptPhone != null and deptPhone != ''">
-            and dept_phone like concat('%', #{deptPhone}, '%')
+        <if test="query.deptPhone != null and query.deptPhone != ''">
+            and dept_phone like concat('%', #{query.deptPhone}, '%')
         </if>
         order by t.parent_id, t.dept_id
     </select>
@@ -85,12 +85,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where d.dept_id = #{deptId}
     </select>
 
-    <select id="getTreeNodes" resultType="com.cowave.sys.admin.domain.base.vo.TreeNode">
+    <select id="listDiagramNodes" resultType="com.cowave.sys.admin.domain.base.vo.DiagramNode">
         select t.dept_id   id,
                t.parent_id pid,
                d.dept_name as label
         from sys_dept_tree t
         left join sys_dept d ON t.dept_id = d.dept_id
+        where t.tenant_id = #{tenantId}
         order by t.parent_id, t.dept_id
     </select>
 
@@ -196,7 +197,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </if>
     </select>
 
-    <select id="getDefaultDeptOfUser" resultType="com.cowave.sys.admin.domain.rabc.SysDept">
+    <select id="getPrimaryDeptByUserId" resultType="com.cowave.sys.admin.domain.rabc.SysDept">
         select
         <include refid="deptColumns"/>
         from sys_user_dept ud, sys_dept d

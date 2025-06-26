@@ -9,6 +9,7 @@
  */
 package com.cowave.sys.admin.domain.rabc.request;
 
+import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.framework.access.security.AccessInfoSetter;
 import com.cowave.commons.tools.Collections;
 import com.cowave.sys.admin.domain.rabc.SysDept;
@@ -33,6 +34,6 @@ public class DeptCreate extends SysDept implements AccessInfoSetter {
 	private List<Integer> parentIds;
 
     public List<SysDeptTree> getDeptParents(){
-        return Collections.copyToList(parentIds, v -> new SysDeptTree(getDeptId(), v));
+        return Collections.copyToList(parentIds, parentId -> new SysDeptTree(getDeptId(), parentId, Access.tenantId()));
     }
 }

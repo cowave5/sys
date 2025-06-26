@@ -23,6 +23,16 @@ import java.util.List;
 public interface SysMenuDtoMapper {
 
     /**
+     * 获取用户权限
+     */
+    List<String> getPermitKeysByUserId(Integer userId);
+
+
+
+
+
+
+    /**
      * 删除当前以及子菜单的角色关联
      */
     void loopDeleteMenuRoles(Integer menuId);
@@ -31,11 +41,6 @@ public interface SysMenuDtoMapper {
      * 删除当前以及子菜单
      */
     void loopDeleteMenus(Integer menuId);
-
-    /**
-     * 用户权限
-     */
-    List<String> getPermitsByUserId(Integer userId);
 
     /**
      * 角色菜单
