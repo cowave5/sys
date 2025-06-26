@@ -78,7 +78,7 @@
       <el-table-column :label="$t('commons.label.options')" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-circle-close" @click="cancelAuthUser(scope.row)"
-                     :disabled="!checkPermit(['sys:role:members'])">
+                     :disabled="scope.row.userId === 1 || !checkPermit(['sys:role:members'])">
             {{ $t('role.button.remove') }}
           </el-button>
         </template>

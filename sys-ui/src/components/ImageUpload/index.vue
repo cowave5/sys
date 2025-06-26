@@ -2,42 +2,33 @@
   <div class="component-upload-image">
     <el-upload
       multiple
-      :action="uploadImgUrl"
+      name="file"
       list-type="picture-card"
-      :on-success="handleUploadSuccess"
-      :before-upload="handleBeforeUpload"
       :limit="limit"
+      :headers="headers"
+      :data="attachData"
+      :file-list="fileList"
+      :action="uploadImgUrl"
+      :show-file-list="true"
+      :before-upload="handleBeforeUpload"
+      :on-preview="handlePictureCardPreview"
+      :on-success="handleUploadSuccess"
       :on-error="handleUploadError"
       :on-exceed="handleExceed"
-      name="file"
       :on-remove="handleRemove"
-      :show-file-list="true"
-      :headers="headers"
-      :file-list="fileList"
-      :on-preview="handlePictureCardPreview"
       :class="{hide: this.fileList.length >= this.limit}"
     >
-      <i class="el-icon-plus"></i>
+      <i class="el-icon-plus" />
     </el-upload>
 
     <!-- 上传提示 -->
     <div class="el-upload__tip" slot="tip" v-if="showTip">
-      请上传
-      <template v-if="fileSize"> 大小不超过 <b style="color: #f56c6c">{{ fileSize }}MB</b> </template>
-      <template v-if="fileType"> 格式为 <b style="color: #f56c6c">{{ fileType.join("/") }}</b> </template>
-      的文件
+      <template v-if="fileSize"> 限制 <b style="color: #f56c6c">{{ fileSize }}MB</b> </template>
+      <template v-if="fileType"> 格式 <b style="color: #f56c6c">{{ fileType.join("/") }}</b> </template>
     </div>
 
-    <el-dialog
-      :visible.sync="dialogVisible"
-      title="预览"
-      width="800"
-      append-to-body
-    >
-      <img
-        :src="dialogImageUrl"
-        style="display: block; max-width: 100%; margin: 0 auto"
-      />
+    <el-dialog :visible.sync="dialogVisible" title="预览" width="800" append-to-body>
+      <img :src="dialogImageUrl" style="display: block; max-width: 100%; margin: 0 auto"/>
     </el-dialog>
   </div>
 </template>
@@ -48,14 +39,13 @@ import cache from "@/plugins/cache";
 export default {
   props: {
     value: [String, Object, Array],
-    // 图片数量限制
     limit: {
       type: Number,
-      default: 5,
+      default: 1,
     },
     // 大小限制(MB)
     fileSize: {
-       type: Number,
+      type: Number,
       default: 5,
     },
     // 文件类型, 例如['png', 'jpg', 'jpeg']
@@ -67,22 +57,22 @@ export default {
     isShowTip: {
       type: Boolean,
       default: true
+    },
+    // 租户id
+    tenantId: {
+      type: String,
+      default: null
+    },
+    // 宿主类型
+    ownerType: {
+      type: String,
+      default: null
+    },
+    // 附件类型
+    attachType: {
+      type: String,
+      default: null
     }
-  },
-  data() {
-    return {
-      number: 0,
-      uploadList: [],
-      dialogImageUrl: "",
-      dialogVisible: false,
-      hideUpload: false,
-      baseUrl: process.env.VUE_APP_BASE_API,
-      uploadImgUrl: process.env.VUE_APP_BASE_API + "/common/upload", // 上传的图片服务器地址
-      headers: {
-        Authorization: "Bearer " + cache.local.getAccessToken()
-      },
-      fileList: []
-    };
   },
   watch: {
     value: {
@@ -92,14 +82,7 @@ export default {
           const list = Array.isArray(val) ? val : this.value.split(',');
           // 然后将数组转为对象数组
           this.fileList = list.map(item => {
-            if (typeof item === "string") {
-              if (item.indexOf(this.baseUrl) === -1) {
-                  item = { name: this.baseUrl + item, url: this.baseUrl + item };
-              } else {
-                  item = { name: item, url: item };
-              }
-            }
-            return item;
+            return { url: item };
           });
         } else {
           this.fileList = [];
@@ -111,10 +94,33 @@ export default {
     }
   },
   computed: {
+    attachData() {
+      return {
+        tenantId: this.tenantId,
+        ownerType: this.ownerType,
+        attachType: this.attachType
+      }
+    },
+    headers() {
+      return {
+        Authorization: "Bearer " + cache.local.getAccessToken()
+      };
+    },
     // 是否显示提示
     showTip() {
       return this.isShowTip && (this.fileType || this.fileSize);
     },
+  },
+  data() {
+    return {
+      number: 0,
+      dialogImageUrl: "",
+      dialogVisible: false,
+      hideUpload: false,
+      baseUrl: process.env.VUE_APP_BASE_API,
+      uploadImgUrl: process.env.VUE_APP_BASE_API + "/admin/api/v1/attach",
+      fileList: []
+    };
   },
   methods: {
     // 删除图片
@@ -126,15 +132,14 @@ export default {
       }
     },
     // 上传成功回调
-    handleUploadSuccess(res) {
-      this.uploadList.push({ name: res.fileName, url: res.fileName });
-      if (this.uploadList.length === this.number) {
-        this.fileList = this.fileList.concat(this.uploadList);
-        this.uploadList = [];
-        this.number = 0;
-        this.$emit("input", this.listToString(this.fileList));
-        this.$modal.closeLoading();
-      }
+    handleUploadSuccess(response) {
+      this.$emit('uploadCallback', response.data);
+      this.fileList.push({
+        name: response.data.attachName,
+        url: response.data.viewUrl, // 根据你接口返回结构
+        status: 'success',
+      });
+      this.$modal.closeLoading();
     },
     // 上传前loading加载
     handleBeforeUpload(file) {

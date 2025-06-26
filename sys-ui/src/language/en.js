@@ -92,6 +92,7 @@ export default {
       },
       sys: {
         root: "System Manage",
+        tenant: "Tenant",
         user: 'User',
         role: "Role",
         menu: "Menu",
@@ -156,6 +157,12 @@ export default {
       close_other: 'close other tabs',
       close_left: 'close tabs to the left',
       close_right: 'close tabs to the right',
+    }
+  },
+  tenant: {
+    title: {
+      system: 'Cowave',
+      cowave: 'Cowave'
     }
   },
   user: {
@@ -294,6 +301,7 @@ export default {
     label: {
       root: "root",
       name: "Name",
+      tenant: "Tenant",
       status: "Status",
       icon: "Icon",
       order: "Order",

@@ -26,7 +26,6 @@ import com.cowave.sys.admin.infra.base.dao.SysAttachDao;
 import com.cowave.sys.admin.infra.base.dao.SysNoticeDao;
 import com.cowave.sys.admin.infra.base.dao.SysNoticeUserDao;
 import com.cowave.sys.admin.infra.base.dao.mapper.dto.SysNoticeDtoMapper;
-import com.cowave.sys.admin.infra.rabc.dao.SysUserAdminDao;
 import com.cowave.sys.admin.infra.rabc.dao.SysUserDao;
 import com.cowave.sys.admin.service.base.SysAttachService;
 import com.cowave.sys.admin.service.base.SysNoticeService;
@@ -39,7 +38,7 @@ import java.util.*;
 
 import static com.cowave.commons.client.http.constants.HttpCode.*;
 import static com.cowave.sys.admin.domain.base.NoticeStatus.*;
-import static com.cowave.sys.admin.domain.auth.AccessType.*;
+import static com.cowave.sys.admin.domain.auth.AuthType.*;
 import static com.cowave.sys.admin.infra.base.socketio.SysSocketConfiguration.EVENT_SERVER_NOTICE_NEW;
 import static com.cowave.sys.admin.infra.base.socketio.SysSocketConfiguration.SPACE_NOTICE;
 
@@ -54,7 +53,6 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     private final SocketIoHelper socketIoHelper;
     private final SysAttachDao sysAttachDao;
     private final SysUserDao sysUserDao;
-    private final SysUserAdminDao sysUserAdminDao;
     private final LdapUserDao ldapUserDao;
     private final OAuthUserDao oauthUserDao;
     private final SysNoticeDao sysNoticeDao;
@@ -67,7 +65,6 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         List<NoticeDto> dtoList = new ArrayList<>();
 
         List<String> sysCodes = new ArrayList<>();
-        List<String> adminCodes = new ArrayList<>();
         List<String> ldapCodes = new ArrayList<>();
         List<String> gitlabCodes = new ArrayList<>();
         for (SysNotice sysNotice : page.getRecords()) {
@@ -75,8 +72,6 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             String userCode = sysNotice.getCreateBy();
             if (SYS.equalsType(userCode)) {
                 sysCodes.add(userCode);
-            } else if (ADMIN.equalsType(userCode)) {
-                adminCodes.add(userCode);
             } else if (LDAP.equalsType(userCode)) {
                 ldapCodes.add(userCode);
             } else if (GITLAB.equalsType(userCode)) {
@@ -84,7 +79,6 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             }
         }
         Map<String, String> sysMap = sysUserDao.queryCodeNameMap(sysCodes);
-        sysMap.putAll(sysUserAdminDao.queryCodeNameMap(adminCodes));
         sysMap.putAll(ldapUserDao.queryCodeNameMap(ldapCodes));
         sysMap.putAll(oauthUserDao.queryCodeNameMap(gitlabCodes));
         for (NoticeDto dto : dtoList) {
@@ -102,8 +96,6 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         String userCode = infoDto.getCreateBy();
         if (SYS.equalsType(userCode)) {
             infoDto.setCreateUserName(sysUserDao.queryNameByCode(userCode));
-        } else if (ADMIN.equalsType(userCode)) {
-            infoDto.setCreateUserName(sysUserAdminDao.getByUserCode(userCode).getUserName());
         } else if (LDAP.equalsType(userCode)) {
             infoDto.setCreateUserName(ldapUserDao.queryNameByCode(userCode));
         } else if (GITLAB.equalsType(userCode)) {
@@ -134,7 +126,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             HttpAsserts.equals(notice.getCreateBy(), Access.userCode(), FORBIDDEN, "{admin.notice.delete.self}");
         }
 
-        List<SysAttach> attachList = sysAttachDao.queryList(noticeId, "sys-notice", null);
+        List<SysAttach> attachList = sysAttachDao.queryList(String.valueOf(noticeId), "sys-notice", null);
 
         // 删除草稿
         if (DRAFT.equalsVal(notice.getNoticeStatus())) {
@@ -176,7 +168,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         List<AttachView> attaches = sysNotice.getAttaches();
         for (AttachView attach : attaches) {
             if (content.contains(attach.getAttachPath())) {
-                sysAttachService.updateMasterById(sysNotice.getNoticeId(), attach.getAttachId());
+                sysAttachDao.updateOwnerById(String.valueOf(sysNotice.getNoticeId()), attach.getAttachId());
             } else {
                 sysAttachService.delete(attach.getAttachId());
             }
@@ -213,10 +205,13 @@ public class SysNoticeServiceImpl implements SysNoticeService {
 
     @Override
     public SysAttach imageUpload(MultipartFile file) throws Exception {
-        AttachUpload upload = new AttachUpload(1, null, "sys-notice", "images");
-        SysAttach attach = sysAttachService.upload(file, upload);
-        attach.setViewUrl(sysAttachService.preview(attach));
-        return attach;
+        AttachUpload upload = AttachUpload.builder()
+                .tenantId(Access.tenantId())
+                .ownerType("sys-notice")
+                .attachType("images")
+                .isPublic(1)
+                .build();
+        return sysAttachService.upload(file, upload);
     }
 
     @Override
@@ -225,7 +220,6 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         List<NoticeUserDto> dtoList = new ArrayList<>();
 
         List<String> sysCodes = new ArrayList<>();
-        List<String> adminCodes = new ArrayList<>();
         List<String> ldapCodes = new ArrayList<>();
         List<String> gitlabCodes = new ArrayList<>();
         for (SysNoticeUser noticeUser : page.getRecords()) {
@@ -233,16 +227,13 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             String userCode = noticeUser.getUserCode();
             if (SYS.equalsType(userCode)) {
                 sysCodes.add(userCode);
-            } else if (ADMIN.equalsType(userCode)) {
-                adminCodes.add(userCode);
-            }else if (LDAP.equalsType(userCode)) {
+            } else if (LDAP.equalsType(userCode)) {
                 ldapCodes.add(userCode);
             } else if (GITLAB.equalsType(userCode)) {
                 gitlabCodes.add(userCode);
             }
         }
         Map<String, String> sysMap = sysUserDao.queryCodeNameMap(sysCodes);
-        sysMap.putAll(sysUserAdminDao.queryCodeNameMap(adminCodes));
         sysMap.putAll(ldapUserDao.queryCodeNameMap(ldapCodes));
         sysMap.putAll(oauthUserDao.queryCodeNameMap(gitlabCodes));
         for (NoticeUserDto userDto : dtoList) {
@@ -254,25 +245,20 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     @Override
     public Page<NoticeMsgDto> msgList() {
         Page<NoticeMsgDto> page = sysNoticeDtoMapper.msgList(Access.page(), Access.userCode());
-
         List<String> sysCodes = new ArrayList<>();
-        List<String> adminCodes = new ArrayList<>();
         List<String> ldapCodes = new ArrayList<>();
         List<String> gitlabCodes = new ArrayList<>();
         for (NoticeMsgDto msgDto : page.getRecords()) {
             String userCode = msgDto.getCreateBy();
             if (SYS.equalsType(userCode)) {
                 sysCodes.add(userCode);
-            } else if (ADMIN.equalsType(userCode)) {
-                adminCodes.add(userCode);
-            }else if (LDAP.equalsType(userCode)) {
+            } else if (LDAP.equalsType(userCode)) {
                 ldapCodes.add(userCode);
             } else if (GITLAB.equalsType(userCode)) {
                 gitlabCodes.add(userCode);
             }
         }
         Map<String, String> sysMap = sysUserDao.queryCodeNameMap(sysCodes);
-        sysMap.putAll(sysUserAdminDao.queryCodeNameMap(adminCodes));
         sysMap.putAll(ldapUserDao.queryCodeNameMap(ldapCodes));
         sysMap.putAll(oauthUserDao.queryCodeNameMap(gitlabCodes));
         for (NoticeMsgDto msgDto : page.getRecords()) {
@@ -311,7 +297,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     }
 
     public void sendFlowNotice(String processName, String taskName, Integer startUser, Integer assigneeUser) {
-        String startUserName = sysUserDao.queryNameById(startUser);
+        String startUserName = sysUserDao.queryNameByUserId(startUser);
         SysNotice notice = new SysNotice();
         notice.setNoticeStatus(PUBLISH.val());
         notice.setCreateBy(Access.userCode());

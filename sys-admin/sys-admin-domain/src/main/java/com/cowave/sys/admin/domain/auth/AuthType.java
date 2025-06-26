@@ -7,33 +7,54 @@
  *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
-package com.cowave.sys.admin.domain.base.vo;
+package com.cowave.sys.admin.domain.auth;
 
-import lombok.Data;
+import com.cowave.commons.tools.EnumVal;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author shanhuiming
  */
-@Data
-public class TreeNode {
+@RequiredArgsConstructor
+public enum AuthType implements EnumVal<String> {
 
     /**
-     * id
+     * 用户令牌
      */
-    private String id;
+    API("api"),
 
     /**
-     * 上级id
+     * OAuth授权
      */
-    private String pid;
+    OAUTH("oauth"),
 
     /**
-     * 名称
+     * 系统用户
      */
-    private String label;
+    SYS("sys"),
 
     /**
-     * 内容
+     * Ldap用户
      */
-    private String content;
+    LDAP("ldap"),
+
+    /**
+     * Gitlab用户
+     */
+    GITLAB("gitlab");
+
+    private final String val;
+
+    @Override
+    public String val() {
+        return val;
+    }
+
+    public String generateCode() {
+        return val + "-" + java.util.UUID.randomUUID();
+    }
+
+    public boolean equalsType(String userCode){
+        return userCode.startsWith(val);
+    }
 }

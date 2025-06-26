@@ -68,6 +68,9 @@
       <el-table-column v-if="cols[5].show" prop="menuPath" :label="$t('menu.label.path')" align="center" :show-overflow-tooltip="true"/>
       <el-table-column v-if="cols[6].show" prop="menuPermit" :label="$t('menu.label.permission')" align="center" :show-overflow-tooltip="true"/>
       <el-table-column v-if="cols[7].show" prop="component" :label="$t('menu.label.component')" align="center" :show-overflow-tooltip="true"/>
+
+      <el-table-column prop="tenantId" :label="$t('menu.label.tenant')" align="center" :show-overflow-tooltip="true"/>
+
       <el-table-column v-if="cols[8].show" prop="menuStatus" :label="$t('menu.label.status')" align="center" width="100">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.enable_disable" :value="scope.row.menuStatus"/>

@@ -20,24 +20,34 @@ import java.util.List;
 public interface SysMenuService{
 
 	/**
-	 * 菜单树
+	 * 菜单权限（管理员）
 	 */
-	List<Tree<Integer>> tree();
+	List<SysMenu> listMenusByAdmin(String tenantId);
 
 	/**
-	 * 用户菜单树
+	 * 菜单权限（指定角色）
 	 */
-	List<Tree<Integer>> getApiTreeByUser();
+	List<SysMenu> listMenusByRoles(String tenantId, List<String> roleList);
+
+	/**
+	 * 菜单树
+	 */
+	List<Tree<Integer>> tree(String tenantId);
 
 	/**
 	 * 列表
 	 */
-	List<SysMenu> list(String menuName, Integer menuStatus, Integer visible);
+	List<SysMenu> list(String menuName, Integer menuStatus);
+
+	/**
+	 * Api令牌权限树
+	 */
+	List<Tree<Integer>> getApiPermitsByUser(String tenantId);
 
 	/**
 	 * 详情
 	 */
-	SysMenu info(Integer menuId);
+	SysMenu info(String tenantId, Integer menuId);
 
 	/**
 	 * 新增
@@ -47,15 +57,11 @@ public interface SysMenuService{
 	/**
 	 * 删除
 	 */
-	void delete(Integer menuId);
+	void delete(String tenantId, Integer menuId);
 
 	/**
 	 * 修改
 	 */
-	void edit(SysMenu sysMenu);
+	void edit(String tenantId, SysMenu sysMenu);
 
-	/**
-	 * 授权菜单
-	 */
-	List<SysMenu> getMenusByRole(List<String> roleList);
 }

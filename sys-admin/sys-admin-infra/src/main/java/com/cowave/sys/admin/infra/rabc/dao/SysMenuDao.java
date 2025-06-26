@@ -28,30 +28,60 @@ import java.util.Objects;
 public class SysMenuDao extends ServiceImpl<SysMenuMapper, SysMenu> {
 
     /**
-     * 菜单列表
+     * 菜单权限（管理员）
      */
-    public List<SysMenu> queryList(Integer visible, Integer menuStatus, String menuName) {
+    public List<SysMenu> listMenusByAdmin(String tenantId) {
         return lambdaQuery()
-                .eq(visible != null, SysMenu::getIsVisible, visible)
-                .eq(menuStatus != null, SysMenu::getMenuStatus, menuStatus)
-                .like(StringUtils.isNotBlank(menuName), SysMenu::getMenuName, menuName)
-                .orderByAsc(SysMenu::getParentId)
-                .orderByAsc(SysMenu::getMenuOrder)
+                .eq(SysMenu::getIsVisible, 1)
+                .eq(SysMenu::getMenuStatus, 1)
+                .in(SysMenu::getTenantId, List.of("#", tenantId))
+                .in(SysMenu::getMenuType, List.of("C", "M"))
+                .orderByAsc(SysMenu::getParentId, SysMenu::getMenuOrder)
                 .list();
     }
 
     /**
-     * Api菜单列表
+     * 列表查询（角色菜单）
      */
-    public List<SysMenu> queryApiList() {
+    public List<SysMenu> listTree(String tenantId) {
         return lambdaQuery()
+                .in(StringUtils.isNotBlank(tenantId), SysMenu::getTenantId, List.of("#", tenantId))
                 .eq(SysMenu::getMenuStatus, 1)
-                .and(wrapper
-                        -> wrapper.isNotNull(SysMenu::getMenuPermit)
-                        .or().eq(SysMenu::getMenuType, "M"))
-                .orderByAsc(SysMenu::getParentId)
-                .orderByAsc(SysMenu::getMenuOrder)
+                .orderByAsc(SysMenu::getParentId, SysMenu::getMenuOrder)
                 .list();
+    }
+
+    /**
+     * 列表查询
+     */
+    public List<SysMenu> list(String menuName, Integer menuStatus) {
+        return lambdaQuery()
+                .eq(menuStatus != null, SysMenu::getMenuStatus, menuStatus)
+                .like(StringUtils.isNotBlank(menuName), SysMenu::getMenuName, menuName)
+                .orderByAsc(SysMenu::getParentId, SysMenu::getMenuOrder)
+                .list();
+    }
+
+    /**
+     * Api菜单权限
+     */
+    public List<SysMenu> listApiPermitsByAdmin(String tenantId) {
+        return lambdaQuery()
+                .in(SysMenu::getTenantId, List.of("#", tenantId))
+                .eq(SysMenu::getMenuStatus, 1)
+                .and(wrapper -> wrapper.isNotNull(SysMenu::getMenuPermit).or().eq(SysMenu::getMenuType, "M"))
+                .orderByAsc(SysMenu::getParentId, SysMenu::getMenuOrder)
+                .list();
+    }
+
+    /**
+     * 菜单查询（菜单id）
+     */
+    public SysMenu getById(String tenantId, Integer menuId) {
+        return lambdaQuery()
+                .in(SysMenu::getTenantId, List.of("#", tenantId))
+                .eq(SysMenu::getMenuId, menuId)
+                .one();
     }
 
     /**

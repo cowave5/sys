@@ -95,6 +95,10 @@ Vue.use(ElTreeSelect);
 import Contextmenu from "vue-contextmenujs"
 Vue.use(Contextmenu);
 
+import 'vue2-org-tree/dist/style.css';
+import Vue2OrgTree from 'vue2-org-tree'
+Vue.use(Vue2OrgTree);
+
 Element.Dialog.props.closeOnClickModal.default = false
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium'

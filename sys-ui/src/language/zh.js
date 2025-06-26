@@ -92,6 +92,7 @@ export default {
       },
       sys: {
         root: "系统管理",
+        tenant: "租户管理",
         user: '用户管理',
         role: "角色管理",
         menu: "菜单管理",
@@ -156,6 +157,12 @@ export default {
       close_other: '关闭其他',
       close_left: '关闭左侧',
       close_right: '关闭右侧',
+    }
+  },
+  tenant: {
+    title: {
+      system: '控维科技',
+      cowave: '控维通信'
     }
   },
   user: {
@@ -293,6 +300,7 @@ export default {
   menu: {
     label: {
       root: "根目录",
+      tenant: "租户归属",
       name: "菜单名称",
       status: "菜单状态",
       order: "显示排序",

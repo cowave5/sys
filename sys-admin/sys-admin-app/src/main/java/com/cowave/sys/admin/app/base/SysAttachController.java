@@ -10,6 +10,7 @@
 package com.cowave.sys.admin.app.base;
 
 import com.cowave.commons.client.http.response.Response;
+import com.cowave.commons.framework.access.Access;
 import com.cowave.sys.admin.domain.base.SysAttach;
 import com.cowave.sys.admin.domain.base.request.AttachQuery;
 import com.cowave.sys.admin.domain.base.request.AttachUpload;
@@ -40,13 +41,13 @@ public class SysAttachController {
      */
     @GetMapping
     public Response<List<SysAttach>> list(AttachQuery query) throws Exception {
-        return Response.success(sysAttachService.list(query));
+        return Response.success(sysAttachService.list(Access.tenantId(), query));
     }
 
     /**
      * 上传
      */
-    @PostMapping("/upload")
+    @PostMapping
     public Response<SysAttach> upload(MultipartFile file, AttachUpload attachUpload) throws Exception {
         return Response.success(sysAttachService.upload(file, attachUpload));
     }
