@@ -22,7 +22,7 @@ public class AdminRedisKeys {
     /**
      * OAuth2授权code
      */
-    public static final String AUTH_OAUTH = "sys-admin:auth:authorize:%s";
+    public static final String AUTH_OAUTH = "sys-admin:auth:oauth:%s";
 
     /**
      * Api令牌

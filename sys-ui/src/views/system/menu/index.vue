@@ -60,7 +60,7 @@
           <svg-icon :icon-class="scope.row.menuIcon" />
         </template>
       </el-table-column>
-      <el-table-column v-if="cols[4].show" prop="isProtected" :label="$t('menu.label.visibility')" align="center" width="100">
+      <el-table-column v-if="cols[4].show" prop="isProtected" :label="$t('menu.label.visibility')" align="center">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.public_protected" :value="scope.row.isProtected"/>
         </template>
@@ -68,6 +68,14 @@
       <el-table-column v-if="cols[5].show" prop="menuPath" :label="$t('menu.label.path')" align="center" :show-overflow-tooltip="true"/>
       <el-table-column v-if="cols[6].show" prop="menuPermit" :label="$t('menu.label.permission')" align="center" :show-overflow-tooltip="true"/>
       <el-table-column v-if="cols[7].show" prop="component" :label="$t('menu.label.component')" align="center" :show-overflow-tooltip="true"/>
+
+      <el-table-column prop="menuModule" :label="$t('menu.label.module')" align="center" :show-overflow-tooltip="true">
+        <template slot-scope="{row: {menuModule}}">
+          <template v-for="item in moduleOptions">
+            <span v-if="menuModule === item.dictCode">{{ $t(item.dictName) }}</span>
+          </template>
+        </template>
+      </el-table-column>
       <el-table-column prop="tenantId" :label="$t('menu.label.tenant')" align="center" :show-overflow-tooltip="true">
         <template slot-scope="{row: {tenantId}}">
           <template v-for="item in tenantOptions">
@@ -75,7 +83,8 @@
           </template>
         </template>
       </el-table-column>
-      <el-table-column v-if="cols[8].show" prop="menuStatus" :label="$t('menu.label.status')" align="center" width="100">
+
+      <el-table-column v-if="cols[8].show" prop="menuStatus" :label="$t('menu.label.status')" align="center">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.enable_disable" :value="scope.row.menuStatus"/>
         </template>
@@ -90,7 +99,7 @@
           <span>{{ parseTime(scope.row.updateTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('commons.label.options')" align="center" class-name="small-padding fixed-width">
+      <el-table-column :label="$t('commons.label.options')" align="center" class-name="small-padding" width="180">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">
             {{$t('commons.button.edit')}}
@@ -108,7 +117,7 @@
     </el-table>
 
     <!-- 添加或修改 -->
-    <el-dialog v-drag :title="title" :visible.sync="open" width="700px" append-to-body>
+    <el-dialog v-drag :title="title" :visible.sync="open" width="800px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="110px">
         <el-row>
           <el-col :span="24">
@@ -119,17 +128,32 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="24">
             <el-form-item :label="$t('menu.label.type')" prop="menuType">
               <el-radio-group v-model="form.menuType">
                 <el-radio v-for="dict in dict.type.menu_type" :key="dict.value" :label="dict.value">{{$t(dict.name)}}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('menu.label.tenant')" prop="status">
+            <el-form-item :label="$t('menu.label.tenant')" prop="tenantId">
               <el-select v-model="form.tenantId" style="width: 100%">
-                <el-option v-for="item in tenantOptions" :key="item.key" :value="item.key" :label="item.label"/>
+                <el-option v-for="item in tenantOptions" :key="item.key" :value="item.key" :label="$t(item.label)"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="menuModule">
+              <span slot="label">
+                <el-tooltip :content="$t('menu.content.module')" placement="top">
+                  <i class="el-icon-question"></i>
+                </el-tooltip>
+                {{$t('menu.label.module')}}
+              </span>
+              <el-select v-model="form.menuModule" style="width: 100%">
+                <el-option v-for="item in moduleOptions" :key="item.dictCode" :value="item.dictCode" :label="$t(item.dictName)"/>
               </el-select>
             </el-form-item>
           </el-col>
@@ -148,7 +172,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('menu.label.order')" prop="menuOrder">
-              <el-input-number v-model="form.menuOrder" controls-position="right" :min=0 style="width: 220px"/>
+              <el-input-number v-model="form.menuOrder" controls-position="right" :min=0 style="width: 100%"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -324,6 +348,7 @@ import IconSelect from "@/components/IconSelect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import {checkPermit} from "@/utils/permission";
 import {listTenantOptions} from "@/api/system/tenant";
+import {getDictByGroup} from "@/api/system/dict";
 
 export default {
   name: "Menu",
@@ -341,6 +366,8 @@ export default {
       menuOptions: [],
       // 租户选项
       tenantOptions: [],
+      // 模块选项
+      moduleOptions: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -374,10 +401,14 @@ export default {
   created() {
     this.getList();
     this.getTenantOptions();
+    this.getModuleOptions();
   },
   computed: {
     rules() {
       return {
+        tenantId: [
+          { required: true, message: this.$t('menu.rules.tenant'), trigger: "blur" }
+        ],
         menuName: [
           { required: true, message: this.$t('menu.rules.name'), trigger: "blur" }
         ],
@@ -416,7 +447,13 @@ export default {
     getTenantOptions() {
       listTenantOptions().then(response => {
         this.tenantOptions = response.data;
-        this.tenantOptions.push({"key": "#", "label": this.$t('menu.label.shared')});
+        this.tenantOptions.push({"key": "#", "label": "menu.label.shared"});
+      });
+    },
+    /** 获取模块选项 */
+    getModuleOptions() {
+      getDictByGroup('op_module').then(response => {
+        this.moduleOptions = response.data;
       });
     },
     /** 选择图标 */
@@ -454,12 +491,14 @@ export default {
         menuId: undefined,
         menuName: undefined,
         menuPath: undefined,
+        menuPermit: undefined,
         menuIcon: undefined,
         menuType: "M",
         parentId: 0,
         menuOrder: 1,
         menuStatus: undefined,
         tenantId: "#",
+        menuModule: null,
         isFrame: 1,
         isCache: 1,
         isVisible: 1,

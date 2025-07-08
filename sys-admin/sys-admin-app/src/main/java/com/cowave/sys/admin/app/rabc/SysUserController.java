@@ -73,7 +73,7 @@ public class SysUserController {
     /**
      * 新增
      */
-    @Operation(module = "op_admin", type = "op_user", action = "op_create", desc = "新增用户：#{#user.userName}")
+    @Operation(module = "op_system", type = "op_user", action = "op_create", desc = "新增用户：#{#user.userName}")
     @PreAuthorize("@permit.hasPermit('sys:user:create')")
     @PostMapping
     public Response<Void> create(@Validated @RequestBody UserCreate user) throws Exception {
@@ -85,7 +85,7 @@ public class SysUserController {
      *
      * @param userIds id列表
      */
-    @Operation(module = "op_admin", type = "op_user", action = "op_delete", desc = "删除用户")
+    @Operation(module = "op_system", type = "op_user", action = "op_delete", desc = "删除用户")
     @PreAuthorize("@permit.hasPermit('sys:user:delete')")
     @DeleteMapping("/{userIds}")
     public Response<Void> delete(@PathVariable List<Integer> userIds) throws Exception {
@@ -95,7 +95,7 @@ public class SysUserController {
     /**
      * 修改
      */
-    @Operation(module = "op_admin", type = "op_user", action = "op_edit", desc = "修改用户：#{#user.userName}")
+    @Operation(module = "op_system", type = "op_user", action = "op_edit", desc = "修改用户：#{#user.userName}")
     @PreAuthorize("@permit.hasPermit('sys:user:edit')")
     @PatchMapping
     public Response<Void> edit(@Validated @RequestBody UserCreate user) throws Exception {
@@ -105,7 +105,7 @@ public class SysUserController {
     /**
      * 修改角色
      */
-    @Operation(module = "op_admin", type = "op_user", action = "op_grant", desc = "修改用户角色：#{#user.userName}")
+    @Operation(module = "op_system", type = "op_user", action = "op_grant", desc = "修改用户角色：#{#user.userName}")
     @PreAuthorize("@permit.hasPermit('sys:user:grant')")
     @PatchMapping("/roles")
     public Response<Void> changeRoles(@Validated @RequestBody UserRoleUpdate user) throws Exception {
@@ -115,7 +115,7 @@ public class SysUserController {
     /**
      * 修改状态
      */
-    @Operation(module = "op_admin", type = "op_user", action = "op_status", desc = "修改用户状态：#{#user.userName}")
+    @Operation(module = "op_system", type = "op_user", action = "op_status", desc = "修改用户状态：#{#user.userName}")
     @PreAuthorize("@permit.hasPermit('sys:user:status')")
     @PatchMapping("/status")
     public Response<Void> changeStatus(@Validated @RequestBody UserStatusUpdate user) throws Exception {
@@ -125,7 +125,7 @@ public class SysUserController {
     /**
      * 修改密码
      */
-    @Operation(module = "op_admin", type = "op_user", action = "op_passwd", desc = "修改用户密码：#{#user.userName}")
+    @Operation(module = "op_system", type = "op_user", action = "op_passwd", desc = "修改用户密码：#{#user.userName}")
     @PreAuthorize("@permit.hasPermit('sys:user:passwd')")
     @PatchMapping("/passwd")
     public Response<Void> changePasswd(@Validated @RequestBody UserPasswdUpdate user) throws Exception {

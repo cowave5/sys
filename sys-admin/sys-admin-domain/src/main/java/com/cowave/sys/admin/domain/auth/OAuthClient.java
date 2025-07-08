@@ -36,6 +36,11 @@ public class OAuthClient implements AccessInfoSetter {
     private Integer id;
 
     /**
+     * 租户id
+     */
+    private String tenantId;
+
+    /**
      * 客户端名称
      */
     @NotBlank(message = "{admin.oauth.name.notnull}")

@@ -84,6 +84,9 @@ export default {
       immediate: true
     }
   },
+  mounted() {
+    localStorage.setItem('tenant_login_route', '/cowave/login');
+  },
   created() {
     this.version = process.env.VUE_APP_VERSION;
     this.getCode();
@@ -91,7 +94,7 @@ export default {
   },
   methods: {
     getCode() {
-      getCodeImg().then(res => {
+      getCodeImg("cowave").then(res => {
         this.codeUrl = "data:image/gif;base64," + res.data.img;
         this.form.uuid = res.data.uuid;
         this.captchaOnOff = res.data.captchaOnOff;

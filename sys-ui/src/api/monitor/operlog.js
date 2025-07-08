@@ -5,7 +5,7 @@ import request from '@/utils/request'
  */
 export function getOpLogOptions() {
   return request({
-    url: '/admin/api/v1/dict/group/types/op_log',
+    url: '/admin/api/v1/dict/group/types/op_module',
     method: 'get'
   })
 }
@@ -13,7 +13,7 @@ export function getOpLogOptions() {
 /**
  * 列表
  */
-export function getOpLogList(params) {
+export function listOpLog(params) {
   return request({
     url: '/admin/api/v1/oplog',
     method: 'get',

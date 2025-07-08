@@ -50,11 +50,11 @@ public class ProfileServiceImpl implements ProfileService {
     public UserProfile info() throws Exception {
         String tenantId = Access.tenantId();
         Integer userId = Access.userId();
-        String userType = Access.userType();
+        String userCode = Access.userCode();
         UserProfile userProfile;
-        if (GITLAB.equalsName(userType)) {
+        if (GITLAB.equalsType(userCode)) {
             userProfile = oauthUserDtoMapper.getOauthProfile(userId);
-        } else if (LDAP.equalsName(userType)) {
+        } else if (LDAP.equalsType(userCode)) {
             userProfile = ldapUserDtoMapper.getLdapUserProfile(userId);
         } else {
             userProfile = sysUserDtoMapper.getUserProfile(userId);

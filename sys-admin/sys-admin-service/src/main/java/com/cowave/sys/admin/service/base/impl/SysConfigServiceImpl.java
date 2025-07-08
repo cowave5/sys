@@ -58,14 +58,14 @@ public class SysConfigServiceImpl implements SysConfigService {
     }
 
     @Override
-    public void add(SysConfig sysConfig) throws Exception {
+    public void add(SysConfig sysConfig) {
         CustomValueParser.getValue(sysConfig.getConfigValue(), sysConfig.getValueType(), sysConfig.getValueParser());
         sysConfigDao.save(sysConfig);
     }
 
     @CacheEvict(value = CONFIG_KEY, key = "#sysConfig.tenantId + ':' + #sysConfig.configKey")
     @Override
-    public void edit(SysConfig sysConfig) throws Exception {
+    public void edit(SysConfig sysConfig) {
         HttpAsserts.notNull(sysConfig.getConfigId(), BAD_REQUEST, "{admin.config.id.notnull}");
 
         SysConfig preConfig = sysConfigDao.getById(sysConfig.getTenantId(), sysConfig.getConfigId());
@@ -77,7 +77,7 @@ public class SysConfigServiceImpl implements SysConfigService {
     }
 
     @Override
-    public void delete(String tenantId, List<Integer> configIds) throws Exception {
+    public void delete(String tenantId, List<Integer> configIds) {
         List<SysConfig> list = sysConfigDao.listByIds(configIds);
         sysConfigDao.removeByIds(configIds);
         // 手动清除缓存

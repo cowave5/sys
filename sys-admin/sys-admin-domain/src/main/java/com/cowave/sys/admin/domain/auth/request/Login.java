@@ -17,11 +17,12 @@ import javax.validation.constraints.NotBlank;
  * @author shanhuiming
  */
 @Data
-public class LoginRequest {
+public class Login {
 
     /**
      * 租户id
      */
+    @NotBlank(message = "{admin.tenant.id.notnull}")
     private String tenantId;
 
     /**

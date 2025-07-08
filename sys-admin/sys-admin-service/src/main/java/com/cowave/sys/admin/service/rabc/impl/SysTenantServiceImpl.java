@@ -121,7 +121,6 @@ public class SysTenantServiceImpl implements SysTenantService {
     @Override
     public List<SelectOption> tenantOptions() {
         List<SysTenant> tenantList = sysTenantDao.list();
-        return Collections.copyToList(tenantList,
-                t -> new SelectOption(t.getTenantId(), t.getTenantName()));
+        return Collections.copyToList(tenantList, t -> new SelectOption(t.getTenantId(), t.getTitle()));
     }
 }

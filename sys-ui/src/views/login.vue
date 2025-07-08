@@ -50,6 +50,9 @@ export default {
       timeKeeping: false,
     };
   },
+  mounted() {
+    localStorage.setItem('tenant_login_route', '/login');
+  },
   created() {
     this.version = process.env.VUE_APP_VERSION;
   },

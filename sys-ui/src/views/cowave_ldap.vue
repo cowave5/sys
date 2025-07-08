@@ -36,6 +36,7 @@ export default {
       version: "",
       year: new Date().getFullYear(),
       ldap: {
+        tenantId: "cowave",
         username: "",
         password: "",
       },

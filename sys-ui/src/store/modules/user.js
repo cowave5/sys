@@ -77,10 +77,11 @@ const user = {
     },
 
     Ldap({ commit }, ldapInfo) {
+      const tenantId = ldapInfo.tenantId;
       const username = ldapInfo.username.trim()
       const password = ldapInfo.password
       return new Promise((resolve, reject) => {
-        ldapLogin(username, password).then(res => {
+        ldapLogin(tenantId, username, password).then(res => {
           commit('SET_TOKEN', res.data);
           resolve();
         }).catch(error => {
@@ -89,9 +90,9 @@ const user = {
       })
     },
 
-    OauthGitlab({ commit }, code) {
+    OauthGitlab({ commit }, query) {
       return new Promise((resolve, reject) => {
-        gitlabLogin(code).then(res => {
+        gitlabLogin(query.tenantId, query.code).then(res => {
           commit('SET_TOKEN', res.data);
           resolve();
         }).catch(error => {

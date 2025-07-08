@@ -97,6 +97,7 @@ export default {
         user: 'User',
         role: "Role",
         menu: "Menu",
+        scope: "Data Scope",
         dept: "Dept",
         post: "Post",
         dict: "Dict",
@@ -349,6 +350,7 @@ export default {
       root: "root",
       name: "Name",
       tenant: "Tenant",
+      module: "Module",
       status: "Status",
       icon: "Icon",
       order: "Order",
@@ -380,7 +382,8 @@ export default {
     rules: {
       name: "menu name can't be empty",
       path: "route path can't be empty",
-      order: "menu order can't be empty"
+      order: "menu order can't be empty",
+      tenant: "menu tenant can't be empty"
     },
     dialog: {
       new: "New Menu",
@@ -391,6 +394,7 @@ export default {
     },
     content: {
       name: "The name supports internationalization and can be defined as the key in internationalized resource",
+      module: "For menus and buttons, filter the data permission options",
       status: "The disabled route will not appear in the sidebar and can't be accessed",
       frame: "The external route needs to start with `http(s)://`",
       visible: "The hidden route will not appear in the sidebar but still can be accessed",
@@ -598,9 +602,7 @@ export default {
       notice_notice: "notice",
       notice_press: "press",
 
-      op_log: "Operation log",
-      op_action: "log action",
-      op_admin: "system operation",
+      op_action: "OP Action",
       op_create: "create",
       op_delete: "delete",
       op_edit: "edit",
@@ -608,14 +610,34 @@ export default {
       op_passwd: "passwd change",
       op_grant: "role change",
       op_login: "login",
-      op_oauth: "OAuth Authorization",
+      op_login_oauth: "OAuth Authorization",
       op_logout: "logout",
       op_logout_force: "force logout",
-      op_auth: "Authorization log",
+
+      op_module: "OP Module",
+
+      op_system: "system",
+      op_auth: "Authorization",
+      op_tenant: "Tenant",
       op_user: "User",
       op_dept: "Dept",
       op_role: "Role",
       op_post: "Post",
+      op_menu: "Menu",
+      op_scope: "Data Scope",
+      op_dict: "Dictionary",
+      op_config: "Config",
+      op_task: "Task",
+      op_ldap: "Ldap",
+      op_oauth: "oAuth",
+
+      op_monitor: "monitor",
+      op_online: "Online user",
+      op_log: "Operation log",
+
+      op_flow: "flow",
+
+      op_meter: "meter",
 
       menu: "Menu dict",
       menu_type: "Menu Type",

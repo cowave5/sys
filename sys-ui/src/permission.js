@@ -14,10 +14,7 @@ router.beforeEach((to, from, next) => {
   // 检查AccessToken（本地持久化）
   if (cache.local.getAccessToken()) {
     // 如果登录Url，直接将next置为首页
-    if (to.path === '/login'
-        || to.path === '/cowave/login'
-        || to.path === '/cowave/ldap'
-        || to.path === '/oauth/gitlab') {
+    if (to.path === '/login' || to.path === '/cowave/login' || to.path === '/cowave/ldap' || to.path === '/oauth/gitlab') {
       next({ path: '/' })
       NProgress.done()
     } else {
@@ -30,8 +27,9 @@ router.beforeEach((to, from, next) => {
             next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
           })
         }).catch(err => {
-          cache.local.removeAccessToken()
-          next({ path: '/cowave/login' })
+          cache.local.removeAccessToken();
+          const loginRoute = localStorage.getItem('tenant_login_route') || '/cowave/login';
+          next({ path: loginRoute });
         })
       } else {
         next()
@@ -42,7 +40,8 @@ router.beforeEach((to, from, next) => {
       next()
     } else {
       const redirect = encodeURIComponent(to.fullPath);
-      next(`/cowave/login?redirect=${redirect}`) // 否则全部重定向到登录页
+      const loginRoute = localStorage.getItem('tenant_login_route') || '/cowave/login';
+      next(`${loginRoute}?redirect=${redirect}`);
       NProgress.done()
     }
   }

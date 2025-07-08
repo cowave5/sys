@@ -3,11 +3,11 @@ import request from '@/utils/request'
 /**
  * 获取验证码
  */
-export function getCodeImg() {
+export function getCodeImg(tenantId) {
   return request({
-    url: '/admin/api/v1/auth/public/captcha',
+    url: '/admin/api/v1/auth/public/captcha?tenantId=' + tenantId,
     method: 'get',
-    timeout: 20000,
+    timeout: 5000,
     headers: {
       requireToken: false
     },
@@ -21,7 +21,7 @@ export function getEmailCode(email) {
   return request({
     url: '/admin/api/v1/auth/public/captcha/email?email=' + email,
     method: 'get',
-    timeout: 20000,
+    timeout: 5000,
     headers: {
       requireToken: false
     },
@@ -85,8 +85,9 @@ export function login(tenantId, userAccount, passWord, code, uuid) {
 /**
  * Ldap登录
  */
-export function ldapLogin(userAccount, passWord) {
+export function ldapLogin(tenantId, userAccount, passWord) {
   const data = {
+    tenantId,
     userAccount,
     passWord
   }
@@ -103,9 +104,9 @@ export function ldapLogin(userAccount, passWord) {
 /**
  * 登录
  */
-export function gitlabLogin(code) {
+export function gitlabLogin(tenantId, code) {
   return request({
-    url: '/admin/api/v1/auth/public/gitlab?code=' + code,
+    url: '/admin/api/v1/auth/public/gitlab?tenantId=' + tenantId + '&code=' + code,
     method: 'get',
     headers: {
       requireToken: false

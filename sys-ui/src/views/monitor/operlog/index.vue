@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import {getOpLogList, delOpLog, cleanOpLog, getOpLogOptions} from "@/api/monitor/operlog";
+import {listOpLog, delOpLog, cleanOpLog, getOpLogOptions} from "@/api/monitor/operlog";
 import {checkPermit} from "@/utils/permission";
 export default {
   name: "Oplog",
@@ -154,7 +154,7 @@ export default {
     /** 查询登录日志 */
     getList() {
       this.loading = true;
-      getOpLogList(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+      listOpLog(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
             this.list = response.data.list;
             this.total = response.data.total;
             this.loading = false;
@@ -207,8 +207,8 @@ export default {
       let types = this.moduleOptions.find(item => item.key === row.opModule).children;
       if (types !== undefined) {
         let viewName = types.find(item => item.key === row.opType).value;
-        if (viewName === undefined) {
-          viewName = "detail";
+        if (viewName === undefined || viewName === null) {
+          viewName = "log_view_" + row.opType;
         }
         this.infoView = this.getDialog(viewName)
         this.$nextTick(() => {

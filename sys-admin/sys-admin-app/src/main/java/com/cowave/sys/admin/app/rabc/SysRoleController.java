@@ -67,7 +67,7 @@ public class SysRoleController {
     /**
      * 新增
      */
-    @Operation(module = "op_admin", type = "op_role", action = "op_create", desc = "新增角色：#{#sysRole.roleName}")
+    @Operation(module = "op_system", type = "op_role", action = "op_create", desc = "新增角色：#{#sysRole.roleName}")
     @PreAuthorize("@permit.hasPermit('sys:role:create')")
     @PostMapping
     public Response<Void> add(@Validated @RequestBody SysRole sysRole) throws Exception {
@@ -79,7 +79,7 @@ public class SysRoleController {
      *
      * @param roleIds 角色id列表
      */
-    @Operation(module = "op_admin", type = "op_role", action = "op_delete", desc = "删除角色")
+    @Operation(module = "op_system", type = "op_role", action = "op_delete", desc = "删除角色")
     @PreAuthorize("@permit.hasPermit('sys:role:delete')")
     @DeleteMapping("/{roleIds}")
     public Response<Void> delete(@PathVariable List<Integer> roleIds) throws Exception {
@@ -89,7 +89,7 @@ public class SysRoleController {
     /**
      * 修改
      */
-    @Operation(module = "op_admin", type = "op_role", action = "op_edit", desc = "修改角色：#{#sysRole.roleName}")
+    @Operation(module = "op_system", type = "op_role", action = "op_edit", desc = "修改角色：#{#sysRole.roleName}")
     @PreAuthorize("@permit.hasPermit('sys:role:edit')")
     @PatchMapping
     public Response<Void> edit(@Validated @RequestBody SysRole sysRole) throws Exception {

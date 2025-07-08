@@ -67,7 +67,7 @@ public class SysPostController {
 	/**
 	 * 新增
 	 */
-	@Operation(module = "op_admin", type = "op_post", action = "op_create", desc = "新增岗位：#{#sysPost.postName}")
+	@Operation(module = "op_system", type = "op_post", action = "op_create", desc = "新增岗位：#{#sysPost.postName}")
 	@PreAuthorize("@permit.hasPermit('sys:post:create')")
 	@PostMapping
 	public Response<Void> create(@Validated @RequestBody PostInfoDto sysPost) throws Exception {
@@ -79,7 +79,7 @@ public class SysPostController {
 	 *
 	 * @param postIds 岗位id列表
 	 */
-	@Operation(module = "op_admin", type = "op_post", action = "op_delete", desc = "删除岗位")
+	@Operation(module = "op_system", type = "op_post", action = "op_delete", desc = "删除岗位")
 	@PreAuthorize("@permit.hasPermit('sys:post:delete')")
 	@DeleteMapping("/{postIds}")
 	public Response<Void> delete(@PathVariable List<Integer> postIds) throws Exception {
@@ -89,7 +89,7 @@ public class SysPostController {
 	/**
 	 * 修改
 	 */
-	@Operation(module = "op_admin", type = "op_post", action = "op_edit", desc = "修改岗位：#{#sysPost.postName}")
+	@Operation(module = "op_system", type = "op_post", action = "op_edit", desc = "修改岗位：#{#sysPost.postName}")
 	@PreAuthorize("@permit.hasPermit('sys:post:edit')")
 	@PatchMapping
 	public Response<Void> edit(@Validated @RequestBody PostInfoDto sysPost) throws Exception {

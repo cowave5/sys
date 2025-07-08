@@ -54,7 +54,12 @@ export default {
   },
   methods: {
     handleRedirect() {
-      window.location.href = '/prod-api/admin/api/v1/oauth/client/redirect/' + this.form.code;
+      if (process.env.NODE_ENV === 'production') {
+        window.location.href = '/prod-api/admin/api/v1/oauth/client/redirect/' + this.form.code;
+      }else{
+        window.location.href = '/dev-api/admin/api/v1/oauth/client/redirect/' + this.form.code;
+      }
+
     }
   }
 };

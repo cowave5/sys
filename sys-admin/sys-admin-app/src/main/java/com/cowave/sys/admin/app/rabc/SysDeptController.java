@@ -71,7 +71,7 @@ public class SysDeptController {
     /**
      * 新增
      */
-    @Operation(module = "op_admin", type = "op_dept", action = "op_create", desc = "新增部门：#{#dept.deptName}")
+    @Operation(module = "op_system", type = "op_dept", action = "op_create", desc = "新增部门：#{#dept.deptName}")
     @PreAuthorize("@permit.hasPermit('sys:dept:create')")
     @PostMapping
     public Response<Void> create(@Validated @RequestBody DeptCreate dept) throws Exception {
@@ -83,7 +83,7 @@ public class SysDeptController {
      *
      * @param deptIds 部门id列表
      */
-    @Operation(module = "op_admin", type = "op_dept", action = "op_delete", desc = "删除部门")
+    @Operation(module = "op_system", type = "op_dept", action = "op_delete", desc = "删除部门")
     @PreAuthorize("@permit.hasPermit('sys:dept:delete')")
     @DeleteMapping("/{deptIds}")
     public Response<Void> delete(@PathVariable List<Integer> deptIds) throws Exception {
@@ -93,7 +93,7 @@ public class SysDeptController {
     /**
      * 修改
      */
-    @Operation(module = "op_admin", type = "op_dept", action = "op_edit", desc = "修改部门：#{#dept.deptName}")
+    @Operation(module = "op_system", type = "op_dept", action = "op_edit", desc = "修改部门：#{#dept.deptName}")
     @PreAuthorize("@permit.hasPermit('sys:dept:edit')")
     @PatchMapping
     public Response<Void> edit(@RequestBody DeptCreate dept) throws Exception {

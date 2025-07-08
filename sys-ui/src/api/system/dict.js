@@ -72,3 +72,13 @@ export function getDictByType(dictType) {
     method: 'get'
   })
 }
+
+/**
+ * 获取分组字典
+ */
+export function getDictByGroup(dictGroup) {
+  return request({
+    url: '/admin/api/v1/dict/group/' + dictGroup,
+    method: 'get'
+  })
+}

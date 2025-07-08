@@ -81,12 +81,9 @@
                      :disabled="scope.row.tenantId === '#'">
             <svg-icon icon-class="pscope"/>{{$t('role.button.menus')}}
           </el-button>
-          <el-button size="mini" type="text" @click="handleDataScope(scope.row)"
-                     :disabled="scope.row.tenantId === '#' || !checkPermit(['sys:role:scope'])">
-            <svg-icon icon-class="vscope"/> {{$t('role.button.scope')}}
-          </el-button>
           <el-button size="mini" type="text" @click="handleAuthUser(scope.row)">
-            <svg-icon icon-class="peoples"/> {{$t('role.button.members')}}</el-button>
+            <svg-icon icon-class="peoples"/> {{$t('role.button.members')}}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -159,22 +156,6 @@
       </div>
     </el-dialog>
 
-    <!-- 数据权限对话框 -->
-    <el-dialog v-drag :title="$t('role.button.scope')" :visible.sync="openDataScope" width="500px" append-to-body>
-      <span>Todo in the future.</span>
-<!--      <el-form :model="form" label-width="100px">-->
-<!--        <el-form-item :label="$t('role.label.name')">-->
-<!--          <el-input v-model="form.roleName" :disabled="true" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item :label="$t('role.label.code')">-->
-<!--          <el-input v-model="form.roleCode" :disabled="true" />-->
-<!--        </el-form-item>-->
-<!--      </el-form>-->
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitDataScope">{{$t('commons.button.confirm')}}</el-button>
-        <el-button @click="cancelDataScope">{{$t('commons.button.cancel')}}</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -213,8 +194,6 @@ export default {
       title: "",
       // 新增修改对话框
       open: false,
-      // 数据权限对话框
-      openDataScope: false,
       // 查询参数
       queryParams: {
         page: 1,
@@ -440,26 +419,6 @@ export default {
     /** 父子联动 */
     handleCheckedTreeConnect(value, type) {
       this.menuCheckStrictly = value ? true: false;
-    },
-    /** 数据权限 */
-    handleDataScope(row) {
-      getRoleInfo(row.roleId).then(response => {
-        this.openDataScope = true;
-        // this.$nextTick(() => {
-        //   roleDeptTreeselect.then(res => {
-        //     this.$refs.dept.setCheckedKeys(res.checkedKeys);
-        //   });
-        // });
-      });
-    },
-    /** 数据权限取消 */
-    cancelDataScope() {
-      this.openDataScope = false;
-    },
-    /** 数据权限提交 */
-    submitDataScope: function() {
-      this.openDataScope = false;
-
     },
     /** 分配用户 */
     handleAuthUser: function(row) {

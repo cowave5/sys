@@ -10,6 +10,7 @@
 package com.cowave.sys.admin.app.auth;
 
 import com.cowave.commons.client.http.response.Response;
+import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.framework.access.security.AccessUserDetails;
 import com.cowave.sys.admin.domain.auth.OAuthClient;
 import com.cowave.sys.admin.domain.auth.OAuthServer;
@@ -49,7 +50,7 @@ public class OAuthController {
     @PreAuthorize("@permit.hasPermit('oauth:gitlab:query')")
     @GetMapping("/config/{serverType}")
     public Response<OAuthServer> getServerConfig(@PathVariable String serverType) {
-        return Response.success(oauthService.getServerConfig(serverType));
+        return Response.success(oauthService.getServerConfig(Access.tenantId(), serverType));
     }
 
     /**
@@ -58,7 +59,7 @@ public class OAuthController {
     @PreAuthorize("@permit.hasPermit('oauth:gitlab:edit')")
     @PatchMapping("/config")
     public Response<Void> updateServerConfig(@RequestBody OAuthServer oAuthServer) throws Exception {
-        return Response.success(() -> oauthService.updateServerConfig(oAuthServer));
+        return Response.success(() -> oauthService.updateServerConfig(Access.tenantId(), oAuthServer));
     }
 
     /**
@@ -67,7 +68,7 @@ public class OAuthController {
     @PreAuthorize("@permit.hasPermit('oauth:gitlab:user:query')")
     @GetMapping("/user")
     public Response<Response.Page<OAuthUserDto>> listUser(OAuthUserQuery query) {
-        return Response.page(oauthService.listUser(query));
+        return Response.page(oauthService.listUser(Access.tenantId(), query));
     }
 
     /**
@@ -78,7 +79,7 @@ public class OAuthController {
     @PreAuthorize("@permit.hasPermit('oauth:gitlab:user:delete')")
     @DeleteMapping("/user/{userId}")
     public Response<Void> deleteUser(@PathVariable Integer userId) throws Exception {
-        return Response.success(() -> oauthService.deleteUser(userId));
+        return Response.success(() -> oauthService.deleteUser(Access.tenantId(), userId));
     }
 
     /**
@@ -90,7 +91,7 @@ public class OAuthController {
     @PreAuthorize("@permit.hasPermit('oauth:gitlab:user:edit')")
     @PatchMapping("/user/role/{userId}/{roleCode}")
     public Response<Void> updateUserRole(@PathVariable Integer userId, @PathVariable String roleCode) throws Exception {
-        return Response.success(() -> oauthService.updateUserRole(userId, roleCode));
+        return Response.success(() -> oauthService.updateUserRole(Access.tenantId(), userId, roleCode));
     }
 
     /**
@@ -99,7 +100,7 @@ public class OAuthController {
     @PreAuthorize("@permit.hasPermit('oauth:client:query')")
     @GetMapping("/client")
     public Response<Response.Page<OAuthClient>> listClient(String clientName) {
-        return Response.page(oauthService.listClient(clientName));
+        return Response.page(oauthService.listClient(Access.tenantId(), clientName));
     }
 
     /**
@@ -108,7 +109,7 @@ public class OAuthController {
     @PreAuthorize("@permit.hasPermit('oauth:client:create')")
     @PostMapping("/client")
     public Response<OAuthClient> createClient(@RequestBody OAuthClient oAuthClient) {
-        return Response.success(oauthService.createClient(oAuthClient));
+        return Response.success(oauthService.createClient(Access.tenantId(), oAuthClient));
     }
 
     /**
@@ -117,7 +118,7 @@ public class OAuthController {
     @PreAuthorize("@permit.hasPermit('oauth:client:delete')")
     @DeleteMapping("/client/{ids}")
     public Response<Void> deleteClient(@PathVariable List<Integer> ids) throws Exception {
-        return Response.success(() -> oauthService.deleteClient(ids));
+        return Response.success(() -> oauthService.deleteClient(Access.tenantId(), ids));
     }
 
     /**

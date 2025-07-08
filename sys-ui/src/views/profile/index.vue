@@ -25,15 +25,15 @@
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="peoples"/> {{$t('user.label.role')}}
-                <div class="pull-right" v-if="user.roles.length>0">{{ user.roles }}</div>
+                <div class="pull-right" v-if="user.roles && user.roles.length>0">{{ user.roles }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="tree"/> {{$t('user.label.dept')}}
-                <div class="pull-right" v-if="user.depts.length>0">{{ user.depts }}</div>
+                <div class="pull-right" v-if="user.depts && user.depts.length>0">{{ user.depts }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="tree"/> {{$t('user.label.report')}}
-                <div class="pull-right" v-if="user.parents.length>0">{{ user.parents }} </div>
+                <div class="pull-right" v-if="user.parents && user.parents.length>0">{{ user.parents }} </div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="date"/> {{$t('commons.label.createTime')}}

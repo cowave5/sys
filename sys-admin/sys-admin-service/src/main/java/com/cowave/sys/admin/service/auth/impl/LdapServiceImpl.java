@@ -25,6 +25,7 @@ import com.cowave.sys.admin.infra.auth.dao.LdapConfigDao;
 import com.cowave.sys.admin.infra.auth.dao.LdapUserDao;
 import com.cowave.sys.admin.infra.auth.dao.mapper.dto.LdapUserDtoMapper;
 import com.cowave.sys.admin.infra.base.SysOperationHandler;
+import com.cowave.sys.admin.infra.rabc.dao.SysTenantDao;
 import com.cowave.sys.admin.infra.rabc.dao.mapper.dto.SysRoleDtoMapper;
 import com.cowave.sys.admin.service.auth.LdapAttributesMapper;
 import com.cowave.sys.admin.service.auth.LdapService;
@@ -56,14 +57,15 @@ public class LdapServiceImpl implements LdapService {
     private final BearerTokenService bearerTokenService;
     private final LdapUserDao ldapUserDao;
     private final LdapConfigDao ldapConfigDao;
+    private final SysTenantDao sysTenantDao;
     private final SysRoleDtoMapper sysRoleDtoMapper;
     private final LdapUserDtoMapper ldapUserDtoMapper;
     private final SysOperationHandler sysOperationHandler;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public AccessUserDetails authenticate(String userAccount, String passWord) {
-        LdapConfig ldapConfig = ldapConfigDao.queryByName("cowave");
+    public AccessUserDetails authenticate(String tenantId, String userAccount, String passWord) {
+        LdapConfig ldapConfig = ldapConfigDao.getById(tenantId);
         if(ldapConfig == null || ldapConfig.getLdapStatus() == 0){
             throw new HttpException(FORBIDDEN, "ldap认证不支持");
         }
@@ -77,7 +79,7 @@ public class LdapServiceImpl implements LdapService {
         List<LdapUser> list = ldapTemplate.search(
                 ldapConfig.getUserDn(), filter, SearchControls.SUBTREE_SCOPE, new LdapAttributesMapper(ldapConfig));
         LdapUser newUser = list.get(0);
-        LdapUser ldapUser = ldapUserDao.getByAccount(newUser.getUserAccount());
+        LdapUser ldapUser = ldapUserDao.getByAccount(tenantId, newUser.getUserAccount());
         if(ldapUser != null){
             ldapUser.setUserInfo(newUser.getUserInfo());
             ldapUser.setUserPasswd(newUser.getUserPasswd());
@@ -91,10 +93,10 @@ public class LdapServiceImpl implements LdapService {
             ldapUserDao.updateById(ldapUser);
         }else{
             ldapUser = newUser;
-            ldapUser.setUserCode(LDAP.generateCode());
+            ldapUser.setUserCode(sysTenantDao.nextUserCode(tenantId, LDAP.val()));
             ldapUser.setRoleCode(ldapConfig.getRoleCode());
             ldapUser.setUserPasswd(passWord);
-            ldapUser.setLdapName(ldapConfig.getLdapName());
+            ldapUser.setTenantId(ldapConfig.getTenantId());
             ldapUserDao.save(ldapUser);
         }
 
@@ -118,7 +120,7 @@ public class LdapServiceImpl implements LdapService {
         // 登录日志
         OperationInfo operationInfo = new OperationInfo();
         operationInfo.setSuccess(true);
-        operationInfo.setOpModule("op_admin");
+        operationInfo.setOpModule("op_system");
         operationInfo.setOpType("op_auth");
         operationInfo.setOpAction("op_login");
         operationInfo.setDesc("Ldap登录：" + userAccount);
@@ -146,13 +148,14 @@ public class LdapServiceImpl implements LdapService {
     }
 
     @Override
-    public LdapConfig queryByName(String ldapName) {
-        return ldapConfigDao.queryByName(ldapName);
+    public LdapConfig getConfig(String tenantId) {
+        return ldapConfigDao.getById(tenantId);
     }
 
     @Override
-    public void updateConfig(LdapConfig ldapConfig) {
-        ldapConfigDao.removeByName(ldapConfig.getLdapName());
+    public void updateConfig(String tenantId, LdapConfig ldapConfig) {
+        ldapConfigDao.removeById(ldapConfig.getTenantId());
+        ldapConfig.setTenantId(tenantId);
         ldapConfigDao.save(ldapConfig);
     }
 
@@ -173,17 +176,17 @@ public class LdapServiceImpl implements LdapService {
     }
 
     @Override
-    public Page<LdapUserDto> listUser(String ldapAccount) {
-        return ldapUserDtoMapper.listUser(Access.page(), ldapAccount);
+    public Page<LdapUserDto> listUser(String tenantId, String ldapAccount) {
+        return ldapUserDtoMapper.listUser(tenantId, ldapAccount, Access.page());
     }
 
     @Override
-    public void deleteUser(Integer userId) {
-        ldapUserDao.removeById(userId);
+    public void deleteUser(String tenantId, Integer userId) {
+        ldapUserDao.removeById(tenantId, userId);
     }
 
     @Override
-    public void changeUserRole(Integer userId, String roleCode) {
-        ldapUserDao.updateRoleCodeById(userId, roleCode);
+    public void changeUserRole(String tenantId, Integer userId, String roleCode) {
+        ldapUserDao.updateRoleCodeById(tenantId, userId, roleCode);
     }
 }

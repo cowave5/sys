@@ -105,7 +105,8 @@ service.interceptors.response.use(response => {
             && router.currentRoute.path !== '/cowave/ldap'
             && router.currentRoute.path !== '/login') {
           MessageBox.alert(msg, {type: 'warning'}).then(() => {
-            router.push('/cowave/login')
+            const loginRoute = localStorage.getItem('tenant_login_route') || '/cowave/login';
+            router.push(loginRoute);
           })
         } else {
           Notification.error({
@@ -114,7 +115,7 @@ service.interceptors.response.use(response => {
         }
         return Promise.reject('认证失败')
       } else {
-        let msg = response.data.msg;
+        let msg = response.data.msg || "服务请求失败";
         Notification.error({
             title: msg
           })

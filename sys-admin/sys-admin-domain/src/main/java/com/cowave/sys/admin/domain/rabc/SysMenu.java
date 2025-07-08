@@ -59,6 +59,11 @@ public class SysMenu implements AccessInfoSetter {
      */
     private String tenantId;
 
+	/**
+	 * 菜单模块
+	 */
+	private String menuModule;
+
     /**
      * 菜单名称
      */

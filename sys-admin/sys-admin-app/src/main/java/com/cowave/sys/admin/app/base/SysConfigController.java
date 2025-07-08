@@ -113,7 +113,8 @@ public class SysConfigController {
      * 获取配置
      */
     @GetMapping("/value/{configKey}")
-    public Response<Object> getConfigValue(@PathVariable String configKey) throws Exception {
-        return Response.success(sysConfigService.getConfigValue(Access.tenantId(), configKey));
+    public Response<Object> getConfigValue(@PathVariable String configKey) {
+        Object configValue = sysConfigService.getConfigValue(Access.tenantId(), configKey);
+        return Response.success(configValue);
     }
 }
