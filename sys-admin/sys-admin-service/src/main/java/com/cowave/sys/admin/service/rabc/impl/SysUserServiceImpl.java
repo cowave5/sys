@@ -80,7 +80,7 @@ public class SysUserServiceImpl implements SysUserService {
 		String userPasswd = user.getUserPasswd();
     	HttpAsserts.notNull(userPasswd, BAD_REQUEST, "{admin.user.passwd.notnull}");
 
-		long accountCount = sysUserDao.countByUserAccount(tenantId, userAccount, null);
+		long accountCount = sysUserDao.countByAccount(tenantId, userAccount, null);
 		HttpAsserts.isTrue(accountCount == 0, BAD_REQUEST, "{admin.user.account.conflict}", userAccount);
 
 		// 创建用户
@@ -140,7 +140,7 @@ public class SysUserServiceImpl implements SysUserService {
 
 		// 账号校验
 		String userAccount = user.getUserAccount();
-		long accountCount = sysUserDao.countByUserAccount(tenantId, userAccount, userId);
+		long accountCount = sysUserDao.countByAccount(tenantId, userAccount, userId);
 		HttpAsserts.isTrue(accountCount == 0, BAD_REQUEST, "{admin.user.account.conflict}", userAccount);
 
 		// 操作日志

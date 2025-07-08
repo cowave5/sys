@@ -9,6 +9,7 @@
  */
 package com.cowave.sys.admin.service.auth;
 
+import com.cowave.commons.client.http.asserts.HttpAsserts;
 import com.cowave.commons.client.http.asserts.HttpHintException;
 import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.framework.access.operation.OperationInfo;
@@ -27,6 +28,7 @@ import com.cowave.sys.admin.domain.rabc.SysUser;
 import com.cowave.sys.admin.domain.rabc.SysUserRole;
 import com.cowave.sys.admin.domain.rabc.vo.Route;
 import com.cowave.sys.admin.domain.rabc.vo.RouteMeta;
+import com.cowave.sys.admin.infra.auth.dao.OAuthUserDao;
 import com.cowave.sys.admin.infra.base.SysOperationHandler;
 import com.cowave.sys.admin.infra.base.dao.SysConfigDao;
 import com.cowave.sys.admin.infra.base.dao.mapper.dto.SysNoticeDtoMapper;
@@ -37,6 +39,7 @@ import com.cowave.sys.admin.infra.rabc.dao.SysUserRoleDao;
 import com.cowave.sys.admin.service.base.SysAttachService;
 import com.cowave.sys.admin.service.rabc.SysMenuService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -53,10 +56,15 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.cowave.commons.client.http.constants.HttpCode.BAD_REQUEST;
+import static com.cowave.commons.client.http.constants.HttpCode.FORBIDDEN;
 import static com.cowave.sys.admin.domain.AdminRedisKeys.LOGIN_FAILS;
 import static com.cowave.sys.admin.domain.AdminRedisKeys.LOGIN_LOCK;
 import static com.cowave.sys.admin.domain.auth.AuthType.GITLAB;
 import static com.cowave.sys.admin.domain.auth.AuthType.SYS;
+import static com.cowave.sys.admin.domain.base.constants.AttachType.AVATAR;
+import static com.cowave.sys.admin.domain.base.constants.OpAction.LOGIN;
+import static com.cowave.sys.admin.domain.base.constants.OpAction.LOGOUT_FORCE;
+import static com.cowave.sys.admin.domain.base.constants.OpModule.*;
 
 /**
  * @author shanhuiming
@@ -69,12 +77,12 @@ public class AuthService {
     private final SysOperationHandler sysOperationHandler;
     private final PasswordEncoder passwordEncoder;
     private final BearerTokenService bearerTokenService;
-    private final OAuthService oauthService;
     private final SysAttachService attachService;
     private final SysMenuService sysMenuService;
     private final SysTenantDao sysTenantDao;
     private final SysConfigDao sysConfigDao;
     private final SysUserDao sysUserDao;
+    private final OAuthUserDao oauthUserDao;
     private final SysRoleDao sysRoleDao;
     private final SysUserRoleDao sysUserRoleDao;
     private final SysNoticeDtoMapper sysNoticeDtoMapper;
@@ -84,10 +92,18 @@ public class AuthService {
      */
     @Transactional(rollbackFor = Exception.class)
     public String register(RegisterRequest request) {
-        String initPasswd = sysConfigDao.getConfigValue("cowave", "sys.initPassword");
+        String tenantId = request.getTenantId();
+
+        boolean registerOnOff = sysConfigDao.getConfigValue(tenantId, "sys.registerOnOff");
+        HttpAsserts.isTrue(registerOnOff, FORBIDDEN, "{admin.register.disable}");
+
+        String userCode = sysTenantDao.nextUserCode(tenantId, SYS.val());
+        String initPasswd = sysConfigDao.getConfigValue(tenantId, "sys.initPassword");
         SysUser sysUser = SysUser.builder()
+                .tenantId(tenantId)
+                .userType(SYS.val())
                 .userStatus(1)
-                .userCode(SYS.generateCode())
+                .userCode(userCode)
                 .userEmail(request.getUserEmail())
                 .userName(request.getUserName())
                 .userAccount(request.getUserAccount())
@@ -99,7 +115,7 @@ public class AuthService {
         sysUserRoleDao.save(new SysUserRole(sysUser.getUserId(), readOnlyRoleId));
 
         // 注册用户的通知消息
-        sysNoticeDtoMapper.initNoticeMsgForNewUser(sysUser.getUserId());
+        sysNoticeDtoMapper.initNoticeMsgForNewUser(userCode);
         sysNoticeDtoMapper.updateNoticeStatForNewUser();
         return initPasswd;
     }
@@ -118,12 +134,13 @@ public class AuthService {
             Authentication authentication = authenticationManager.authenticate(
                     new TenantUsernamePasswordAuthenticationToken(tenantId, userAccount, passwd));
             // 登录日志
-            OperationInfo operationInfo = new OperationInfo();
-            operationInfo.setSuccess(true);
-            operationInfo.setOpModule("op_admin");
-            operationInfo.setOpType("op_auth");
-            operationInfo.setOpAction("op_login");
-            operationInfo.setDesc("用户登录：" + userAccount);
+            OperationInfo operationInfo = OperationInfo.builder()
+                    .success(true)
+                    .opModule(SYSTEM)
+                    .opType(SYSTEM_AUTH)
+                    .opAction(LOGIN)
+                    .desc("用户登录：" + userAccount)
+                    .build();
             sysOperationHandler.create(operationInfo, null);
             return (AccessUserDetails) authentication.getPrincipal();
         } catch (BadCredentialsException e) {
@@ -150,18 +167,19 @@ public class AuthService {
     /**
      * 强制退出
      */
-    public void forceLogout(String accessId) {
-        AccessTokenInfo accessTokenInfo = bearerTokenService.revokeAccessToken(accessId);
+    public void forceLogout(String tenantId, String accessId) {
+        AccessTokenInfo accessTokenInfo = bearerTokenService.revokeAccessToken(tenantId, accessId);
         if(accessTokenInfo == null){
             return;
         }
         // 强退日志
-        OperationInfo operationInfo = new OperationInfo();
-        operationInfo.setSuccess(true);
-        operationInfo.setOpModule("op_admin");
-        operationInfo.setOpType("op_auth");
-        operationInfo.setOpAction("op_logout_force");
-        operationInfo.setDesc("强制退出：" + accessTokenInfo.getUserAccount());
+        OperationInfo operationInfo = OperationInfo.builder()
+                .success(true)
+                .opModule(SYSTEM)
+                .opType(SYSTEM_AUTH)
+                .opAction(LOGOUT_FORCE)
+                .desc("强制退出：" + accessTokenInfo.getUserAccount())
+                .build();
         sysOperationHandler.create(operationInfo, null);
     }
 
@@ -175,33 +193,33 @@ public class AuthService {
     /**
      * 授权信息
      */
-    public AuthInfo info() throws Exception {
+    public AuthInfo getAuthInfo() throws Exception {
         AccessUserDetails userDetails = Access.userDetails();
         Integer userId = userDetails.getUserId();
-        String tenantId = userDetails.getTenantId();
-        // 构造授权信息
+
         AuthInfo authInfo = new AuthInfo();
         authInfo.setUserId(userId);
         authInfo.setUserName(userDetails.getUserNick());
         authInfo.setRoles(userDetails.getRoles());
         authInfo.setPermissions(userDetails.getPermissions());
-        // 尝试一下补充头像信息
-        if (GITLAB.equalsName(userDetails.getAuthType())) {
-            OAuthUser oAuthUser = oauthService.infoUser(userId);
+
+        String tenantId = userDetails.getTenantId();
+        SysTenant sysTenant = sysTenantDao.getById(tenantId);
+        authInfo.setTenantId(tenantId);
+        authInfo.setTenantTitle(sysTenant.getTitle());
+        authInfo.setTenantLogo(sysTenant.getLogo());
+
+        if (GITLAB.equalsVal(userDetails.getAuthType())) {
+            OAuthUser oAuthUser = oauthUserDao.getById(userId);
             authInfo.setUserEmail(oAuthUser.getUserEmail());
             authInfo.setAvatar(oAuthUser.getUserAvatar());
-        } else if (SYS.equalsName(userDetails.getAuthType())) {
-            SysAttach avatar = attachService.latestOfOwner(
-                    String.valueOf(userId), "sys-user", "avatar");
+        } else if (SYS.equalsVal(userDetails.getAuthType())) {
+            SysAttach avatar = attachService.latestOfOwner(String.valueOf(userId), SYSTEM_USER, AVATAR);
             if (avatar != null) {
                 authInfo.setAvatar(avatar.getViewUrl());
             }
         }
-        // 填充租户信息
-        SysTenant sysTenant = sysTenantDao.getById(tenantId);
-        authInfo.setTenantId(tenantId);
-        authInfo.setTenantTitle(sysTenant.getTenantName());
-        return  authInfo;
+        return authInfo;
     }
 
     /**
@@ -212,7 +230,12 @@ public class AuthService {
         if(Access.isAdminUser()){
             menuList = sysMenuService.listMenusByAdmin(Access.tenantId());
         }else{
-            menuList = sysMenuService.listMenusByRoles(Access.tenantId(), Access.userRoles());
+            List<String> userRoles = Access.userRoles();
+            if(CollectionUtils.isEmpty(userRoles)){
+                menuList = sysMenuService.listMenusInPublic(Access.tenantId());
+            } else {
+                menuList = sysMenuService.listMenusByRoles(Access.tenantId(), userRoles);
+            }
         }
 
         if(menuList.isEmpty()){

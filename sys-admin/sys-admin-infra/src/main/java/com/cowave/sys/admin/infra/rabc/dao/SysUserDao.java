@@ -46,7 +46,7 @@ public class SysUserDao extends ServiceImpl<SysUserMapper, SysUser> {
     /**
      * 查询用户（用户账号）
      */
-    public SysUser getByUserAccount(String tenantId, String userAccount){
+    public SysUser getByAccount(String tenantId, String userAccount){
         return lambdaQuery()
                 .eq(SysUser::getTenantId, tenantId)
                 .eq(SysUser::getUserAccount, userAccount)
@@ -56,14 +56,14 @@ public class SysUserDao extends ServiceImpl<SysUserMapper, SysUser> {
     /**
      * 查询用户（用户编码）
      */
-    public SysUser getByUserCode(String userCode){
+    public SysUser getByCode(String userCode){
         return lambdaQuery().eq(SysUser::getUserCode, userCode).one();
     }
 
     /**
      * 账号统计（排除自己）
      */
-    public long countByUserAccount(String tenantId, String userAccount, Integer userId){
+    public long countByAccount(String tenantId, String userAccount, Integer userId){
         return lambdaQuery()
                 .eq(SysUser::getTenantId, tenantId)
                 .eq(SysUser::getUserAccount, userAccount)
@@ -74,7 +74,7 @@ public class SysUserDao extends ServiceImpl<SysUserMapper, SysUser> {
     /**
      * 查询姓名（用户id）
      */
-    public String queryNameByUserId(Integer userId) {
+    public String queryNameById(Integer userId) {
         return lambdaQuery()
                 .eq(SysUser::getUserId, userId)
                 .select(SysUser::getUserName)

@@ -22,17 +22,6 @@ export function updateUserProfile(data) {
 }
 
 /**
- * 头像上传
- */
-export function uploadAvatar(data) {
-  return request({
-    url: '/admin/api/v1/profile/avatar',
-    method: 'patch',
-    data: data
-  })
-}
-
-/**
  * 密码重置
  */
 export function resetPasswd(oldPasswd, newPasswd) {

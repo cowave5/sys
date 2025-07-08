@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  * 通知公告
- * @order 10
+ * @order 16
  * @author shanhuiming
  */
 @Validated
@@ -61,7 +61,7 @@ public class SysNoticeController {
      */
     @PostMapping
     public Response<Void> add(@Validated @RequestBody NoticeCreate sysNotice) throws Exception {
-        return Response.success(() -> sysNoticeService.add(sysNotice));
+        return Response.success(() -> sysNoticeService.add(Access.tenantId(), sysNotice));
     }
 
     /**
@@ -100,14 +100,6 @@ public class SysNoticeController {
     @GetMapping("/readers")
     public Response<Response.Page<NoticeUserDto>> getNoticeReaders(@NotNull(message = "{admin.notice.id.notnull}") Long noticeId) {
         return Response.success(sysNoticeService.getNoticeReaders(Access.tenantId(), noticeId));
-    }
-
-    /**
-     * 上传图片
-     */
-    @PostMapping("/image")
-    public Response<SysAttach> imageUpload(@RequestParam("file") MultipartFile file) throws Exception {
-        return Response.success(sysNoticeService.imageUpload(Access.tenantId(), file));
     }
 
     /**

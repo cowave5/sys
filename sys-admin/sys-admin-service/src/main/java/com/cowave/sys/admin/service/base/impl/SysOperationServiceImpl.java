@@ -14,8 +14,12 @@ import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.framework.helper.es.EsHelper;
 import com.cowave.sys.admin.domain.base.SysOperation;
 import com.cowave.sys.admin.domain.base.request.OperationQuery;
+import com.cowave.sys.admin.domain.rabc.SysScope;
+import com.cowave.sys.admin.infra.rabc.dao.mapper.dto.SysScopeDtoMapper;
 import com.cowave.sys.admin.service.base.SysOperationService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -25,6 +29,9 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+
+import static com.cowave.commons.framework.access.security.Permission.ROLE_ADMIN;
 
 /**
  * @author shanhuiming
@@ -32,8 +39,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class SysOperationServiceImpl implements SysOperationService {
-
+    private static final String SCOPE_PERSON = "personal";
+    private static final String SCOPE_DEPT = "dept";
     private final EsHelper esHelper;
+    private final SysScopeDtoMapper sysScopeDtoMapper;
 
     @Override
     public Response.Page<SysOperation> list(String tenantId, OperationQuery query, boolean isPage) {
@@ -44,6 +53,12 @@ public class SysOperationServiceImpl implements SysOperationService {
         }
         if (StringUtils.isNotBlank(query.getOpType())) {
             boolQuery.filter(QueryBuilders.termsQuery("opType", query.getOpType()));
+        }
+
+        // 数据权限过滤
+        String currentScope = getCurrentScope();
+        if(StringUtils.isNotBlank(currentScope)){
+            appendScopeQuery(currentScope, boolQuery);
         }
 
         if (query.getBeginTime() != null || query.getEndTime() != null) {
@@ -87,5 +102,39 @@ public class SysOperationServiceImpl implements SysOperationService {
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
         boolQuery.filter(QueryBuilders.termsQuery("access.accessTenantId", tenantId));
         esHelper.deleteByQuery(SysOperation.INDEX_NAME, boolQuery);
+    }
+
+    private void appendScopeQuery(String scope, BoolQueryBuilder boolQuery) {
+        if(SCOPE_PERSON.equals(scope)){
+            boolQuery.filter(QueryBuilders.termsQuery("access.accessUserAccount", Access.userAccount()));
+        }else if(SCOPE_DEPT.equals(scope)){
+            Integer deptId = Access.deptId();
+            boolQuery.filter(QueryBuilders.termsQuery("access.accessDeptId", List.of(deptId)));
+        }
+    }
+
+    private String getCurrentScope() {
+        String permit = Access.permit();
+        if(StringUtils.isBlank(permit)) {
+            return null;
+        }
+
+        List<String> roleCodes = Access.userRoles();
+        if(CollectionUtils.isEmpty(roleCodes) || roleCodes.contains(ROLE_ADMIN)) {
+            return null;
+        }
+
+        List<SysScope> list = sysScopeDtoMapper.listScopeByPermit(permit, roleCodes);
+        if(list.isEmpty()){
+            return null;
+        }
+
+        // 同一个permit，应该只选一个scope
+        SysScope sysScope = list.get(0);
+        Map<String, Object> scopeContent = sysScope.getScopeContent();
+        if(MapUtils.isEmpty(scopeContent)){
+            return null;
+        }
+        return (String) scopeContent.get("scope");
     }
 }

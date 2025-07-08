@@ -102,8 +102,8 @@ public class SysRoleServiceImpl implements SysRoleService {
         HttpAsserts.notNull(preRole, NOT_FOUND, "{admin.role.not.exist}", roleUpdate.getRoleId());
 
         sysRoleMenuDao.deleteByRoleId(roleUpdate.getRoleId());
-        sysRoleMenuDao.saveBatch(Collections.copyToList(
-                roleUpdate.getMenuIds(), mid -> new SysRoleMenu(roleUpdate.getRoleId(), mid)));
+        sysRoleMenuDao.saveBatch(Collections.copyToList(roleUpdate.getMenuScopes(),
+                ms -> new SysRoleMenu(roleUpdate.getRoleId(), ms.getMenuId(), ms.getScopeId())));
     }
 
     @Override

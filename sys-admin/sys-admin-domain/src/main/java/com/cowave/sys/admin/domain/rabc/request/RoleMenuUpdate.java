@@ -9,6 +9,7 @@
  */
 package com.cowave.sys.admin.domain.rabc.request;
 
+import com.cowave.sys.admin.domain.rabc.dto.SysMenuScope;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -31,5 +32,5 @@ public class RoleMenuUpdate {
 	 * 菜单id列表
 	 */
     @NotNull(message = "{admin.menu.ids.notnull}")
-	private List<Integer> menuIds = new ArrayList<>();
+	private List<SysMenuScope> menuScopes = new ArrayList<>();
 }

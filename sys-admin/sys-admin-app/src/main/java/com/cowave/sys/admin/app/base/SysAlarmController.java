@@ -28,7 +28,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * 系统告警
- * @order 13
+ * @order 15
  * @author shanhuiming
  */
 @Validated

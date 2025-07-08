@@ -89,6 +89,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
             return writeResponse(exchange.getResponse(), UNAUTHORIZED, "frame.auth.invalid");
         }
 
+        String tenantId = (String) claims.get(CLAIM_TENANT_ID);
         String tokenType = (String) claims.get(CLAIM_TYPE);
         String accessId = (String) claims.get(CLAIM_ACCESS_ID);
 
@@ -128,7 +129,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
             }
 
             // 是否已注销
-            if(!redisHelper.existKey(AUTH_ACCESS_KEY.formatted("sys-admin", accessId))){
+            if(!redisHelper.existKey(AUTH_ACCESS_KEY.formatted("sys-admin", tenantId, accessId))){
                 return writeResponse(exchange.getResponse(), UNAUTHORIZED, "frame.auth.denied");
             }
         }

@@ -21,7 +21,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.List;
 
-import static com.cowave.sys.admin.domain.base.NoticeStatus.DRAFT;
+import static com.cowave.sys.admin.domain.base.constants.NoticeStatus.DRAFT;
 
 /**
  * @author shanhuiming
@@ -39,7 +39,6 @@ public class SysNotice {
     /**
      * 租户id
      */
-    @NotBlank(message = "{admin.tenant.id.notnull}")
     private String tenantId;
 
     /**

@@ -17,20 +17,18 @@ import com.cowave.sys.admin.domain.auth.request.ApiTokenRequest;
 import com.cowave.sys.admin.domain.auth.request.PasswdReset;
 import com.cowave.sys.admin.domain.auth.request.ProfileUpdate;
 import com.cowave.sys.admin.domain.auth.vo.ApiTokenVo;
-import com.cowave.sys.admin.domain.base.request.AttachUpload;
 import com.cowave.sys.admin.service.auth.ApiTokenService;
 import com.cowave.sys.admin.service.auth.ProfileService;
 import com.cowave.sys.admin.service.rabc.SysMenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 /**
  * 个人信息
- * @order 9
+ * @order 12
  * @author shanhuiming
  */
 @RequiredArgsConstructor
@@ -63,14 +61,6 @@ public class ProfileController {
     @PatchMapping(value = {"/passwd"})
     public Response<Void> resetPasswd(@RequestBody PasswdReset passwdReset) throws Exception {
         return Response.success(() -> profileService.resetPasswd(passwdReset));
-    }
-
-    /**
-     * 头像上传
-     */
-    @PatchMapping("/avatar")
-    public Response<String> uploadAvatar(@RequestParam("file") MultipartFile file, AttachUpload attachUpload) throws Exception {
-        return Response.success(profileService.uploadAvatar(file, attachUpload));
     }
 
     /**

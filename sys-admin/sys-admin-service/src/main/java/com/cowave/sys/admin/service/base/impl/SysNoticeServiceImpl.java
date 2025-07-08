@@ -32,13 +32,13 @@ import com.cowave.sys.admin.service.base.SysNoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
 import static com.cowave.commons.client.http.constants.HttpCode.*;
-import static com.cowave.sys.admin.domain.base.NoticeStatus.*;
+import static com.cowave.sys.admin.domain.base.constants.NoticeStatus.*;
 import static com.cowave.sys.admin.domain.auth.AuthType.*;
+import static com.cowave.sys.admin.domain.base.constants.OpModule.SYSTEM_NOTICE;
 import static com.cowave.sys.admin.infra.base.socketio.SysSocketConfiguration.EVENT_SERVER_NOTICE_NEW;
 import static com.cowave.sys.admin.infra.base.socketio.SysSocketConfiguration.SPACE_NOTICE;
 
@@ -105,7 +105,8 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     }
 
     @Override
-    public void add(NoticeCreate sysNotice) throws Exception {
+    public void add(String tenantId, NoticeCreate sysNotice) throws Exception {
+        sysNotice.setTenantId(tenantId);
         sysNoticeDao.save(sysNotice);
         filterAttaches(sysNotice);
     }
@@ -126,13 +127,13 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             HttpAsserts.equals(notice.getCreateBy(), Access.userCode(), FORBIDDEN, "{admin.notice.delete.self}");
         }
 
-        List<SysAttach> attachList = sysAttachDao.queryList(String.valueOf(noticeId), "sys-notice", null);
+        List<SysAttach> attachList = sysAttachDao.listOfOwner(String.valueOf(noticeId), SYSTEM_NOTICE, null);
 
         // 删除草稿
         if (DRAFT.equalsVal(notice.getNoticeStatus())) {
             sysNoticeDao.removeById(noticeId);
             for (SysAttach attach : attachList) {
-                sysAttachService.delete(attach);
+                sysAttachService.remove(attach);
             }
         } else if (PUBLISH.equalsVal(notice.getNoticeStatus())) {
             // 撤回已发布
@@ -141,7 +142,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             // 删除已撤回
             sysNoticeDao.removeById(noticeId);
             for (SysAttach attach : attachList) {
-                sysAttachService.delete(attach);
+                sysAttachService.remove(attach);
             }
             sysNoticeUserDao.removeByNoticeId(noticeId);
         }
@@ -170,7 +171,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             if (content.contains(attach.getAttachPath())) {
                 sysAttachDao.updateOwnerById(String.valueOf(sysNotice.getNoticeId()), attach.getAttachId());
             } else {
-                sysAttachService.delete(attach.getAttachId());
+                sysAttachService.removeById(attach.getAttachId());
             }
         }
     }
@@ -200,16 +201,6 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         // 推送
         List<String> userCodes = sysNoticeUserDao.getUserCodesByNoticeId(noticeId);
         socketIoHelper.sendClientsOfNamespace(SPACE_NOTICE, userCodes, EVENT_SERVER_NOTICE_NEW, notice.getNoticeTitle());
-    }
-
-    @Override
-    public SysAttach imageUpload(String tenantId, MultipartFile file) throws Exception {
-        AttachUpload upload = AttachUpload.builder()
-                .tenantId(tenantId)
-                .ownerType("sys-notice")
-                .attachType("images")
-                .build();
-        return sysAttachService.upload(file, upload);
     }
 
     @Override
@@ -298,7 +289,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     }
 
     public void sendFlowNotice(String processName, String taskName, Integer startUser, Integer assigneeUser) {
-        String startUserName = sysUserDao.queryNameByUserId(startUser);
+        String startUserName = sysUserDao.queryNameById(startUser);
         SysNotice notice = new SysNotice();
         notice.setNoticeStatus(PUBLISH.val());
         notice.setCreateBy(Access.userCode());

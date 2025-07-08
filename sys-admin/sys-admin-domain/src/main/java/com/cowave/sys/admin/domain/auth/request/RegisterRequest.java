@@ -21,6 +21,12 @@ import javax.validation.constraints.Pattern;
 public class RegisterRequest {
 
     /**
+     * 租户id
+     */
+    @NotBlank(message = "{admin.tenant.id.notnull}")
+    private String tenantId;
+
+    /**
      * 验证码
      */
     @NotBlank(message = "{admin.captcha.failed}")

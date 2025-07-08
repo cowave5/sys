@@ -17,7 +17,13 @@ import javax.validation.constraints.NotBlank;
  * @author shanhuiming
  */
 @Data
-public class LdapRequest {
+public class LdapLogin {
+
+    /**
+     * 租户id
+     */
+    @NotBlank(message = "{admin.tenant.id.notnull}")
+    private String tenantId;
 
     /**
      * 用户名

@@ -48,7 +48,7 @@ public class UserDetailsServiceImpl implements TenantUserDetailsService {
 
     @Override
 	public UserDetails loadTenantUserByUsername(String tenantId, String userAccount) {
-        SysUser sysUser = sysUserDao.getByUserAccount(tenantId, userAccount);
+        SysUser sysUser = sysUserDao.getByAccount(tenantId, userAccount);
         if(sysUser == null){
             return null;
         }
