@@ -1,6 +1,7 @@
 import  jwt  from  'jsonwebtoken'
 
 const TenantId = 'tenant_id';
+const TenantIndex = 'tenant_index';
 const UserId = 'user_id';
 const UserCode = 'user_code';
 const UserName = 'user_name';
@@ -75,6 +76,14 @@ const localCache = {
     this.set(UserName, accessInfo['User.name']);
     this.set(AccessKey, token.accessToken);
     this.set(RefreshKey, token.refreshToken);
+  },
+
+  getTenantIndex() {
+    return this.get(TenantIndex);
+  },
+
+  setTenantIndex(tenantIndex) {
+    this.set(TenantIndex, tenantIndex);
   },
 
   getUserId(){

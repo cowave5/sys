@@ -13,6 +13,7 @@ const getters = {
   tenantId: state => state.user.tenantId,
   tenantTitle: state => state.user.tenantTitle,
   tenantLogo: state => state.user.tenantLogo,
+  tenantIndex: state => state.user.tenantIndex,
 
   userId: state => state.user.userId,
   name: state => state.user.name,

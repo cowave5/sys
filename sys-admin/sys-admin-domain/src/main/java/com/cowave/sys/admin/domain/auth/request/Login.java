@@ -17,23 +17,24 @@ import javax.validation.constraints.NotBlank;
  * @author shanhuiming
  */
 @Data
-public class LoginRequest {
+public class Login {
 
     /**
      * 租户id
      */
+    @NotBlank(message = "{admin.tenant.id.null}")
     private String tenantId;
 
     /**
      * 用户名
      */
-	@NotBlank(message = "{admin.user.account.notnull}")
+	@NotBlank(message = "{admin.user.account.null}")
     private String userAccount;
 
     /**
      * 用户密码
      */
-    @NotBlank(message = "{admin.user.passwd.notnull}")
+    @NotBlank(message = "{admin.user.passwd.null}")
     private String passWord;
 
     /**

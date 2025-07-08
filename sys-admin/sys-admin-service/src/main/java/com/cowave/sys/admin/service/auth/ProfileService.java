@@ -12,8 +12,6 @@ package com.cowave.sys.admin.service.auth;
 import com.cowave.sys.admin.domain.auth.dto.UserProfile;
 import com.cowave.sys.admin.domain.auth.request.PasswdReset;
 import com.cowave.sys.admin.domain.auth.request.ProfileUpdate;
-import com.cowave.sys.admin.domain.base.request.AttachUpload;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author shanhuiming
@@ -28,7 +26,7 @@ public interface ProfileService {
     /**
      * 修改
      */
-    void edit(ProfileUpdate profile);
+    void edit(ProfileUpdate profile) throws Exception;
 
     /**
      * 重置密码
@@ -36,7 +34,8 @@ public interface ProfileService {
     void resetPasswd(PasswdReset passwdReset);
 
     /**
-     * 上传头像
+     * 二次认证绑定
      */
-    String uploadAvatar(MultipartFile file, AttachUpload attachUpload) throws Exception;
+    void bindMfa(Integer userId, String mfaKey);
+
 }

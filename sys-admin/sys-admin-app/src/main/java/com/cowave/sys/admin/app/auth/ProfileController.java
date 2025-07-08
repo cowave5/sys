@@ -10,27 +10,31 @@
 package com.cowave.sys.admin.app.auth;
 
 import cn.hutool.core.lang.tree.Tree;
+import com.cowave.commons.client.http.asserts.HttpAsserts;
 import com.cowave.commons.client.http.response.Response;
 import com.cowave.commons.framework.access.Access;
 import com.cowave.sys.admin.domain.auth.dto.UserProfile;
 import com.cowave.sys.admin.domain.auth.request.ApiTokenRequest;
+import com.cowave.sys.admin.domain.auth.request.MfaBind;
 import com.cowave.sys.admin.domain.auth.request.PasswdReset;
 import com.cowave.sys.admin.domain.auth.request.ProfileUpdate;
 import com.cowave.sys.admin.domain.auth.vo.ApiTokenVo;
-import com.cowave.sys.admin.domain.base.request.AttachUpload;
+import com.cowave.sys.admin.domain.auth.vo.MfaVo;
+import com.cowave.sys.admin.infra.auth.MfaAuthVerifier;
 import com.cowave.sys.admin.service.auth.ApiTokenService;
 import com.cowave.sys.admin.service.auth.ProfileService;
 import com.cowave.sys.admin.service.rabc.SysMenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static com.cowave.commons.client.http.constants.HttpCode.BAD_REQUEST;
+
 /**
  * 个人信息
- * @order 9
+ * @order 12
  * @author shanhuiming
  */
 @RequiredArgsConstructor
@@ -65,12 +69,25 @@ public class ProfileController {
         return Response.success(() -> profileService.resetPasswd(passwdReset));
     }
 
-    /**
-     * 头像上传
+	/**
+     * MFA获取
      */
-    @PatchMapping("/avatar")
-    public Response<String> uploadAvatar(@RequestParam("file") MultipartFile file, AttachUpload attachUpload) throws Exception {
-        return Response.success(profileService.uploadAvatar(file, attachUpload));
+    @GetMapping("/mfa")
+    public Response<MfaVo> generateMfa() {
+        String tfaKey = MfaAuthVerifier.generateKey();
+		String url = MfaAuthVerifier.generateAuthUrl(Access.tenantId(), Access.userAccount(), tfaKey);
+        return Response.success(new MfaVo(tfaKey, url));
+    }
+
+    /**
+     * MFA绑定
+     */
+    @PostMapping("/mfa/bind")
+    public Response<Void> bindMfa(@RequestBody MfaBind mfaBind) {
+        HttpAsserts.isTrue(MfaAuthVerifier.validateCode(mfaBind.getMfaKey(), mfaBind.getMfaCode()),
+                BAD_REQUEST, "验证失败");
+        profileService.bindMfa(Access.userId(), mfaBind.getMfaKey());
+        return Response.success();
     }
 
     /**

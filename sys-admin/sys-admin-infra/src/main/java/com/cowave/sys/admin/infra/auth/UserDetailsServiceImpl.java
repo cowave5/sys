@@ -48,7 +48,7 @@ public class UserDetailsServiceImpl implements TenantUserDetailsService {
 
     @Override
 	public UserDetails loadTenantUserByUsername(String tenantId, String userAccount) {
-        SysUser sysUser = sysUserDao.getByUserAccount(tenantId, userAccount);
+        SysUser sysUser = sysUserDao.getByAccount(tenantId, userAccount);
         if(sysUser == null){
             return null;
         }
@@ -81,6 +81,8 @@ public class UserDetailsServiceImpl implements TenantUserDetailsService {
         userDetails.setClusterLevel(applicationProperties.getClusterLevel());
         userDetails.setClusterName(applicationProperties.getClusterName());
         bearerTokenService.assignAccessRefreshToken(userDetails);
+        // 租户首页
+        userDetails.setTenantIndex(sysTenant.getViewIndex());
         return userDetails;
 	}
 }

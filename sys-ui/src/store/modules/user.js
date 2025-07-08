@@ -8,6 +8,7 @@ const user = {
     tenantId: null,
     tenantTitle: null,
     tenantLogo: null,
+    tenantIndex: cache.local.getTenantIndex(),
     userId: null,
     name: '',
     avatar: '',
@@ -27,6 +28,9 @@ const user = {
     },
     SET_TENANT_LOGO: (state, tenantLogo) => {
       state.tenantLogo = tenantLogo
+    },
+    SET_TENANT_INDEX: (state, tenantIndex) => {
+      cache.local.setTenantIndex(tenantIndex);
     },
     SET_USERID: (state, userId) => {
       state.userId = userId
@@ -53,6 +57,7 @@ const user = {
       return new Promise((resolve, reject) => {
         logon(tenantId, username, password).then(res => {
           commit('SET_TOKEN', res.data);
+          commit('SET_TENANT_INDEX', res.data.tenantIndex);
           resolve();
         }).catch(error => {
           reject(error)
@@ -69,6 +74,7 @@ const user = {
       return new Promise((resolve, reject) => {
         login(tenantId, username, password, code, uuid).then(res => {
           commit('SET_TOKEN', res.data);
+          commit('SET_TENANT_INDEX', res.data.tenantIndex);
           resolve();
         }).catch(error => {
           reject(error)
@@ -77,11 +83,13 @@ const user = {
     },
 
     Ldap({ commit }, ldapInfo) {
+      const tenantId = ldapInfo.tenantId;
       const username = ldapInfo.username.trim()
       const password = ldapInfo.password
       return new Promise((resolve, reject) => {
-        ldapLogin(username, password).then(res => {
+        ldapLogin(tenantId, username, password).then(res => {
           commit('SET_TOKEN', res.data);
+          commit('SET_TENANT_INDEX', res.data.tenantIndex);
           resolve();
         }).catch(error => {
           reject(error)
@@ -89,10 +97,11 @@ const user = {
       })
     },
 
-    OauthGitlab({ commit }, code) {
+    OauthGitlab({ commit }, query) {
       return new Promise((resolve, reject) => {
-        gitlabLogin(code).then(res => {
+        gitlabLogin(query.tenantId, query.code).then(res => {
           commit('SET_TOKEN', res.data);
+          commit('SET_TENANT_INDEX', res.data.tenantIndex);
           resolve();
         }).catch(error => {
           reject(error)
@@ -107,6 +116,7 @@ const user = {
           commit('SET_TENANT', '')
           commit('SET_TENANT_TITLE', '')
           commit('SET_TENANT_LOGO', null)
+          commit('SET_TENANT_TITLE', null)
           commit('SET_USERID', null)
           commit('SET_NAME', '')
           commit('SET_AVATAR', '')

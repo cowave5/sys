@@ -7,7 +7,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
-package com.cowave.sys.admin.domain.base;
+package com.cowave.sys.admin.domain.base.constants;
 
 import com.cowave.commons.tools.EnumVal;
 import lombok.RequiredArgsConstructor;
@@ -16,37 +16,22 @@ import lombok.RequiredArgsConstructor;
  * @author shanhuiming
  */
 @RequiredArgsConstructor
-public enum NoticeReadStatus implements EnumVal<Integer> {
+public enum NoticeStatus implements EnumVal<Integer> {
 
     /**
-     * 消息未读
+     * 草稿
      */
-    UNREAD_PUBLISH(0),
+    DRAFT(0),
 
     /**
-     * 消息未读删除
+     * 已发布
      */
-    UNREAD_DELETE(1),
+    PUBLISH(1),
 
     /**
-     * 消息未读撤回
+     * 已撤回
      */
-    UNREAD_RECALL(2),
-
-    /**
-     * 消息已读
-     */
-    READ_PUBLISH(10),
-
-    /**
-     * 消息已读删除
-     */
-    READ_DELETE(11),
-
-    /**
-     * 消息已读撤回
-     */
-    READ_RECALL(22);
+    RECALL(2);
 
     private final Integer val;
 

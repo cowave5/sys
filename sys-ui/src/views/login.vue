@@ -3,12 +3,12 @@
     <el-form ref="form" :model="form" :rules="rules" class="register-form">
       <h3 class="title">控维科技</h3>
       <el-form-item prop="username">
-        <el-input v-model="form.username" type="text" autocomplete="new-password" placeholder="账号">
+        <el-input v-model="form.username" type="text" placeholder="账号">
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="form.password" type="password" autocomplete="new-password" placeholder="密码" @keyup.enter.native="handleLogin">
+        <el-input v-model="form.password" type="password" placeholder="密码" @keyup.enter.native="handleLogin">
           <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
@@ -39,7 +39,7 @@ export default {
       },
       rules: {
         username: [
-          { required: true, trigger: "blur", message: "请输入您的域账号" }
+          { required: true, trigger: "blur", message: "请输入您的账号" }
         ],
         password: [
           { required: true, trigger: "blur", message: "请输入您的密码" }
@@ -50,6 +50,9 @@ export default {
       timeKeeping: false,
     };
   },
+  mounted() {
+    localStorage.setItem('tenant_login_route', '/login');
+  },
   created() {
     this.version = process.env.VUE_APP_VERSION;
   },
@@ -59,7 +62,7 @@ export default {
         if (valid) {
           this.loading = true;
           this.$store.dispatch("Logon", this.form).then(async () => {
-            this.$router.push({path: this.redirect || "/"}).catch(() => {});
+            await this.$router.push({path: this.redirect || "/"}).catch(() => {});
             await this.$store.dispatch('OpenNoticeSocket');
           }).catch(() => {
             this.loading = false;
@@ -77,7 +80,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/images/login-system.jpg");
+  background-image: url("../assets/images/login.jpg");
   background-size: cover;
 }
 .title {
