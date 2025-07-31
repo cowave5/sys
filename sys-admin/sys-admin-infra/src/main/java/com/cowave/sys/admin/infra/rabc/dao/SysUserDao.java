@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.tools.Collections;
 import com.cowave.sys.admin.domain.auth.request.ProfileUpdate;
+import com.cowave.sys.admin.domain.constants.EnableStatus;
 import com.cowave.sys.admin.domain.rabc.SysUser;
 import com.cowave.sys.admin.domain.rabc.request.UserCreate;
 import com.cowave.sys.admin.domain.rabc.request.UserExportQuery;
@@ -126,7 +127,7 @@ public class SysUserDao extends ServiceImpl<SysUserMapper, SysUser> {
     /**
      * 修改状态
      */
-    public void updateStatusById(Integer userId, Integer status){
+    public void updateStatusById(Integer userId, EnableStatus status){
         lambdaUpdate().eq(SysUser::getUserId, userId)
                 .set(SysUser::getUpdateBy, Access.userCode())
                 .set(SysUser::getUpdateTime, new Date())

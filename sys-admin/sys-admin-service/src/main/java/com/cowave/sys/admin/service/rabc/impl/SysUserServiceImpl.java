@@ -40,7 +40,7 @@ import java.util.List;
 import static com.cowave.commons.client.http.constants.HttpCode.*;
 import static com.cowave.sys.admin.domain.AdminRedisKeys.DEPT_USER_DIAGRAM;
 import static com.cowave.sys.admin.domain.AdminRedisKeys.USER_DIAGRAM;
-import static com.cowave.sys.admin.domain.auth.AuthType.SYS;
+import static com.cowave.sys.admin.domain.constants.AuthType.SYS;
 import static com.cowave.sys.admin.domain.rabc.vo.DiagramNode.DIAGRAM_CONFIG;
 
 /**
@@ -84,8 +84,8 @@ public class SysUserServiceImpl implements SysUserService {
 		HttpAsserts.isTrue(accountCount == 0, BAD_REQUEST, "{admin.user.account.conflict}", userAccount);
 
 		// 创建用户
-		user.setUserType(SYS.val());
-		user.setUserCode(sysTenantDao.nextUserCode(tenantId, SYS.val()));
+		user.setUserType(SYS.getVal());
+		user.setUserCode(sysTenantDao.nextUserCode(tenantId, SYS.getVal()));
     	user.setUserPasswd(passwordEncoder.encode(userPasswd));
 		sysUserDao.save(user);
     	// 用户角色
@@ -195,8 +195,8 @@ public class SysUserServiceImpl implements SysUserService {
 		String passwd = sysConfigDao.getConfigValue(tenantId, "sys.initPassword");
 		for(SysUser sysUser : list){
 			sysUser.setTenantId(tenantId);
-			sysUser.setUserType(SYS.val());
-			sysUser.setUserCode(sysTenantDao.nextUserCode(tenantId, SYS.val()));
+			sysUser.setUserType(SYS.getVal());
+			sysUser.setUserCode(sysTenantDao.nextUserCode(tenantId, SYS.getVal()));
 			sysUser.setUserPasswd(passwordEncoder.encode(passwd));
 			sysUser.setCreateBy(Access.userCode());
 			sysUser.setCreateTime(Access.accessTime());

@@ -36,15 +36,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.cowave.sys.admin.domain.base.constants.OpAction.*;
-import static com.cowave.sys.admin.domain.base.constants.OpModule.SYSTEM;
-import static com.cowave.sys.admin.domain.base.constants.OpModule.SYSTEM_USER;
+import static com.cowave.sys.admin.domain.constants.OpAction.*;
+import static com.cowave.sys.admin.domain.constants.OpModule.SYSTEM;
+import static com.cowave.sys.admin.domain.constants.OpModule.SYSTEM_USER;
 
 /**
  * 用户
- *
+ * @order 4
  * @author shanhuiming
- * @order 3
  */
 @RequiredArgsConstructor
 @Validated
