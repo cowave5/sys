@@ -28,7 +28,6 @@
       </el-table-column>
       <el-table-column label="用户账号" align="center" prop="userAccount" :show-overflow-tooltip="true"/>
       <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true"/>
-      <el-table-column label="角色" align="center" prop="roleName"/>
       <el-table-column label="手机" align="center" prop="userPhone" :show-overflow-tooltip="true"/>
       <el-table-column label="邮箱" align="center" prop="userEmail" width="200" :show-overflow-tooltip="true"/>
       <el-table-column label="部门" align="center" prop="userDept"/>
@@ -39,11 +38,9 @@
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('commons.label.options')" align="center" class-name="small-padding" width="160">
+      <el-table-column label="更新时间" align="center" prop="updateTime" width="180">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
-          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
-                     :disabled="!checkPermit(['sys:ldap:delete'])">删除</el-button>
+          <span>{{ parseTime(scope.row.updateTime) }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -145,7 +142,7 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="用户角色:" prop="roleCode">
+            <el-form-item label="默认角色:" prop="roleCode">
               <el-select v-model="form.roleCode" placeholder="Ldap用户默认角色" style="width: 100%;">
                 <el-option v-for="item in roleOptions" :key="item.roleCode" :label="item.roleName" :value="item.roleCode"/>
               </el-select>
@@ -159,69 +156,11 @@
         <el-button @click="cancel">取消</el-button>
       </div>
     </el-dialog>
-
-    <!-- 修改用户角色 -->
-    <el-dialog title="修改用户角色" :visible.sync="openRole" width="750px" append-to-body>
-      <el-form ref="form" :model="roleForm" label-width="100px">
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="用户名称">
-              <el-input v-model="roleForm.userName" disabled="disabled" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="用户账号">
-              <el-input v-model="roleForm.userAccount" disabled="disabled" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="部门">
-              <el-input v-model="roleForm.userDept" disabled="disabled" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="岗位">
-              <el-input v-model="roleForm.userPost" disabled="disabled" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="手机">
-              <el-input v-model="roleForm.userPhone" disabled="disabled" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="邮箱">
-              <el-input v-model="roleForm.userEmail" disabled="disabled" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="用户角色">
-              <el-select v-model="roleForm.roleCode" style="width: 100%;">
-                <el-option v-for="item in roleOptions" :key="item.roleCOde" :label="item.roleName" :value="item.roleCode"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="saveRole"
-                   :disabled="!checkPermit(['sys:ldap:edit'])">保存</el-button>
-        <el-button @click="cancelRole">取消</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import {
-  changeLdapRole,
-  delLdapUser,
   getLdapConfig,
   getLdapUsers,
   saveLdapConfig,
@@ -249,7 +188,6 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
-      openRole: false,
       // 查询参数
       queryParams: {
         page: 1,
@@ -277,7 +215,6 @@ export default {
       },
       // 角色选项
       roleOptions: [],
-      roleForm: {},
     };
   },
   created() {
@@ -368,15 +305,6 @@ export default {
         }
       );
     },
-    /** 删除 */
-    handleDelete(row) {
-      this.$modal.confirm("确认删除用户: " + row.userName).then(function() {
-        return delLdapUser(row.id);
-      }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess(this.$t('commons.msg.success.delete'));
-      }).catch(() => {});
-    },
     /** 取消 */
     cancel() {
       this.open = false;
@@ -408,23 +336,6 @@ export default {
             this.$modal.msgSuccess("测试成功");
           });
         }
-      });
-    },
-    /** 修改用户角色 */
-    handleUpdate(row){
-      this.roleForm = row;
-      this.openRole = true;
-    },
-    /** 取消修改用户 */
-    cancelRole(){
-      this.openRole = false;
-    },
-    /** 保存用户角色 */
-    saveRole(){
-      changeLdapRole(this.roleForm.id, this.roleForm.roleCode).then(() => {
-        this.openRole = false;
-        this.$modal.msgSuccess("修改成功");
-        this.getList();
       });
     },
   }

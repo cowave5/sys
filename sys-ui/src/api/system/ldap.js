@@ -42,23 +42,3 @@ export function getLdapUsers(params) {
     params: params
   })
 }
-
-/**
- * 删除用户
- */
-export function delLdapUser(id) {
-  return request({
-    url: '/admin/api/v1/ldap/user/' + id,
-    method: 'delete'
-  })
-}
-
-/**
- * 修改用户角色
- */
-export function changeLdapRole(userId, roleCode) {
-  return request({
-    url: '/admin/api/v1/ldap/user/role/' + userId + '/' + roleCode,
-    method: 'patch'
-  })
-}

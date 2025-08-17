@@ -17,35 +17,24 @@ import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.framework.access.operation.OperationInfo;
 import com.cowave.commons.framework.access.security.AccessInfo;
 import com.cowave.commons.framework.access.security.AccessUserDetails;
-import com.cowave.commons.framework.access.security.BearerTokenService;
-import com.cowave.commons.framework.access.security.Permission;
-import com.cowave.commons.framework.configuration.ApplicationProperties;
 import com.cowave.commons.framework.helper.redis.RedisHelper;
-import com.cowave.sys.admin.domain.auth.LdapUser;
 import com.cowave.sys.admin.domain.auth.OAuthClient;
 import com.cowave.sys.admin.domain.auth.bo.GitlabUser;
 import com.cowave.sys.admin.domain.auth.OAuthServer;
 import com.cowave.sys.admin.domain.auth.bo.GitlabToken;
 import com.cowave.sys.admin.domain.auth.OAuthUser;
 import com.cowave.sys.admin.domain.auth.bo.OAuth2CodeBo;
-import com.cowave.sys.admin.domain.auth.dto.OAuthUserDto;
 import com.cowave.sys.admin.domain.auth.request.OAuth2CodeRequest;
 import com.cowave.sys.admin.domain.auth.request.OAuth2TokenRequest;
 import com.cowave.sys.admin.domain.auth.request.OAuthUserQuery;
 import com.cowave.sys.admin.domain.auth.vo.OAuth2CodeVo;
 import com.cowave.sys.admin.domain.base.SysOperation;
 import com.cowave.sys.admin.domain.constants.SuccessStatus;
-import com.cowave.sys.admin.domain.rabc.SysTenant;
-import com.cowave.sys.admin.domain.rabc.SysUser;
-import com.cowave.sys.admin.infra.auth.dao.LdapUserDao;
-import com.cowave.sys.admin.infra.auth.dao.OAuthClientDao;
-import com.cowave.sys.admin.infra.auth.dao.OAuthServerDao;
-import com.cowave.sys.admin.infra.auth.dao.OAuthUserDao;
-import com.cowave.sys.admin.infra.auth.dao.mapper.dto.OAuthUserDtoMapper;
+import com.cowave.sys.admin.domain.constants.UserType;
+import com.cowave.sys.admin.domain.rabc.*;
+import com.cowave.sys.admin.infra.auth.dao.*;
 import com.cowave.sys.admin.infra.base.SysOperationHandler;
-import com.cowave.sys.admin.infra.rabc.dao.SysTenantDao;
-import com.cowave.sys.admin.infra.rabc.dao.SysUserDao;
-import com.cowave.sys.admin.infra.rabc.dao.mapper.dto.SysRoleDtoMapper;
+import com.cowave.sys.admin.infra.rabc.dao.*;
 import com.cowave.sys.admin.service.auth.GitlabService;
 import com.cowave.sys.admin.service.auth.OAuthService;
 import lombok.RequiredArgsConstructor;
@@ -62,8 +51,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static com.cowave.commons.client.http.constants.HttpCode.*;
-import static com.cowave.sys.admin.domain.AdminRedisKeys.AUTH_OAUTH;
-import static com.cowave.sys.admin.domain.constants.AuthType.*;
+import static com.cowave.sys.admin.domain.AdminRedisKeys.*;
 import static com.cowave.sys.admin.domain.constants.OpAction.LOGIN;
 import static com.cowave.sys.admin.domain.constants.OpAction.LOGIN_OAUTH;
 import static com.cowave.sys.admin.domain.constants.OpModule.SYSTEM;
@@ -75,24 +63,23 @@ import static com.cowave.sys.admin.domain.constants.OpModule.SYSTEM_AUTH;
 @RequiredArgsConstructor
 @Service
 public class OAuthServiceImpl implements OAuthService {
-    private final ApplicationProperties applicationProperties;
-    private final BearerTokenService bearerTokenService;
     private final RedisHelper redisHelper;
     private final SysTenantDao sysTenantDao;
     private final SysUserDao sysUserDao;
-    private final LdapUserDao ldapUserDao;
+    private final SysRoleDao sysRoleDao;
+    private final SysUserRoleDao sysUserRoleDao;
+    private final SysUserTreeDao sysUserTreeDao;
     private final OAuthUserDao oauthUserDao;
     private final OAuthClientDao oAuthClientDao;
     private final OAuthServerDao oauthServerDao;
-    private final OAuthUserDtoMapper oauthUserDtoMapper;
-    private final SysRoleDtoMapper sysRoleDtoMapper;
     private final SysOperationHandler sysOperationHandler;
     private final GitlabService gitlabService;
+    private final UserDetailsDao userDetailsDao;
 
     @Override
     public AccessUserDetails gitlabCallback(String tenantId, String code) {
         // 根据授权码兑换令牌
-        OAuthServer oAuthServer = oauthServerDao.getByServerType(tenantId, GITLAB.getVal());
+        OAuthServer oAuthServer = oauthServerDao.getByServerType(tenantId, UserType.GITLAB.getVal());
 
         HttpResponse<GitlabToken> tokenResponse = gitlabService.getGitlabToken(oAuthServer.getAuthUrl(),
                 oAuthServer.getAppId(), oAuthServer.getAppSecret(),
@@ -106,9 +93,9 @@ public class OAuthServiceImpl implements OAuthService {
         HttpAsserts.isTrue(userResponse.isSuccess(), INTERNAL_SERVER_ERROR, userResponse.getMessage());
         GitlabUser gitlabUser = userResponse.getBody();
 
-        // 保存Gitlab用户
+        // Gitlab用户信息
         assert gitlabUser != null;
-        OAuthUser oauthUser = oauthUserDao.getByAccount(tenantId, GITLAB.getVal(), gitlabUser.getUsername());
+        OAuthUser oauthUser = oauthUserDao.getByAccount(tenantId, UserType.GITLAB.getVal(), gitlabUser.getUsername());
         if (oauthUser != null) {
             oauthUser.setUserName(gitlabUser.getName());
             oauthUser.setUserEmail(gitlabUser.getEmail());
@@ -122,31 +109,42 @@ public class OAuthServiceImpl implements OAuthService {
         } else {
             oauthUser = GitlabUser.oAuthUser(gitlabUser);
             oauthUser.setTenantId(tenantId);
-            oauthUser.setUserCode(sysTenantDao.nextUserCode(tenantId, GITLAB.generateCode()));
-            oauthUser.setRoleCode(oAuthServer.getRoleCode());
             oauthUserDao.save(oauthUser);
         }
 
-        // 使用Gitlab用户信息构造当前系统的访问令牌
-        String roleCode = oauthUser.getRoleCode();
-        List<String> permits;
-        if(Permission.ROLE_ADMIN.equals(roleCode)){
-            permits = List.of(Permission.PERMIT_ADMIN);
+        // 对应系统用户
+        String userCode = UserType.GITLAB.newCode(tenantId, oauthUser.getUserAccount());
+        SysUser sysUser = sysUserDao.getByCode(userCode);
+        if(sysUser == null){
+            sysUser = new SysUser();
+            sysUser.setUserCode(userCode);
+            sysUser.setTenantId(tenantId);
+            sysUser.setUserType(UserType.GITLAB);
+            sysUser.setUserAccount(oauthUser.getUserAccount());
+            sysUser.setUserName(oauthUser.getUserName());
+            sysUser.setUserEmail(oauthUser.getUserEmail());
+            sysUserDao.save(sysUser);
+            // role
+            SysRole sysRole = sysRoleDao.getByCode(tenantId, oAuthServer.getRoleCode());
+            if(sysRole != null) {
+                SysUserRole userRole = new SysUserRole(sysUser.getUserId(), sysRole.getRoleId());
+                sysUserRoleDao.save(userRole);
+            }
+            // 用户关系
+            SysUserTree userTree = new SysUserTree(sysUser.getUserId(), 0, tenantId);
+            sysUserTreeDao.save(userTree);
+            // 用户树缓存
+            redisHelper.delete(USER_DIAGRAM + ":" + tenantId);
+            redisHelper.delete(DEPT_USER_DIAGRAM + ":" + tenantId);
         }else{
-            permits = sysRoleDtoMapper.getPermitsByRoleCode(roleCode);
+            sysUser.setUserName(oauthUser.getUserName());
+            sysUser.setUserEmail(oauthUser.getUserEmail());
+            sysUserDao.updateGitlabByCode(sysUser);
         }
 
-        AccessUserDetails userDetails = oauthUser.newUserDetails();
-        userDetails.setClusterId(applicationProperties.getClusterId());
-        userDetails.setClusterLevel(applicationProperties.getClusterLevel());
-        userDetails.setClusterName(applicationProperties.getClusterName());
-        userDetails.setPermissions(permits);
-        userDetails.setRoles(List.of(roleCode));
-        bearerTokenService.assignAccessRefreshToken(userDetails);
-        // 租户首页
+        // 创建令牌
         SysTenant sysTenant = sysTenantDao.getById(tenantId);
-        userDetails.setTenantIndex(sysTenant.getViewIndex());
-
+        AccessUserDetails userDetails = userDetailsDao.newUserDetails(UserType.GITLAB.getVal(), sysTenant, sysUser);
         // 登录日志
         OperationInfo operationInfo = OperationInfo.builder()
                 .success(true)
@@ -173,18 +171,8 @@ public class OAuthServiceImpl implements OAuthService {
     }
 
     @Override
-    public List<OAuthUserDto> listUser(String tenantId, OAuthUserQuery query) {
-        return oauthUserDtoMapper.listUser(tenantId, query, Access.page());
-    }
-
-    @Override
-    public void deleteUser(String tenantId, Integer userId) {
-        oauthUserDao.removeById(tenantId, userId);
-    }
-
-    @Override
-    public void updateUserRole(String tenantId, Integer userId, String roleCode) {
-        oauthUserDao.updateRoleCodeById(tenantId, userId, roleCode);
+    public Page<OAuthUser> listUser(String tenantId, OAuthUserQuery query) {
+        return oauthUserDao.getUserPage(tenantId, query.getServerType(), query.getUserAccount());
     }
 
     @Override
@@ -282,26 +270,10 @@ public class OAuthServiceImpl implements OAuthService {
         }
 
         // 创建令牌
-        AccessUserDetails userDetails;
-        String userCode = oAuth2CodeBo.getUserCode();
-        if (GITLAB.equalsType(userCode)) {
-            OAuthUser oAuthUser = oauthUserDao.getByUserCode(userCode);
-            userDetails = oAuthUser.newUserDetails();
-            userDetails.setAuthType(OAUTH.getVal() + "/" + GITLAB.getVal());
-        } else if (LDAP.equalsType(userCode)) {
-            LdapUser ldapUser = ldapUserDao.getByUserCode(userCode);
-            userDetails = ldapUser.newUserDetails();
-            userDetails.setAuthType(OAUTH.getVal() + "/" + LDAP.getVal());
-        } else {
-            SysUser sysUser = sysUserDao.getByCode(userCode);
-            userDetails = sysUser.newUserDetails(null);
-            userDetails.setAuthType(OAUTH.getVal() + "/" + SYS.getVal());
-        }
-        // 根据scope设置permits，这里就省略了（当前登录的用户信息直接可以获取）
-        userDetails.setClusterId(applicationProperties.getClusterId());
-        userDetails.setClusterLevel(applicationProperties.getClusterLevel());
-        userDetails.setClusterName(applicationProperties.getClusterName());
-        bearerTokenService.assignAccessRefreshToken(userDetails);
+        SysUser sysUser = sysUserDao.getByCode(oAuth2CodeBo.getUserCode());
+        SysTenant sysTenant = sysTenantDao.getById(sysUser.getTenantId());
+        String authType = sysUser.getUserType().oauthType();
+        AccessUserDetails userDetails = userDetailsDao.newUserDetails(authType, sysTenant, sysUser);
 
         // 授权日志
         SysOperation sysOperation = new SysOperation();

@@ -20,16 +20,14 @@ import com.cowave.sys.admin.domain.auth.request.RegisterRequest;
 import com.cowave.sys.admin.domain.auth.vo.AuthInfo;
 import com.cowave.sys.admin.domain.auth.vo.OnlineInfo;
 import com.cowave.sys.admin.domain.base.SysAttach;
-import com.cowave.sys.admin.domain.rabc.SysMenu;
-import com.cowave.sys.admin.domain.rabc.SysTenant;
-import com.cowave.sys.admin.domain.rabc.SysUser;
-import com.cowave.sys.admin.domain.rabc.SysUserRole;
+import com.cowave.sys.admin.domain.constants.UserType;
+import com.cowave.sys.admin.domain.rabc.*;
 import com.cowave.sys.admin.domain.rabc.vo.Route;
 import com.cowave.sys.admin.domain.rabc.vo.RouteMeta;
 import com.cowave.sys.admin.infra.auth.MfaAuthVerifier;
 import com.cowave.sys.admin.infra.auth.MfaConfiguration;
-import com.cowave.sys.admin.infra.auth.UserDetailsServiceImpl;
 import com.cowave.sys.admin.infra.auth.dao.OAuthUserDao;
+import com.cowave.sys.admin.infra.auth.dao.UserDetailsDao;
 import com.cowave.sys.admin.infra.base.SysOperationHandler;
 import com.cowave.sys.admin.infra.base.dao.SysConfigDao;
 import com.cowave.sys.admin.infra.base.dao.mapper.dto.SysNoticeDtoMapper;
@@ -60,8 +58,6 @@ import static com.cowave.commons.framework.access.security.BearerTokenService.CL
 import static com.cowave.commons.framework.access.security.BearerTokenService.CLAIM_USER_ACCOUNT;
 import static com.cowave.sys.admin.domain.AdminRedisKeys.LOGIN_FAILS;
 import static com.cowave.sys.admin.domain.AdminRedisKeys.LOGIN_LOCK;
-import static com.cowave.sys.admin.domain.constants.AuthType.GITLAB;
-import static com.cowave.sys.admin.domain.constants.AuthType.SYS;
 import static com.cowave.sys.admin.domain.constants.AttachType.AVATAR;
 import static com.cowave.sys.admin.domain.constants.EnableStatus.ENABLE;
 import static com.cowave.sys.admin.domain.constants.OpAction.LOGIN;
@@ -89,7 +85,7 @@ public class AuthService {
     private final SysUserRoleDao sysUserRoleDao;
     private final SysNoticeDtoMapper sysNoticeDtoMapper;
     private final MfaConfiguration mfaConfiguration;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsDao userDetailsDao;
 
     /**
      * 注册
@@ -101,11 +97,11 @@ public class AuthService {
         boolean registerOnOff = sysConfigDao.getConfigValue(tenantId, "sys.registerOnOff");
         HttpAsserts.isTrue(registerOnOff, FORBIDDEN, "{admin.register.disable}");
 
-        String userCode = sysTenantDao.nextUserCode(tenantId, SYS.getVal());
+        String userCode = UserType.SYS.newCode(tenantId, request.getUserAccount());
         String initPasswd = sysConfigDao.getConfigValue(tenantId, "sys.initPassword");
         SysUser sysUser = SysUser.builder()
                 .tenantId(tenantId)
-                .userType(SYS.getVal())
+                .userType(UserType.SYS)
                 .userStatus(ENABLE)
                 .userCode(userCode)
                 .userEmail(request.getUserEmail())
@@ -115,8 +111,10 @@ public class AuthService {
                 .build();
         sysUserDao.save(sysUser);
 
-        Integer readOnlyRoleId = sysRoleDao.queryIdByCode("role-readonly");
-        sysUserRoleDao.save(new SysUserRole(sysUser.getUserId(), readOnlyRoleId));
+        SysRole sysRole = sysRoleDao.getByCode(tenantId, "role-readonly");
+        if(sysRole != null) {
+            sysUserRoleDao.save(new SysUserRole(sysUser.getUserId(), sysRole.getRoleId()));
+        }
 
         // 注册用户的通知消息
         sysNoticeDtoMapper.initNoticeMsgForNewUser(userCode);
@@ -168,13 +166,13 @@ public class AuthService {
         Claims claims = mfaConfiguration.parseMfaToken(mfaToken);
         String tenantId = (String) claims.get(CLAIM_TENANT_ID);
         String userAccount = (String) claims.get(CLAIM_USER_ACCOUNT);
-        SysUser sysUser = sysUserDao.getByAccount(tenantId, userAccount);
+        SysUser sysUser = sysUserDao.getByAccount(tenantId, UserType.SYS, userAccount);
 
         String mfaKey = sysUser.getMfa();
         HttpAsserts.isTrue(MfaAuthVerifier.validateCode(mfaKey, mfaCode), BAD_REQUEST, "{admin.mfa.code.invalid}");
 
         SysTenant sysTenant = sysTenantDao.getById(tenantId);
-        return userDetailsService.buildUserDetails(sysUser, sysTenant);
+        return userDetailsDao.newUserDetails(UserType.SYS.getVal(), sysTenant, sysUser);
     }
 
     /**
@@ -263,11 +261,12 @@ public class AuthService {
         authInfo.setTenantTitle(sysTenant.getTitle());
         authInfo.setTenantLogo(sysTenant.getLogo());
 
-        if (GITLAB.equalsVal(userDetails.getAuthType())) {
-            OAuthUser oAuthUser = oauthUserDao.getById(userId);
-            authInfo.setUserEmail(oAuthUser.getUserEmail());
+        // Avatar
+        if (UserType.GITLAB.equalsVal(userDetails.getAuthType())) {
+            OAuthUser oAuthUser =
+                    oauthUserDao.getByAccount(tenantId, UserType.GITLAB.getVal(), userDetails.getUsername());
             authInfo.setAvatar(oAuthUser.getUserAvatar());
-        } else if (SYS.equalsVal(userDetails.getAuthType())) {
+        } else if (UserType.SYS.equalsVal(userDetails.getAuthType())) {
             SysAttach avatar = attachService.latestOfOwner(String.valueOf(userId), SYSTEM_USER, AVATAR);
             if (avatar != null) {
                 authInfo.setAvatar(avatar.getViewUrl());

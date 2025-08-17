@@ -51,7 +51,7 @@ public class MfaConfiguration {
         try {
             return Jwts.parser().setSigningKey(mfaSecret).parseClaimsJws(mfaToken).getBody();
         } catch (ExpiredJwtException e) {
-            throw new HttpHintException(UNAUTHORIZED, "{frame.auth.access.expire}"); // TODO
+            throw new HttpHintException(UNAUTHORIZED, "{frame.auth.access.expire}");
         } catch (Exception e) {
             throw new HttpHintException(UNAUTHORIZED, "{frame.auth.access.invalid}");
         }

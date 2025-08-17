@@ -10,13 +10,12 @@
 package com.cowave.sys.admin.domain.auth.bo;
 
 import com.cowave.sys.admin.domain.auth.OAuthUser;
+import com.cowave.sys.admin.domain.constants.UserType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.List;
-
-import static com.cowave.sys.admin.domain.constants.AuthType.GITLAB;
 
 /**
  * @author shanhuiming
@@ -61,7 +60,7 @@ public class GitlabUser {
 
     public static OAuthUser oAuthUser(GitlabUser gitlabUser){
         OAuthUser oauthUser = new OAuthUser();
-        oauthUser.setServerType(GITLAB.getVal());
+        oauthUser.setServerType(UserType.GITLAB.getVal());
         oauthUser.setUserName(gitlabUser.name);
         oauthUser.setUserAccount(gitlabUser.username);
         oauthUser.setUserEmail(gitlabUser.email);

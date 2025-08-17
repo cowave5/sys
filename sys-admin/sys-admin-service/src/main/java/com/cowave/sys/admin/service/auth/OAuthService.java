@@ -13,7 +13,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cowave.commons.framework.access.security.AccessUserDetails;
 import com.cowave.sys.admin.domain.auth.OAuthClient;
 import com.cowave.sys.admin.domain.auth.OAuthServer;
-import com.cowave.sys.admin.domain.auth.dto.OAuthUserDto;
+import com.cowave.sys.admin.domain.auth.OAuthUser;
 import com.cowave.sys.admin.domain.auth.request.OAuth2CodeRequest;
 import com.cowave.sys.admin.domain.auth.request.OAuth2TokenRequest;
 import com.cowave.sys.admin.domain.auth.request.OAuthUserQuery;
@@ -46,17 +46,7 @@ public interface OAuthService {
     /**
      * 用户列表
      */
-    List<OAuthUserDto> listUser(String tenantId, OAuthUserQuery query);
-
-    /**
-     * 删除用户
-     */
-    void deleteUser(String tenantId, Integer userId);
-
-    /**
-     * 修改用户角色
-     */
-    void updateUserRole(String tenantId, Integer userId, String roleCode);
+    Page<OAuthUser> listUser(String tenantId, OAuthUserQuery query);
 
     /**
      * 授权客户端列表

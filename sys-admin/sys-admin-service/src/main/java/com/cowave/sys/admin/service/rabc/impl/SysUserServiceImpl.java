@@ -16,6 +16,8 @@ import com.cowave.commons.client.http.asserts.HttpAsserts;
 import com.cowave.commons.client.http.response.Response;
 import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.framework.access.operation.OperationContext;
+import com.cowave.commons.framework.access.security.BearerTokenService;
+import com.cowave.sys.admin.domain.constants.UserType;
 import com.cowave.sys.admin.domain.rabc.SysTenant;
 import com.cowave.sys.admin.domain.rabc.vo.UserDiagramNode;
 import com.cowave.sys.admin.infra.base.dao.SysConfigDao;
@@ -41,7 +43,6 @@ import java.util.List;
 import static com.cowave.commons.client.http.constants.HttpCode.*;
 import static com.cowave.sys.admin.domain.AdminRedisKeys.DEPT_USER_DIAGRAM;
 import static com.cowave.sys.admin.domain.AdminRedisKeys.USER_DIAGRAM;
-import static com.cowave.sys.admin.domain.constants.AuthType.SYS;
 import static com.cowave.sys.admin.domain.rabc.vo.DiagramNode.DIAGRAM_CONFIG;
 
 /**
@@ -51,6 +52,7 @@ import static com.cowave.sys.admin.domain.rabc.vo.DiagramNode.DIAGRAM_CONFIG;
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
 public class SysUserServiceImpl implements SysUserService {
+	private final BearerTokenService bearerTokenService;
 	private final PasswordEncoder passwordEncoder;
 	private final SysConfigDao sysConfigDao;
 	private final SysTenantDao sysTenantDao;
@@ -81,12 +83,12 @@ public class SysUserServiceImpl implements SysUserService {
 		String userPasswd = user.getUserPasswd();
     	HttpAsserts.notNull(userPasswd, BAD_REQUEST, "{admin.user.passwd.null}");
 
-		long accountCount = sysUserDao.countByAccount(tenantId, userAccount, null);
+		long accountCount = sysUserDao.countByAccount(tenantId, UserType.SYS, userAccount, null);
 		HttpAsserts.isTrue(accountCount == 0, BAD_REQUEST, "{admin.user.account.conflict}", userAccount);
 
 		// 创建用户
-		user.setUserType(SYS.getVal());
-		user.setUserCode(sysTenantDao.nextUserCode(tenantId, SYS.getVal()));
+		user.setUserType(UserType.SYS);
+		user.setUserCode(UserType.SYS.newCode(tenantId, userAccount));
     	user.setUserPasswd(passwordEncoder.encode(userPasswd));
 		sysUserDao.save(user);
     	// 用户角色
@@ -127,6 +129,8 @@ public class SysUserServiceImpl implements SysUserService {
 		sysUserTreeDao.removeParentsByUserId(userId);
 		// 下级用户
 		sysUserTreeDao.removeChildrenByUserId(userId);
+		// 强制退出
+		bearerTokenService.revokeRefreshToken(tenantId, preUser.getUserType().getVal(), preUser.getUserAccount());
 		return preUser;
 	}
 
@@ -141,7 +145,7 @@ public class SysUserServiceImpl implements SysUserService {
 
 		// 账号校验
 		String userAccount = user.getUserAccount();
-		long accountCount = sysUserDao.countByAccount(tenantId, userAccount, userId);
+		long accountCount = sysUserDao.countByAccount(tenantId, UserType.SYS, userAccount, userId);
 		HttpAsserts.isTrue(accountCount == 0, BAD_REQUEST, "{admin.user.account.conflict}", userAccount);
 
 		// 操作日志
@@ -196,8 +200,8 @@ public class SysUserServiceImpl implements SysUserService {
 		String passwd = sysConfigDao.getConfigValue(tenantId, "sys.initPassword");
 		for(SysUser sysUser : list){
 			sysUser.setTenantId(tenantId);
-			sysUser.setUserType(SYS.getVal());
-			sysUser.setUserCode(sysTenantDao.nextUserCode(tenantId, SYS.getVal()));
+			sysUser.setUserType(UserType.SYS);
+			sysUser.setUserCode(UserType.SYS.newCode(tenantId, sysUser.getUserAccount()));
 			sysUser.setUserPasswd(passwordEncoder.encode(passwd));
 			sysUser.setCreateBy(Access.userCode());
 			sysUser.setCreateTime(Access.accessTime());

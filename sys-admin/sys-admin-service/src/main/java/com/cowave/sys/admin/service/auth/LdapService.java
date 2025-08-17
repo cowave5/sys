@@ -12,7 +12,7 @@ package com.cowave.sys.admin.service.auth;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cowave.commons.framework.access.security.AccessUserDetails;
 import com.cowave.sys.admin.domain.auth.LdapConfig;
-import com.cowave.sys.admin.domain.auth.dto.LdapUserDto;
+import com.cowave.sys.admin.domain.auth.LdapUser;
 
 /**
  * @author shanhuiming
@@ -42,15 +42,5 @@ public interface LdapService {
     /**
      * 用户列表
      */
-    Page<LdapUserDto> listUser(String tenantId, String ldapAccount);
-
-    /**
-     * 删除用户
-     */
-    void deleteUser(String tenantId, Integer userId);
-
-    /**
-     * 修改用户角色
-     */
-    void changeUserRole(String tenantId, Integer userId, String roleCode);
+    Page<LdapUser> listUser(String tenantId, String ldapAccount);
 }

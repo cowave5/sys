@@ -6,7 +6,7 @@ import cache from "@/plugins/cache";
 
 NProgress.configure({ showSpinner: false })
 
-const whiteList = ['/login', '/tenant/login', '/cowave/login', '/cowave/register', '/cowave/ldap', '/oauth/gitlab', '/bind']
+const whiteList = ['/login', '/open/login', '/cowave/login', '/cowave/register', '/cowave/ldap', '/oauth/gitlab', '/bind']
 
 // 路由跳转
 router.beforeEach((to, from, next) => {
@@ -16,7 +16,7 @@ router.beforeEach((to, from, next) => {
     // 直接将next置为首页
     if (to.path === '/mfa'
         || to.path === '/login'
-        || to.path === '/tenant/login'
+        || to.path === '/open/login'
         || to.path === '/cowave/login'
         || to.path === '/cowave/ldap'
         || to.path === '/oauth/gitlab') {

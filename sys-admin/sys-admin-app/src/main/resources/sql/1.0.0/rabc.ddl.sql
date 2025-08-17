@@ -149,12 +149,12 @@ drop table if exists sys_user;
 create table sys_user
 (
     user_id      serial primary key,
+    user_code    character varying(64),
     tenant_id    character varying(64),
     user_type    character varying(64),
-    user_code    character varying(64),
-    user_name    character varying(64)  not null,
     user_account character varying(64)  not null,
-    user_passwd  character varying(256) not null,
+    user_name    character varying(64)  not null,
+    user_passwd  character varying(256),
     user_sex     int2 default 0,
     user_phone   character varying(11),
     user_email   character varying(128),
@@ -167,7 +167,8 @@ create table sys_user
     update_by    character varying(64),
     update_time  timestamp
 );
-create unique index sys_user_user_account on sys_user(tenant_id, user_account);
+create unique index sys_user_user_code on sys_user(user_code);
+create unique index sys_user_user_account on sys_user(tenant_id, user_type, user_account);
 comment on table sys_user is '用户信息';
 comment on column sys_user.user_id is '用户id';
 comment on column sys_user.tenant_id is '租户id';

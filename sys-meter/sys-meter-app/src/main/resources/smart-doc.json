@@ -1,8 +1,8 @@
 {
 	"serverUrl": "http://localhost:19030",
 	"pathPrefix": "/code",
-	"openUrl": "http://10.64.193.53:7700/api",
-	"appToken": "7d0a662f24f742f1980d48f7adc4c798",
+	"openUrl": "http://localhost:19030/meter/api",
+	"appToken": "130695055dc44d9c8b50f53663cf7b41",
 	"debugEnvName": "Dev",
 	"debugEnvUrl": "http://localhost:19004",
 	"tornaDebug": false,

@@ -33,26 +33,6 @@ export function listUser(params) {
 }
 
 /**
- * 修改用户角色
- */
-export function changeGitlabRole(userId, roleCode) {
-  return request({
-    url: '/admin/api/v1/oauth/user/role/' + userId + '/' + roleCode,
-    method: 'patch'
-  })
-}
-
-/**
- * 删除用户
- */
-export function deleteGitlabUser(userId) {
-  return request({
-    url: '/admin/api/v1/oauth/user/' + userId,
-    method: 'delete'
-  })
-}
-
-/**
  * 授权客户端列表
  */
 export function getClientList(params) {

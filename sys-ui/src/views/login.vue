@@ -1,7 +1,7 @@
 <template>
   <div class="register">
     <el-form ref="form" :model="form" :rules="rules" class="register-form">
-      <h3 class="title">控维科技</h3>
+      <h3 class="title">Cowave管理系统</h3>
       <el-form-item prop="username">
         <el-input v-model="form.username" type="text" placeholder="账号">
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
@@ -84,7 +84,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/images/login-tenant.jpg");
+  background-image: url("../assets/images/login.jpg");
   background-size: cover;
 }
 .title {

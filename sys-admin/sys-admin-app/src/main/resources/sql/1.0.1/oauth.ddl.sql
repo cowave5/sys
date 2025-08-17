@@ -42,8 +42,6 @@ create table oauth_user
     id           bigserial primary key,
     tenant_id    character varying(64),
     server_type  character varying(64),
-    user_code    character varying(64),
-    role_code    character varying(64),
     user_name    character varying(64),
     user_account character varying(64),
     user_avatar  character varying(256),
@@ -56,7 +54,6 @@ create unique index oauth_user_unique on oauth_user(tenant_id, server_type, user
 comment on table oauth_user is '授权用户';
 comment on column oauth_user.id is 'id';
 comment on column oauth_user.server_type is '应用类型';
-comment on column oauth_user.role_code is '用户角色';
 comment on column oauth_user.user_name is '用户名称';
 comment on column oauth_user.user_account is '用户账号';
 comment on column oauth_user.user_avatar is '用户头像';

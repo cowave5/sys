@@ -1,7 +1,8 @@
 -- 租户信息
 INSERT INTO "sys_tenant" ("tenant_id", "tenant_name", "title", "view_index","tenant_user", "tenant_addr", "tenant_phone", "tenant_email", "user_index", "user_count","status", "expire_time", "remark", "create_by", "create_time", "update_by", "update_time", "logo") VALUES
-('system', '控维科技', 'tenant.title.system', 'index_system', NULL, '华清园6栋', NULL, NULL, 1, 1, 1, NULL, NULL, NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00', NULL),
-('cowave', '控维通信', 'tenant.title.cowave', 'index_cowave',NULL, '华清园6栋', NULL, NULL, 9, 9, 1, NULL, NULL, NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00', NULL);
+('system', 'system', 'tenant.title.system', 'index_system', NULL, '华清园6栋', NULL, NULL, 1, 1, 1, NULL, NULL, NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00', NULL),
+('cowave', '控维通信', 'tenant.title.cowave', 'index_cowave',NULL, '华清园6栋', NULL, NULL, 9, 9, 1, NULL, NULL, NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00', NULL),
+('open', '在线演示', 'tenant.title.open', 'index_open',NULL, '华清园6栋', NULL, NULL, 1, 1, 1, NULL, NULL, NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00', NULL);
 
 --部门数据
 INSERT INTO "sys_dept" ("dept_id", "tenant_id", "dept_type", "dept_code", "dept_name", "dept_short", "dept_addr", "dept_phone", "remark", "create_by", "create_time", "update_by", "update_time") VALUES
@@ -137,16 +138,17 @@ INSERT INTO "sys_post_tree" ("post_id", "parent_id", "tenant_id") VALUES (26, 21
 
 --用户数据
 INSERT INTO "sys_user" ("user_id", "tenant_id", "user_type", "user_code", "user_name", "user_account", "user_passwd", "user_sex", "user_phone", "user_email", "user_status", "user_rank", "remark", "create_by", "create_time", "update_by", "update_time") VALUES
-(1, 'system', 'sys', 'system-sys-00001', '系统管理员', 'sysAdmin', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 0, null, null, 1, NULL, NULL,  NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
-(2, 'cowave', 'sys', 'cowave-sys-00001', '刘备', 'liubei', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 0, '13288888888', 'liubei@cowave.com', 1, 'M7', NULL,  NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
-(3, 'cowave', 'sys', 'cowave-sys-00002', '诸葛亮', 'zhugeliang', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 0, '13288888888', 'zhugeliang@cowave.com', 1, 'M7', NULL,  NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
-(4, 'cowave', 'sys', 'cowave-sys-00003', '关羽', 'guanyu', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 0, '13288888888', 'guanyu@cowave.com', 1, 'M7', NULL,  NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
-(5, 'cowave', 'sys', 'cowave-sys-00004', '张飞', 'zhangfei', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 0, '13288888888', 'zhangfei@cowave.com', 1, 'M7', NULL,  NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
-(6, 'cowave', 'sys', 'cowave-sys-00005', '马超', 'machao', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 0, '13288888888', 'machao@cowave.com', 1, 'M7', NULL,  NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
-(7, 'cowave', 'sys', 'cowave-sys-00006', '赵云', 'zhaoyun', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 0, '13288888888', 'zhaoyun@cowave.com', 1, 'M7', NULL,  NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
-(8, 'cowave', 'sys', 'cowave-sys-00007', '黄忠', 'huangzhong', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 0, '13288888888', 'huangzhong@cowave.com', 1, 'M7', NULL,  NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
-(9, 'cowave', 'sys', 'cowave-sys-00008', '大乔', 'daqiao', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 1, '13288888888', 'daqiao@cowave.com', 1, 'M2', NULL, NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
-(10, 'cowave', 'sys', 'cowave-sys-00009', '小乔', 'xiaoqiao', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 1, '13288888888', 'xiaoqiao@cowave.com', 1, 'M2', NULL, NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00');
+(1, 'system', 'sys', 'system-sys-sysAdmin', '系统管理员', 'sysAdmin', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 0, null, null, 1, NULL, NULL,  NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
+(2, 'cowave', 'sys', 'cowave-sys-liubei', '刘备', 'liubei', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 0, '13288888888', 'liubei@cowave.com', 1, 'M7', NULL,  NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
+(3, 'cowave', 'sys', 'cowave-sys-zhugeliang', '诸葛亮', 'zhugeliang', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 0, '13288888888', 'zhugeliang@cowave.com', 1, 'M7', NULL,  NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
+(4, 'cowave', 'sys', 'cowave-sys-guanyu', '关羽', 'guanyu', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 0, '13288888888', 'guanyu@cowave.com', 1, 'M7', NULL,  NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
+(5, 'cowave', 'sys', 'cowave-sys-zhangfei', '张飞', 'zhangfei', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 0, '13288888888', 'zhangfei@cowave.com', 1, 'M7', NULL,  NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
+(6, 'cowave', 'sys', 'cowave-sys-machao', '马超', 'machao', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 0, '13288888888', 'machao@cowave.com', 1, 'M7', NULL,  NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
+(7, 'cowave', 'sys', 'cowave-sys-zhaoyun', '赵云', 'zhaoyun', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 0, '13288888888', 'zhaoyun@cowave.com', 1, 'M7', NULL,  NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
+(8, 'cowave', 'sys', 'cowave-sys-huangzhong', '黄忠', 'huangzhong', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 0, '13288888888', 'huangzhong@cowave.com', 1, 'M7', NULL,  NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
+(9, 'cowave', 'sys', 'cowave-sys-daqiao', '大乔', 'daqiao', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 1, '13288888888', 'daqiao@cowave.com', 1, 'M2', NULL, NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
+(10, 'cowave', 'sys', 'cowave-sys-xiaoqiao', '小乔', 'xiaoqiao', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 1, '13288888888', 'xiaoqiao@cowave.com', 1, 'M2', NULL, NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00'),
+(11, 'open', 'sys', 'open-sys-mia', '米娅', 'mia', '$2a$10$q8HvVpWNp0kadKq49IQO/OT2ZVK9HeimiEVNbb61LTWMmtvUIuZnq', 0, null, null, 1, NULL, NULL,  NULL, '2022-04-25 09:00:00', NULL, '2022-04-25 09:00:00');
 SELECT setval('sys_user_user_id_seq', (SELECT max(user_id) FROM sys_user));
 
 --角色数据
@@ -384,6 +386,7 @@ INSERT INTO "sys_user_dept" ("user_id", "dept_id", "post_id", "is_default", "is_
 
 --用户角色
 INSERT INTO "sys_user_role" ("user_id", "role_id") VALUES (1, 1);
+INSERT INTO "sys_user_role" ("user_id", "role_id") VALUES (11, 1);
 INSERT INTO "sys_user_role" ("user_id", "role_id") VALUES (2, 1);
 INSERT INTO "sys_user_role" ("user_id", "role_id") VALUES (3, 3);
 INSERT INTO "sys_user_role" ("user_id", "role_id") VALUES (4, 3);

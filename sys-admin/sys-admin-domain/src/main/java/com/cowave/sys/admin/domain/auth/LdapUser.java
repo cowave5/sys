@@ -11,11 +11,8 @@ package com.cowave.sys.admin.domain.auth;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.cowave.commons.framework.access.security.AccessUserDetails;
 import lombok.Data;
 import java.util.Date;
-
-import static com.cowave.sys.admin.domain.constants.AuthType.LDAP;
 
 /**
  * Ldap用户信息
@@ -28,16 +25,6 @@ public class LdapUser {
      */
     @TableId(type = IdType.AUTO)
     private Long id;
-
-    /**
-     * 用户编码
-     */
-    private String userCode;
-
-    /**
-     * 用户角色
-     */
-    private String roleCode;
 
     /**
      * 租户id
@@ -97,18 +84,5 @@ public class LdapUser {
     /**
      * 更新时间
      */
-    private Date updateTime;
-
-    public AccessUserDetails newUserDetails(){
-        AccessUserDetails userDetails = AccessUserDetails.newUserDetails();
-        userDetails.setAuthType(LDAP.getVal());
-        userDetails.setUserType(LDAP.getVal());
-        userDetails.setTenantId(tenantId);
-        userDetails.setUserId(id);
-        userDetails.setUserCode(userCode);
-        userDetails.setUsername(userAccount);
-        userDetails.setUserNick(userName);
-        userDetails.setDeptName(userDept);
-        return userDetails;
-    }
+    private Date updateTime = new Date();
 }

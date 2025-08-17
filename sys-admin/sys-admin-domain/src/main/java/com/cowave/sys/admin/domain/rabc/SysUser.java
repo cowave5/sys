@@ -18,8 +18,8 @@ import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import com.alibaba.excel.enums.poi.HorizontalAlignmentEnum;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.cowave.commons.framework.access.security.AccessUserDetails;
 import com.cowave.sys.admin.domain.constants.EnableStatus;
+import com.cowave.sys.admin.domain.constants.UserType;
 import com.cowave.sys.admin.domain.constants.converter.EnableStatusConverter;
 import com.cowave.sys.admin.domain.constants.UserSex;
 import com.cowave.sys.admin.domain.constants.converter.UserSexConverter;
@@ -33,8 +33,6 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.util.Date;
-
-import static com.cowave.sys.admin.domain.constants.AuthType.SYS;
 
 /**
  * @author shanhuiming
@@ -64,7 +62,7 @@ public class SysUser {
     /**
      * 用户类型
      */
-    private String userType;
+    private UserType userType;
 
     /**
      * 用户编码
@@ -156,22 +154,4 @@ public class SysUser {
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
-
-    public AccessUserDetails newUserDetails(SysDept userDept) {
-        AccessUserDetails userDetails = AccessUserDetails.newUserDetails();
-        userDetails.setAuthType(SYS.getVal());
-        userDetails.setUserType(userType);
-        userDetails.setTenantId(tenantId);
-        userDetails.setUserId(userId);
-        userDetails.setUserCode(userCode);
-        userDetails.setUsername(userAccount);
-        userDetails.setUserNick(userName);
-        userDetails.setUserPasswd(userPasswd);
-        if (userDept != null) {
-            userDetails.setDeptId(userDept.getDeptId());
-            userDetails.setDeptCode(userDept.getDeptCode());
-            userDetails.setDeptName(userDept.getDeptName());
-        }
-        return userDetails;
-    }
 }

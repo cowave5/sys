@@ -18,6 +18,7 @@ import com.cowave.commons.framework.access.security.Permission;
 import com.cowave.commons.framework.access.security.BearerTokenService;
 import com.cowave.commons.framework.configuration.ApplicationProperties;
 import com.cowave.commons.framework.helper.redis.RedisHelper;
+import com.cowave.sys.admin.domain.constants.UserType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +49,6 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import static com.cowave.sys.admin.domain.constants.AuthType.SYS;
 
 /**
  * @author shanhuiming
@@ -118,7 +117,7 @@ public class SpringTest {
     @PostConstruct
     public void init() {
         AccessUserDetails userDetails = AccessUserDetails.newUserDetails();
-        userDetails.setAuthType(SYS.getVal());
+        userDetails.setAuthType(UserType.SYS.getVal());
         userDetails.setUserId(6L);
         userDetails.setDeptId(1L);
         userDetails.setUsername("guanyu");
@@ -131,7 +130,7 @@ public class SpringTest {
         this.refreshToken = userDetails.getRefreshToken();
 
         AccessUserDetails logoutUserDetails = AccessUserDetails.newUserDetails();
-        logoutUserDetails.setAuthType(SYS.getVal());
+        logoutUserDetails.setAuthType(UserType.SYS.getVal());
         logoutUserDetails.setUserId(7L);
         logoutUserDetails.setDeptId(2L);
         logoutUserDetails.setUsername("zhangfei");

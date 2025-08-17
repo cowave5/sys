@@ -12,13 +12,10 @@ package com.cowave.sys.admin.domain.auth;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.cowave.commons.framework.access.security.AccessUserDetails;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
-
-import static com.cowave.sys.admin.domain.constants.AuthType.GITLAB;
 
 /**
  * 授权用户
@@ -42,16 +39,6 @@ public class OAuthUser {
      * 服务类型
      */
     private String serverType;
-
-    /**
-     * 用户编码
-     */
-    private String userCode;
-
-    /**
-     * 用户角色
-     */
-    private String roleCode;
 
     /**
      * 用户名称
@@ -89,17 +76,4 @@ public class OAuthUser {
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime = new Date();
-
-    public AccessUserDetails newUserDetails(){
-        AccessUserDetails userDetails = AccessUserDetails.newUserDetails();
-        userDetails.setAuthType(GITLAB.getVal());
-        userDetails.setUserType(GITLAB.getVal());
-        userDetails.setTenantId(tenantId);
-        userDetails.setUserId(id);
-        userDetails.setUserCode(userCode);
-        userDetails.setUsername(userAccount);
-        userDetails.setUserNick(userName);
-        userDetails.setDeptName(userDept);
-        return userDetails;
-    }
 }

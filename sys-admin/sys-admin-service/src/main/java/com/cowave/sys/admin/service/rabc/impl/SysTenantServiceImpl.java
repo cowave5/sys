@@ -14,6 +14,7 @@ import com.cowave.commons.client.http.asserts.HttpAsserts;
 import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.tools.Collections;
 import com.cowave.sys.admin.domain.base.vo.SelectOption;
+import com.cowave.sys.admin.domain.constants.UserType;
 import com.cowave.sys.admin.domain.rabc.SysTenant;
 import com.cowave.sys.admin.domain.rabc.SysUser;
 import com.cowave.sys.admin.domain.rabc.SysUserRole;
@@ -38,7 +39,6 @@ import java.util.List;
 import static com.cowave.commons.client.http.constants.HttpCode.BAD_REQUEST;
 import static com.cowave.sys.admin.domain.AdminRedisKeys.DEPT_USER_DIAGRAM;
 import static com.cowave.sys.admin.domain.AdminRedisKeys.USER_DIAGRAM;
-import static com.cowave.sys.admin.domain.constants.AuthType.SYS;
 import static com.cowave.sys.admin.domain.constants.AttachType.LOGO;
 import static com.cowave.sys.admin.domain.constants.OpModule.SYSTEM_TENANT;
 
@@ -98,12 +98,11 @@ public class SysTenantServiceImpl implements SysTenantService {
     @Override
     public void createManager(TenantManagerCreate managerCreate) {
         long accountCount = sysUserDao.countByAccount(
-                managerCreate.getTenantId(), managerCreate.getUserAccount(), null);
+                managerCreate.getTenantId(), UserType.SYS, managerCreate.getUserAccount(), null);
 		HttpAsserts.isTrue(accountCount == 0,
                 BAD_REQUEST, "{admin.user.account.conflict}", managerCreate.getUserAccount());
 
         SysUser sysUser = managerCreate.newSysUser();
-        sysUser.setUserCode(sysTenantDao.nextUserCode(managerCreate.getTenantId(), SYS.getVal()));
         sysUser.setUserPasswd(passwordEncoder.encode(managerCreate.getUserPasswd()));
         sysUserDao.save(sysUser);
         // sysAdmin

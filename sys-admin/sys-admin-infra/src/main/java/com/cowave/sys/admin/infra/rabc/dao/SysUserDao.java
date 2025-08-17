@@ -15,6 +15,7 @@ import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.tools.Collections;
 import com.cowave.sys.admin.domain.auth.request.ProfileUpdate;
 import com.cowave.sys.admin.domain.constants.EnableStatus;
+import com.cowave.sys.admin.domain.constants.UserType;
 import com.cowave.sys.admin.domain.rabc.SysUser;
 import com.cowave.sys.admin.domain.rabc.request.UserCreate;
 import com.cowave.sys.admin.domain.rabc.request.UserExportQuery;
@@ -24,10 +25,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author shanhuiming
@@ -50,9 +48,10 @@ public class SysUserDao extends ServiceImpl<SysUserMapper, SysUser> {
     /**
      * 查询用户（用户账号）
      */
-    public SysUser getByAccount(String tenantId, String userAccount){
+    public SysUser getByAccount(String tenantId, UserType userType, String userAccount){
         return lambdaQuery()
                 .eq(SysUser::getTenantId, tenantId)
+                .eq(SysUser::getUserType, userType)
                 .eq(SysUser::getUserAccount, userAccount)
                 .one();
     }
@@ -67,9 +66,10 @@ public class SysUserDao extends ServiceImpl<SysUserMapper, SysUser> {
     /**
      * 账号统计（排除自己）
      */
-    public long countByAccount(String tenantId, String userAccount, Integer userId){
+    public long countByAccount(String tenantId, UserType userType, String userAccount, Integer userId){
         return lambdaQuery()
                 .eq(SysUser::getTenantId, tenantId)
+                .eq(SysUser::getUserType, userType)
                 .eq(SysUser::getUserAccount, userAccount)
                 .ne(userId != null, SysUser::getUserId, userId)
                 .count();
@@ -180,7 +180,7 @@ public class SysUserDao extends ServiceImpl<SysUserMapper, SysUser> {
     /**
      * 查询姓名（用户编码列表）
      */
-    public Map<String, String> queryCodeNameMap(List<String> userCodes){
+    public Map<String, String> queryCodeNameMap(Collection<String> userCodes){
         if(userCodes.isEmpty()){
             return new HashMap<>();
         }
@@ -200,5 +200,22 @@ public class SysUserDao extends ServiceImpl<SysUserMapper, SysUser> {
                 .like(StringUtils.isNotBlank(query.getUserName()), SysUser::getUserName, query.getUserName())
                 .notIn(CollectionUtils.isNotEmpty(query.getUserCodes()), SysUser::getUserCode, query.getUserCodes())
                 .page(Access.page());
+    }
+
+    public void updateLdapByCode(SysUser sysUser) {
+        lambdaUpdate()
+                .eq(SysUser::getUserCode, sysUser.getUserCode())
+                .set(SysUser::getUserName, sysUser.getUserName())
+                .set(SysUser::getUserPhone, sysUser.getUserPhone())
+                .set(SysUser::getUserEmail, sysUser.getUserEmail())
+                .update();
+    }
+
+    public void updateGitlabByCode(SysUser sysUser) {
+        lambdaUpdate()
+                .eq(SysUser::getUserCode, sysUser.getUserCode())
+                .set(SysUser::getUserName, sysUser.getUserName())
+                .set(SysUser::getUserEmail, sysUser.getUserEmail())
+                .update();
     }
 }

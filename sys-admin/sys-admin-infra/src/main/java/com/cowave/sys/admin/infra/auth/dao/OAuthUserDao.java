@@ -9,22 +9,27 @@
  */
 package com.cowave.sys.admin.infra.auth.dao;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.cowave.commons.tools.Collections;
+import com.cowave.commons.framework.access.Access;
 import com.cowave.sys.admin.domain.auth.OAuthUser;
 import com.cowave.sys.admin.infra.auth.dao.mapper.OAuthUserMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author shanhuiming
  */
 @Repository
 public class OAuthUserDao extends ServiceImpl<OAuthUserMapper, OAuthUser> {
+
+    public Page<OAuthUser> getUserPage(String tenantId, String serverType, String userAccount) {
+        return lambdaQuery()
+                .eq(OAuthUser::getTenantId, tenantId)
+                .eq(OAuthUser::getServerType, serverType)
+                .like(StringUtils.isNotBlank(userAccount), OAuthUser::getUserAccount, userAccount)
+                .page(Access.page());
+    }
 
     /**
      * 查询用户（账号）
@@ -35,56 +40,5 @@ public class OAuthUserDao extends ServiceImpl<OAuthUserMapper, OAuthUser> {
                 .eq(OAuthUser::getServerType, serverType)
                 .eq(OAuthUser::getUserAccount, userAccount)
                 .one();
-    }
-
-    /**
-     * 查询用户（编码）
-     */
-    public OAuthUser getByUserCode(String userCode){
-        return lambdaQuery().eq(OAuthUser::getUserCode, userCode).one();
-    }
-
-    /**
-     * 删除用户
-     */
-    public void removeById(String tenantId, Integer userId){
-        lambdaUpdate().eq(OAuthUser::getTenantId, tenantId).eq(OAuthUser::getId, userId).remove();
-    }
-
-    /**
-     * 更新用户角色
-     */
-    public void updateRoleCodeById(String tenantId, Integer userId, String roleCode){
-        lambdaUpdate()
-                .eq(OAuthUser::getTenantId, tenantId)
-                .eq(OAuthUser::getId, userId)
-                .set(OAuthUser::getRoleCode, roleCode)
-                .set(OAuthUser::getUpdateTime, new Date())
-                .update();
-    }
-
-    /**
-     * 查询用户名称
-     */
-    public String queryNameByCode(String userCode){
-        return lambdaQuery()
-                .eq(OAuthUser::getUserCode, userCode)
-                .select(OAuthUser::getUserName)
-                .oneOpt().map(OAuthUser::getUserName).orElse(null);
-    }
-
-    /**
-     * 查询用户名称
-     */
-    public Map<String, String> queryCodeNameMap(List<String> userCodes){
-        if(userCodes.isEmpty()){
-            return new HashMap<>();
-        }
-
-        List<OAuthUser> list = lambdaQuery()
-                .in(OAuthUser::getUserCode, userCodes)
-                .select(OAuthUser::getUserCode, OAuthUser::getUserName)
-                .list();
-        return Collections.copyToMap(list, OAuthUser::getUserCode, OAuthUser::getUserName);
     }
 }

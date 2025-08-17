@@ -10,6 +10,11 @@ spring:
     auth:
       enable: true
       mode: access-refresh
+      ignoreUrls:
+        - /favicon.ico
+        - /actuator/**
+        - /doc/**
+        - /api/**
   datasource:
     url: jdbc:postgresql://127.0.0.1:5432/sys-meter
     username: postgres
@@ -17,3 +22,10 @@ spring:
   liquibase:
     enabled: true
     change-log: sql/changelog.yml
+
+easyopen:
+  default-version: 1.0
+  ignore-validate: true
+  only-json: true
+  interceptors[0]: com.cowave.sys.meter.open.interceptor.DocInterceptor
+
