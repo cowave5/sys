@@ -29,6 +29,12 @@ export const user_sex = [
   { value: 2, label: 'dict.name.unknown', css: 'danger' }
 ];
 
+export const user_type = [
+  { value: 'sys', label: 'dict.name.sys_user' },
+  { value: 'ldap', label: 'dict.name.ldap_user' },
+  { value: 'gitlab', label: 'dict.name.gitlab_user' }
+];
+
 export const menu_type = [
   { value: 'M', label: 'dict.name.menu_M', css: 'primary' },
   { value: 'C', label: 'dict.name.menu_C', css: 'success' },

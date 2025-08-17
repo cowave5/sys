@@ -189,7 +189,8 @@ export default {
   tenant: {
     title: {
       system: 'Cowave',
-      cowave: 'Cowave'
+      cowave: 'Cowave',
+      open: 'OpenTrial',
     },
     label: {
       id: "Tenant Key",
@@ -234,6 +235,7 @@ export default {
   user: {
     label: {
       id: "Id",
+      type: "Type",
       name: "Name",
       account: "Account",
       passwd: "Password",
@@ -573,6 +575,9 @@ export default {
       public_protected: "Public/Protected",
       public: "Public",
       protected: "Protected",
+      sys_user: "System User",
+      ldap_user: "Ldap User",
+      gitlab_user: "Gitlab User",
 
       attach_type: "Attach Type",
       avatar: "Avatar",

@@ -84,7 +84,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/images/login-tenant.jpg");
+  background-image: url("../assets/images/login-open.jpg");
   background-size: cover;
 }
 .title {

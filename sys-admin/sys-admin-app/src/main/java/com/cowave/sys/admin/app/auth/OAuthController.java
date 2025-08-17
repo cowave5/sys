@@ -14,7 +14,7 @@ import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.framework.access.security.AccessUserDetails;
 import com.cowave.sys.admin.domain.auth.OAuthClient;
 import com.cowave.sys.admin.domain.auth.OAuthServer;
-import com.cowave.sys.admin.domain.auth.dto.OAuthUserDto;
+import com.cowave.sys.admin.domain.auth.OAuthUser;
 import com.cowave.sys.admin.domain.auth.request.OAuth2CodeRequest;
 import com.cowave.sys.admin.domain.auth.request.OAuth2TokenRequest;
 import com.cowave.sys.admin.domain.auth.request.OAuthUserQuery;
@@ -67,31 +67,8 @@ public class OAuthController {
      */
     @PreAuthorize("@permits.hasPermit('oauth:gitlab:user:query')")
     @GetMapping("/user")
-    public Response<Response.Page<OAuthUserDto>> listUser(OAuthUserQuery query) {
+    public Response<Response.Page<OAuthUser>> listUser(OAuthUserQuery query) {
         return Response.page(oauthService.listUser(Access.tenantId(), query));
-    }
-
-    /**
-     * 删除用户
-     *
-     * @param userId 用户id
-     */
-    @PreAuthorize("@permits.hasPermit('oauth:gitlab:user:delete')")
-    @DeleteMapping("/user/{userId}")
-    public Response<Void> deleteUser(@PathVariable Integer userId) throws Exception {
-        return Response.success(() -> oauthService.deleteUser(Access.tenantId(), userId));
-    }
-
-    /**
-     * 修改用户角色
-     *
-     * @param userId 用户id
-     * @param roleCode 角色编码
-     */
-    @PreAuthorize("@permits.hasPermit('oauth:gitlab:user:edit')")
-    @PatchMapping("/user/role/{userId}/{roleCode}")
-    public Response<Void> updateUserRole(@PathVariable Integer userId, @PathVariable String roleCode) throws Exception {
-        return Response.success(() -> oauthService.updateUserRole(Access.tenantId(), userId, roleCode));
     }
 
     /**

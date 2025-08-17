@@ -52,8 +52,8 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/tenant/login',
-    component: () => import('@/views/tenant_login.vue'),
+    path: '/open/login',
+    component: () => import('@/views/open_login.vue'),
     hidden: true
   },
   {

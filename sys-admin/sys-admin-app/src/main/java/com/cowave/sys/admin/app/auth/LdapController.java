@@ -12,7 +12,7 @@ package com.cowave.sys.admin.app.auth;
 import com.cowave.commons.client.http.response.Response;
 import com.cowave.commons.framework.access.Access;
 import com.cowave.sys.admin.domain.auth.LdapConfig;
-import com.cowave.sys.admin.domain.auth.dto.LdapUserDto;
+import com.cowave.sys.admin.domain.auth.LdapUser;
 import com.cowave.sys.admin.service.auth.LdapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -64,29 +64,7 @@ public class LdapController {
      */
     @PreAuthorize("@permits.hasPermit('sys:ldap:query')")
     @GetMapping(value = {"/user"})
-    public Response<Response.Page<LdapUserDto>> listUser(String ldapAccount) {
+    public Response<Response.Page<LdapUser>> listUser(String ldapAccount) {
         return Response.page(ldapService.listUser(Access.tenantId(), ldapAccount));
-    }
-
-    /**
-     * 删除用户
-     * @param userId 用户id
-     */
-    @PreAuthorize("@permits.hasPermit('sys:ldap:edit')")
-    @DeleteMapping(value = {"/user/{userId}"})
-    public Response<Void> deleteUser(@PathVariable Integer userId) throws Exception {
-        return Response.success(() -> ldapService.deleteUser(Access.tenantId(), userId));
-    }
-
-    /**
-     * 修改用户角色
-     *
-     * @param userId 用户id
-     * @param roleCode 角色编码
-     */
-    @PreAuthorize("@permits.hasPermit('sys:ldap:edit')")
-    @PatchMapping("/user/role/{userId}/{roleCode}")
-    public Response<Void> changeUserRole(@PathVariable Integer userId, @PathVariable String roleCode) throws Exception {
-        return Response.success(() -> ldapService.changeUserRole(Access.tenantId(), userId, roleCode));
     }
 }

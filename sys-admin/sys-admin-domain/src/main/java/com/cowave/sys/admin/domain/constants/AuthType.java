@@ -13,9 +13,6 @@ import com.cowave.commons.tools.EnumVal;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * @author shanhuiming
  */
@@ -26,41 +23,8 @@ public enum AuthType implements EnumVal<String> {
     /**
      * 用户令牌
      */
-    API("api"),
-
-    /**
-     * OAuth授权
-     */
-    OAUTH("oauth"),
-
-    /**
-     * 系统用户
-     */
-    SYS("sys"),
-
-    /**
-     * Ldap用户
-     */
-    LDAP("ldap"),
-
-    /**
-     * Gitlab用户
-     */
-    GITLAB("gitlab");
+    API("api");
 
     private final String val;
 
-    private final Pattern pattern = Pattern.compile("^[^-]+-([^-]+)-");
-
-    public String generateCode() {
-        return val + "-" + java.util.UUID.randomUUID();
-    }
-
-    public boolean equalsType(String userCode){
-        Matcher matcher = pattern.matcher(userCode);
-        if (matcher.find()) {
-            return val.equals(matcher.group(1));
-        }
-        return false;
-    }
 }

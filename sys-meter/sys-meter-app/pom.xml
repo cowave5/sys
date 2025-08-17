@@ -17,6 +17,7 @@
             <artifactId>sys-meter-service</artifactId>
             <version>1.0.3</version>
         </dependency>
+
         <!-- nacos -->
 <!--		<dependency>-->
 <!--			<groupId>com.alibaba.cloud</groupId>-->

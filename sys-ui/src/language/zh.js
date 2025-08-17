@@ -189,7 +189,8 @@ export default {
   tenant: {
     title: {
       system: '控维科技',
-      cowave: '控维通信'
+      cowave: '控维通信',
+      open: '在线演示',
     },
     label: {
       id: "租户标识",
@@ -234,6 +235,7 @@ export default {
   user: {
     label: {
       id: "用户Id",
+      type: "用户类型",
       name: "用户名称",
       account: "用户账号",
       passwd: "用户密码",
@@ -573,6 +575,9 @@ export default {
       public_protected: "公开的/受限的",
       public: "公开的",
       protected: "受限的",
+      sys_user: "系统用户",
+      ldap_user: "Ldap用户",
+      gitlab_user: "Gitlab用户",
 
       attach_type: "文件类型",
       avatar: "头像",

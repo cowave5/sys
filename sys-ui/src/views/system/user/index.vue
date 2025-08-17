@@ -88,15 +88,15 @@
               <span>{{(queryParams.page - 1) * queryParams.pageSize + scope.$index + 1}}</span>
             </template>
           </el-table-column>
-          <el-table-column v-if="cols[0].show" :label="$t('user.label.name')" prop="userName" align="center" width="100" :show-overflow-tooltip="true"/>
-          <el-table-column v-if="cols[1].show" :label="$t('user.label.account')" prop="userAccount" align="center" width="100" :show-overflow-tooltip="true"/>
-          <el-table-column v-if="cols[2].show" :label="$t('user.label.sex')" align="center" width="80">
-            <template slot-scope="{row: {userSex}}">
-              <template v-for="item in user_sex">
-                <span v-if="userSex === item.value">{{$t(item.label)}}</span>
+          <el-table-column v-if="cols[0].show" :label="$t('user.label.type')" align="center" width="120">
+            <template slot-scope="{row: {userType}}">
+              <template v-for="item in user_type">
+                <span v-if="userType === item.value">{{$t(item.label)}}</span>
               </template>
             </template>
           </el-table-column>
+          <el-table-column v-if="cols[1].show" :label="$t('user.label.name')" prop="userName" align="center" width="100" :show-overflow-tooltip="true"/>
+          <el-table-column v-if="cols[2].show" :label="$t('user.label.account')" prop="userAccount" align="center" width="100" :show-overflow-tooltip="true"/>
           <el-table-column v-if="cols[3].show" :label="$t('user.label.phone')" prop="userPhone" align="center" width="120"/>
           <el-table-column v-if="cols[4].show" :label="$t('user.label.email')" prop="userEmail" align="center" :show-overflow-tooltip="true"/>
           <el-table-column v-if="cols[5].show" :label="$t('user.label.dept')" align="center" :show-overflow-tooltip="true">
@@ -156,7 +156,7 @@
                   <i class="el-icon-d-arrow-right el-icon--right"></i>{{$t('commons.button.more')}}
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="handleResetPwd" icon="el-icon-key"
+                  <el-dropdown-item v-if="scope.row.userType === 'sys'" command="handleResetPwd" icon="el-icon-key"
                                     :disabled="scope.row.userId === 1 || !checkPermit(['sys:user:passwd'])">
                     {{$t('user.button.passwd')}}
                   </el-dropdown-item>
@@ -181,12 +181,14 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item :label="$t('user.label.account')" prop="userAccount">
-                  <el-input v-model="form.userAccount" :placeholder="$t('user.placeholder.account')" maxlength="30" />
+                  <el-input v-model="form.userAccount" :placeholder="$t('user.placeholder.account')" maxlength="30"
+                            :disabled="form.userType === 'ldap' || form.userType === 'gitlab'"/>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item :label="$t('user.label.name')" prop="userName">
-                  <el-input v-model="form.userName" :placeholder="$t('user.placeholder.name')" maxlength="30" />
+                  <el-input v-model="form.userName" :placeholder="$t('user.placeholder.name')" maxlength="30"
+                            :disabled="form.userType === 'ldap' || form.userType === 'gitlab'"/>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -207,12 +209,14 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item :label="$t('user.label.phone')" prop="userPhone">
-                  <el-input v-model="form.userPhone" :placeholder="$t('user.placeholder.phone')" maxlength="11" />
+                  <el-input v-model="form.userPhone" :placeholder="$t('user.placeholder.phone')" maxlength="11"
+                            :disabled="form.userType === 'ldap'"/>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item :label="$t('user.label.email')" prop="email">
-                  <el-input v-model="form.userEmail" :placeholder="$t('user.placeholder.email')" maxlength="50" />
+                  <el-input v-model="form.userEmail" :placeholder="$t('user.placeholder.email')" maxlength="50"
+                            :disabled="form.userType === 'ldap' || form.userType === 'gitlab'"/>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -353,7 +357,7 @@ import {checkPermit} from "@/utils/permission";
 import cache from "@/plugins/cache";
 import { getRoleList } from '@/api/system/role'
 import {getConfigValue} from "@/api/system/config";
-import { enable_disable, user_sex } from '@/utils/constants';
+import {enable_disable, user_type, user_sex} from '@/utils/constants';
 export default {
   name: "User",
   dicts: ['post_level'],
@@ -362,6 +366,7 @@ export default {
     return {
       enable_disable: enable_disable,
       user_sex: user_sex,
+      user_type: user_type,
       activeTab: 'basic',
       // 遮罩层
       loading: true,
@@ -421,9 +426,9 @@ export default {
       diagramOpen: false,
       diagramData:{},
       cols: [
-        {key: 0, label: 'user.label.name', show: true},
-        {key: 1, label: 'user.label.account', show: true},
-        {key: 2, label: 'user.label.sex', show: true},
+        {key: 0, label: 'user.label.type', show: true},
+        {key: 1, label: 'user.label.name', show: true},
+        {key: 2, label: 'user.label.account', show: true},
         {key: 3, label: 'user.label.phone', show: true},
         {key: 4, label: 'user.label.email', show: true},
         {key: 5, label: 'user.label.dept', show: true},

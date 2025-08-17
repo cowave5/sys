@@ -12,22 +12,18 @@ package com.cowave.sys.admin.service.auth.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cowave.commons.client.http.asserts.HttpAsserts;
 import com.cowave.commons.client.http.asserts.HttpException;
-import com.cowave.commons.framework.access.Access;
 import com.cowave.commons.framework.access.operation.OperationInfo;
 import com.cowave.commons.framework.access.security.AccessUserDetails;
-import com.cowave.commons.framework.access.security.BearerTokenService;
-import com.cowave.commons.framework.access.security.Permission;
-import com.cowave.commons.framework.configuration.ApplicationProperties;
+import com.cowave.commons.framework.helper.redis.RedisHelper;
 import com.cowave.sys.admin.domain.auth.LdapConfig;
 import com.cowave.sys.admin.domain.auth.LdapUser;
-import com.cowave.sys.admin.domain.auth.dto.LdapUserDto;
-import com.cowave.sys.admin.domain.rabc.SysTenant;
+import com.cowave.sys.admin.domain.constants.UserType;
+import com.cowave.sys.admin.domain.rabc.*;
 import com.cowave.sys.admin.infra.auth.dao.LdapConfigDao;
 import com.cowave.sys.admin.infra.auth.dao.LdapUserDao;
-import com.cowave.sys.admin.infra.auth.dao.mapper.dto.LdapUserDtoMapper;
+import com.cowave.sys.admin.infra.auth.dao.UserDetailsDao;
 import com.cowave.sys.admin.infra.base.SysOperationHandler;
-import com.cowave.sys.admin.infra.rabc.dao.SysTenantDao;
-import com.cowave.sys.admin.infra.rabc.dao.mapper.dto.SysRoleDtoMapper;
+import com.cowave.sys.admin.infra.rabc.dao.*;
 import com.cowave.sys.admin.service.auth.LdapAttributesMapper;
 import com.cowave.sys.admin.service.auth.LdapService;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +41,8 @@ import java.util.Date;
 import java.util.List;
 
 import static com.cowave.commons.client.http.constants.HttpCode.*;
-import static com.cowave.sys.admin.domain.constants.AuthType.LDAP;
+import static com.cowave.sys.admin.domain.AdminRedisKeys.DEPT_USER_DIAGRAM;
+import static com.cowave.sys.admin.domain.AdminRedisKeys.USER_DIAGRAM;
 import static com.cowave.sys.admin.domain.constants.OpAction.LOGIN;
 import static com.cowave.sys.admin.domain.constants.OpModule.SYSTEM;
 import static com.cowave.sys.admin.domain.constants.OpModule.SYSTEM_AUTH;
@@ -57,14 +54,16 @@ import static com.cowave.sys.admin.domain.constants.OpModule.SYSTEM_AUTH;
 @Service
 public class LdapServiceImpl implements LdapService {
     private final ObjectProvider<DirContextAuthenticationStrategy> dirContextAuthenticationStrategy;
-    private final ApplicationProperties applicationProperties;
-    private final BearerTokenService bearerTokenService;
+    private final RedisHelper redisHelper;
     private final LdapUserDao ldapUserDao;
     private final LdapConfigDao ldapConfigDao;
     private final SysTenantDao sysTenantDao;
-    private final SysRoleDtoMapper sysRoleDtoMapper;
-    private final LdapUserDtoMapper ldapUserDtoMapper;
     private final SysOperationHandler sysOperationHandler;
+    private final SysUserDao sysUserDao;
+    private final SysUserTreeDao sysUserTreeDao;
+    private final SysRoleDao sysRoleDao;
+    private final SysUserRoleDao sysUserRoleDao;
+    private final UserDetailsDao userDetailsDao;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -79,7 +78,7 @@ public class LdapServiceImpl implements LdapService {
         boolean isAuthenticated = ldapTemplate.authenticate("", filter, passWord);
         HttpAsserts.isTrue(isAuthenticated, UNAUTHORIZED, "{frame.auth.pass.invalid}");
 
-        // 首次Ldap认证成功，创建SysUser
+        // Ldap用户信息
         List<LdapUser> list = ldapTemplate.search(
                 ldapConfig.getUserDn(), filter, SearchControls.SUBTREE_SCOPE, new LdapAttributesMapper(ldapConfig));
         LdapUser newUser = list.get(0);
@@ -97,33 +96,46 @@ public class LdapServiceImpl implements LdapService {
             ldapUserDao.updateById(ldapUser);
         }else{
             ldapUser = newUser;
-            ldapUser.setUserCode(sysTenantDao.nextUserCode(tenantId, LDAP.getVal()));
-            ldapUser.setRoleCode(ldapConfig.getRoleCode());
             ldapUser.setUserPasswd(passWord);
             ldapUser.setTenantId(ldapConfig.getTenantId());
             ldapUserDao.save(ldapUser);
         }
 
-        String roleCode = ldapUser.getRoleCode();
-        List<String> permits;
-        if(Permission.ROLE_ADMIN.equals(roleCode)){
-            permits = List.of(Permission.PERMIT_ADMIN);
+        // 对应系统用户
+        String userCode = UserType.LDAP.newCode(tenantId, newUser.getUserAccount());
+        SysUser sysUser = sysUserDao.getByCode(userCode);
+        if(sysUser == null){
+            sysUser = new SysUser();
+            sysUser.setUserCode(userCode);
+            sysUser.setTenantId(ldapConfig.getTenantId());
+            sysUser.setUserType(UserType.LDAP);
+            sysUser.setUserAccount(newUser.getUserAccount());
+            sysUser.setUserName(newUser.getUserName());
+            sysUser.setUserPhone(newUser.getUserPhone());
+            sysUser.setUserEmail(newUser.getUserEmail());
+            sysUserDao.save(sysUser);
+            // role
+            SysRole sysRole = sysRoleDao.getByCode(tenantId, ldapConfig.getRoleCode());
+            if(sysRole != null) {
+                SysUserRole userRole = new SysUserRole(sysUser.getUserId(), sysRole.getRoleId());
+                sysUserRoleDao.save(userRole);
+            }
+            // 用户关系
+            SysUserTree userTree = new SysUserTree(sysUser.getUserId(), 0, ldapConfig.getTenantId());
+            sysUserTreeDao.save(userTree);
+            // 用户树缓存
+            redisHelper.delete(USER_DIAGRAM + ":" + tenantId);
+            redisHelper.delete(DEPT_USER_DIAGRAM + ":" + tenantId);
         }else{
-            permits = sysRoleDtoMapper.getPermitsByRoleCode(roleCode);
+            sysUser.setUserName(newUser.getUserName());
+            sysUser.setUserPhone(newUser.getUserPhone());
+            sysUser.setUserEmail(newUser.getUserEmail());
+            sysUserDao.updateLdapByCode(sysUser);
         }
 
-        // 构造AccessToken
-        AccessUserDetails userDetails = ldapUser.newUserDetails();
-        userDetails.setClusterId(applicationProperties.getClusterId());
-        userDetails.setClusterLevel(applicationProperties.getClusterLevel());
-        userDetails.setClusterName(applicationProperties.getClusterName());
-        userDetails.setRoles(List.of(roleCode));
-        userDetails.setPermissions(permits);
-        bearerTokenService.assignAccessRefreshToken(userDetails);
-        // 租户首页
+        // 创建令牌
         SysTenant sysTenant = sysTenantDao.getById(tenantId);
-        userDetails.setTenantIndex(sysTenant.getViewIndex());
-
+        AccessUserDetails userDetails = userDetailsDao.newUserDetails(UserType.LDAP.getVal(), sysTenant, sysUser);
         // 登录日志
         OperationInfo operationInfo = OperationInfo.builder()
                 .success(true)
@@ -184,17 +196,7 @@ public class LdapServiceImpl implements LdapService {
     }
 
     @Override
-    public Page<LdapUserDto> listUser(String tenantId, String ldapAccount) {
-        return ldapUserDtoMapper.listUser(tenantId, ldapAccount, Access.page());
-    }
-
-    @Override
-    public void deleteUser(String tenantId, Integer userId) {
-        ldapUserDao.removeById(tenantId, userId);
-    }
-
-    @Override
-    public void changeUserRole(String tenantId, Integer userId, String roleCode) {
-        ldapUserDao.updateRoleCodeById(tenantId, userId, roleCode);
+    public Page<LdapUser> listUser(String tenantId, String ldapAccount) {
+        return ldapUserDao.getUserPage(tenantId, ldapAccount);
     }
 }

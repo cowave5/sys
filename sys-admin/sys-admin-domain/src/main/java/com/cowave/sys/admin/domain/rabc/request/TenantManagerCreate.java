@@ -9,13 +9,12 @@
  */
 package com.cowave.sys.admin.domain.rabc.request;
 
+import com.cowave.sys.admin.domain.constants.UserType;
 import com.cowave.sys.admin.domain.rabc.SysUser;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-
-import static com.cowave.sys.admin.domain.constants.AuthType.SYS;
 
 /**
  * @author shanhuiming
@@ -50,7 +49,8 @@ public class TenantManagerCreate {
 
     public SysUser newSysUser() {
         SysUser sysUser = new SysUser();
-        sysUser.setUserType(SYS.getVal());
+        sysUser.setUserType(UserType.SYS);
+        sysUser.setUserCode(UserType.SYS.newCode(tenantId, userAccount));
         sysUser.setTenantId(tenantId);
         sysUser.setUserName(userName);
         sysUser.setUserAccount(userAccount);

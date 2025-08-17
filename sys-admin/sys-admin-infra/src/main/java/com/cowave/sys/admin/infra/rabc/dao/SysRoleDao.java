@@ -39,11 +39,21 @@ public class SysRoleDao extends ServiceImpl<SysRoleMapper, SysRole> {
     }
 
     /**
+     * 查询角色id（角色编码）
+     */
+    public SysRole getByCode(String tenantId, String roleCode){
+        return lambdaQuery()
+                .in(SysRole::getTenantId, List.of("#", tenantId))
+                .eq(SysRole::getRoleCode, roleCode)
+                .one();
+    }
+
+    /**
      * 列表查询（角色id）
      */
     public List<SysRole> listByIds(String tenantId, List<Integer> roleIds) {
         return lambdaQuery()
-                .eq(SysRole::getTenantId, tenantId)
+                .in(SysRole::getTenantId, List.of("#", tenantId))
                 .in(SysRole::getRoleId, roleIds)
                 .list();
     }
@@ -57,16 +67,6 @@ public class SysRoleDao extends ServiceImpl<SysRoleMapper, SysRole> {
                 .eq(StringUtils.isNotBlank(query.getRoleCode()), SysRole::getRoleCode, query.getRoleCode())
                 .eq(StringUtils.isNotBlank(query.getRoleName()), SysRole::getRoleName, query.getRoleName())
                 .page(Access.page());
-    }
-
-    /**
-     * 查询角色id（角色编码）
-     */
-    public Integer queryIdByCode(String roleCode){
-        return lambdaQuery()
-                .select(SysRole::getRoleId)
-                .eq(SysRole::getRoleCode, roleCode)
-                .one().getRoleId();
     }
 
     /**

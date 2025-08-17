@@ -24,10 +24,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author shanhuiming
@@ -180,7 +177,7 @@ public class SysUserDao extends ServiceImpl<SysUserMapper, SysUser> {
     /**
      * 查询姓名（用户编码列表）
      */
-    public Map<String, String> queryCodeNameMap(List<String> userCodes){
+    public Map<String, String> queryCodeNameMap(Collection<String> userCodes){
         if(userCodes.isEmpty()){
             return new HashMap<>();
         }
@@ -200,5 +197,22 @@ public class SysUserDao extends ServiceImpl<SysUserMapper, SysUser> {
                 .like(StringUtils.isNotBlank(query.getUserName()), SysUser::getUserName, query.getUserName())
                 .notIn(CollectionUtils.isNotEmpty(query.getUserCodes()), SysUser::getUserCode, query.getUserCodes())
                 .page(Access.page());
+    }
+
+    public void updateLdapByCode(SysUser sysUser) {
+        lambdaUpdate()
+                .eq(SysUser::getUserCode, sysUser.getUserCode())
+                .set(SysUser::getUserName, sysUser.getUserName())
+                .set(SysUser::getUserPhone, sysUser.getUserPhone())
+                .set(SysUser::getUserEmail, sysUser.getUserEmail())
+                .update();
+    }
+
+    public void updateGitlabByCode(SysUser sysUser) {
+        lambdaUpdate()
+                .eq(SysUser::getUserCode, sysUser.getUserCode())
+                .set(SysUser::getUserName, sysUser.getUserName())
+                .set(SysUser::getUserEmail, sysUser.getUserEmail())
+                .update();
     }
 }

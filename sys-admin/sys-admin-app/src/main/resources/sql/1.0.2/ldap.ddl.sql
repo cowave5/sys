@@ -55,8 +55,6 @@ drop table if exists ldap_user;
 create table ldap_user
 (
     id           bigserial primary key,
-    user_code    character varying(64),
-    role_code    character varying(64),
     tenant_id    character varying(64),
     user_account character varying(64),
     user_passwd  character varying(64),
@@ -73,7 +71,6 @@ create table ldap_user
 create unique index ldap_user_unique on ldap_user(tenant_id, user_account);
 comment on table ldap_user is 'ldap用户';
 comment on column ldap_user.id is 'id';
-comment on column ldap_user.role_code is '用户角色';
 comment on column ldap_user.user_info is '用户信息';
 comment on column ldap_user.user_account is '用户账号';
 comment on column ldap_user.user_passwd is '用户密码';
